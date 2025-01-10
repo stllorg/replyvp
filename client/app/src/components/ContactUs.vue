@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
       <div class="col-md-6">
         <div class="contact-form bg-white p-4 rounded shadow">
-          <h2 class="text-center mb-4">Contact Us</h2>
+          <h2 class="text-center mb-4">Envie sua mensagem</h2>
           <form @submit.prevent="handleSubmit">
             <div class="mb-3">
               <label for="username" class="form-label">Usuário</label>

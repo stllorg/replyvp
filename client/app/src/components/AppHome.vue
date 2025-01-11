@@ -2,7 +2,7 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-12">
-        <div class="card">
+        <div class="card mb-2">
           <img src="https://placehold.co/512x256.png" class="card-img-top" alt="Imagem de Missão">
           <div class="card-body">
             <h5 class="card-title">Missão da Empresa</h5>
@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="col-12">
-        <div class="card">
+        <div class="card mb-2">
           <img src="https://placehold.co/512x256.png" class="card-img-top" alt="Imagem de Missão">
           <div class="card-body">
             <h5 class="card-title">Vantagens de contratar</h5>
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="col-12">
-        <div class="card">
+        <div class="card mb-2">
           <img src="https://placehold.co/512x256.png" class="card-img-top" alt="Imagem de Missão">
           <div class="card-body">
             <h5 class="card-title">Planos e Preços</h5>

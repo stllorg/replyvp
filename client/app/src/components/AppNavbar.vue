@@ -29,6 +29,7 @@
             src="https://placehold.co/50x50.png"
             alt="profile"
             class="rounded-circle"
+            @click="navigateToLogin"
           />
         </div>
       </div>
@@ -38,6 +39,11 @@
   <script>
   export default {
     name: "AppNavbar",
+    methods: {
+    navigateToLogin() {
+      this.$router.push('/login');
+    }
+  }
   };
   </script>
   
@@ -47,4 +53,3 @@
     height: 50px;
   }
   </style>
-  

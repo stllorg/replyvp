@@ -5,7 +5,7 @@
         <div class="card shadow">
           <div class="card-body p-4">
             <h2 class="card-title text-center mb-4">Entrar em IA.ContactCenter</h2>
-            <form @submit.prevent="testLogin">
+            <form @submit.prevent="loginUser">
               <div class="mb-3">
                 <label for="username" class="form-label">Nome de usuário</label>
                 <input
@@ -37,7 +37,7 @@
                 <button type="submit" class="btn btn-primary">Fazer login</button>
               </div>
               <p class="text-center">
-                Ainda não tem cadastro? <a href="#">Cadastre-se</a>
+                Ainda não tem cadastro? <router-link to="/register">Cadastre-se</router-link>
               </p>
             </form>
           </div>
@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'LoginPage',
   data() {
@@ -58,15 +60,32 @@ export default {
     };
   },
   methods: {
-    testLogin() {
+    async loginUser() {
       this.error = null;
-      if (this.username === 'admin' && this.password === 'admin') {
-        alert(`Login bem sucedido!\n Você se conectou como ${this.username}`);
-      } else {
-        this.error = "Credenciais inválidas.";
+      try {
+        const response = await axios.post("http://localhost:8080/api/users/login.php", {
+          username: this.username,
+          password: this.password,
+        });
+
+        if (response.data.success) {
+          const user = response.data.user;
+          localStorage.setItem("user", JSON.stringify({
+            username: user.username,
+            email: user.email,
+          }));
+
+          this.$router.push("/dashboard");
+        } else {
+          const errorData = await response.json();
+          this.error = errorData.error || "Erro ao tentar fazer login.";
+        }
+      } catch (err) {
+        this.error = "Erro na comunicação com o servidor. Tente novamente mais tarde.";
+      } finally {
+        this.username = "";
+        this.password = "";
       }
-      this.username = "";
-      this.password = "";
     },
   },
 };

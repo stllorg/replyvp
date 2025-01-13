@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'RegisterPage',
   data() {
@@ -77,24 +79,34 @@ export default {
     };
   },
   methods: {
-    testSignUp() {
-
-      if (this.permission) {
-        this.testRegister();
-      } else {
-        alert(`O registro foi negado!`);
-      }
-      
-    },testRegister() {
+    async register() {
       this.error = null;
-      if (this.username === 'test' && this.password === 'test') {
-        alert(`Usuário ${this.username} cadastrado com sucesso!`);
-      } else {
-        this.error = "Credenciais inválidas.";
+
+      if (!this.username || !this.password || !this.email) {
+        this.error = "Todos os campos são obrigatórios.";
+        return;
       }
-      this.username = "";
-      this.password = "";
-      this.email = "";
+
+      try{
+        const response = await axios.post('http://localhost:8080/api/users/register.php', {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+        });
+
+      if (response.status === 200) {
+        alert(`Usuário ${this.username} cadastrado com sucesso!`);
+        this.username = "";
+        this.password = "";
+        this.email = "";
+      }
+      } catch(error) {
+        if (error.response) {
+          this.error = error.response.data.message || 'Erro ao registrar usuário';
+        } else {
+          this.error = 'Erro de rede ou servidor';
+        }
+      }
     }
   },
 };

@@ -7,6 +7,7 @@ import RegisterPage from '@/components/RegisterPage.vue';
 import TerminateAccount from '@/components/TerminateAccount.vue';
 import PrivacyPolicyPage from '@/components/PrivacyPolicyPage.vue';
 import TermsPage from '@/components/TermsPage.vue';
+import DashboardPage from '@/components/DashboardPage.vue';
 
 const routes = [
   { path: '/', name: 'AppHome', component: AppHome },
@@ -17,6 +18,7 @@ const routes = [
   { path: '/terminate', name: 'TerminateAccount', component: TerminateAccount},
   { path: '/policy', name: 'PrivacyPolicyPage', component: PrivacyPolicyPage},
   { path: '/terms', name: 'TermsPage', component: TermsPage},
+  { path: '/dashboard', name: 'DashboardPage', component: DashboardPage},
 ];
 
 const router = createRouter({

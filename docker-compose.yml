@@ -18,6 +18,7 @@ services:
     restart: always
     volumes:
       - ./web/api:/var/www/html/api
+      - ./web/auth:/var/www/html/auth
     ports:
       - "8080:80"
     depends_on:

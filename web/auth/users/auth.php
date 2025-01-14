@@ -1,9 +1,18 @@
 <?php
 require 'connection.php';
 require '../libs/php-jwt-6.10.2/src/JWT.php';
+require '../libs/php-jwt-6.10.2/src/Key.php';
+require '../libs/php-jwt-6.10.2/src/JWTExceptionWithPayloadInterface.php';
+require '../libs/php-jwt-6.10.2/src/SignatureInvalidException.php';
+require '../libs/php-jwt-6.10.2/src/BeforeValidException.php';
+require '../libs/php-jwt-6.10.2/src/ExpiredException.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Firebase\JWT\JWTExceptionWithPayloadInterface;
+use Firebase\JWT\SignatureInvalidException;
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
 
 // Configurações
 $secretKey = 'sua_chave_secreta';
@@ -40,6 +49,20 @@ function authenticate() {
     }
 }
 
+function getUserRoles($userId, $connection) {
+    $stmt = $connection->prepare("SELECT r.name FROM roles r INNER JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = ?");
+    $stmt->bind_param('i',$userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $roles = [];
+    while ($row = $result-> fetch_assoc()) {
+        $roles[] = $row['name'];
+    }
+
+    $stmt->close();
+    return $roles;
+}
 
 try {
     $connection = getConnection();
@@ -59,7 +82,7 @@ try {
             exit;
         }
 
-        $stmt = $connection->prepare("SELECT id, password, email FROM users WHERE username = ?");
+        $stmt = $connection->prepare("SELECT id, password, email, username FROM users WHERE username = ?");
         $stmt->bind_param('s', $input['username']);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -78,14 +101,17 @@ try {
             echo json_encode(["error" => "Invalid username or password."]);
             exit;
         }
+
+        $roles = getUserRoles($user['id'], $connection);
         
         $payload = [
             "iat" => time(),
             "exp" => time() + 3600,
             "data" => [
                 "id" => $user['id'],
-                "username" => $input['username'],
-                "email" => $user['email']
+                "username" => $user['username'],
+                "email" => $user['email'],
+                "roles" => $roles
             ]
         ];
 
@@ -95,7 +121,12 @@ try {
         echo json_encode([
             "success" => true,
             "message" => "Login successful.",
-            "token" => $jwt
+            "token" => $jwt,
+            "user" => [
+                "username" => $input['username'],
+                "email" => $user['email'],
+                "roles" => $roles
+            ]
         ]);
     } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $userData = authenticate();

@@ -22,6 +22,30 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 INSERT INTO users (username, email, password) VALUES
-('usuario1', 'usuario1@email.com', '$2y$10$muO7.qg/8k9x.a8/1234567890abcdefghijklmnopq'),
+('adm', 'Xtest@testmail.com', '$2y$12$WmsHcmLZh8uArpDIy8MeVOJmDFnpkO7wMdADfD0mfC8HcZ0y6C.iO'),
 ('usuario2', 'usuario2@email.com', '$2y$10$anotherHash1234567890abcdefghijklmnopqrs'),
 ('usuario3', 'usuario3@email.com', '$2y$10$yetAnotherHash1234567890abcdefghijklmn');
+
+CREATE TABLE IF NOT EXISTS roles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+INSERT INTO roles (name) VALUES
+('admin'),
+('manager'),
+('support'),
+('user');
+
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id INT NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+INSERT INTO user_roles (user_id, role_id) VALUES
+(1, 1),
+(2, 2),
+(3, 4);

@@ -1,6 +1,6 @@
-# Simple PHP API for Messaging
+# ReplyVP
 
-This repository contains a simple PHP API designed to handle sending messages to a PostgreSQL database.
+This repository contains a simple PHP API.
 
 ---
 ## Requirements
@@ -9,6 +9,10 @@ This repository contains a simple PHP API designed to handle sending messages to
 - **Language**: PHP 8.2
 - **Web Server**: Apache 2.4
 - **Database Driver**: MySQLi
+
+### Auth
+- Firebase php-jwt v6.10.2 - https://github.com/firebase/php-jwt
+- 
 
 ### Database
 - **Database**: MySQL v9.1

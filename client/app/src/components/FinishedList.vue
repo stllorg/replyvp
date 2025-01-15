@@ -1,13 +1,13 @@
 <template>
     <div class="container py-5">
-      <h2 class="text-center mb-4">Mensagens Recebidas</h2>
+      <h2 class="text-center mb-4">Mensagens Não Respondidas</h2>
       <table class="table table-striped table-bordered">
         <thead class="table-dark">
           <tr>
-            <th>ID</th>
+            <th>Cliente</th>
+            <th>Reincidente</th>
             <th>Assunto</th>
-            <th>Status</th>
-            <th>Horário de Envio</th>
+            <th>Última mensagem</th>
           </tr>
         </thead>
         <tbody>
@@ -27,6 +27,7 @@
   
   <script>
   export default {
+    name: 'FinishedList',
     props: {
       messages: {
         type: Array,

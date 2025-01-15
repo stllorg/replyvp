@@ -5,7 +5,7 @@
         <div class="card shadow">
           <div class="card-body p-4">
             <h2 class="card-title text-center mb-4">Registrar em IA.ContactCenter</h2>
-            <form @submit.prevent="testSignUp">
+            <form @submit.prevent="register">
               <div class="mb-3">
                 <label for="username" class="form-label">Nome de usuário</label>
                 <input
@@ -54,7 +54,7 @@
                 {{ error }}
               </div>
               <div class="d-grid gap-2 mb-3">
-                <button type="submit" class="btn btn-primary">Fazer login</button>
+                <button type="submit" class="btn btn-primary">Cadastrar-se</button>
               </div>
             </form>
           </div>
@@ -94,7 +94,7 @@ export default {
           password: this.password,
         });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert(`Usuário ${this.username} cadastrado com sucesso!`);
         this.username = "";
         this.password = "";
@@ -109,5 +109,11 @@ export default {
       }
     }
   },
+  mounted() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user.token){
+      this.$router.push("/dashboard");
+    }
+  }
 };
 </script>

@@ -1,7 +1,5 @@
 <template>
     <div class="container mt-4">
-      <!-- Container Superior: Informações do Usuário -->
-       <!--Add user.photo-->
       <div class="card shadow mb-4 border-0" style="background-color: #f8f9fa;">
         <div class="card-body text-center">
           <img
@@ -15,7 +13,6 @@
         </div>
       </div>
   
-      <!-- Container Inferior: Lista de Mensagens -->
       <div class="card shadow border-0" style="background-color: #f8f9fa;">
         <div class="card-body">
           <h5 class="card-title text-secondary fw-bold">Mensagens</h5>

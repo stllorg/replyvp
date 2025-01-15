@@ -18,12 +18,24 @@ const routes = [
   { path: '/terminate', name: 'TerminateAccount', component: TerminateAccount},
   { path: '/policy', name: 'PrivacyPolicyPage', component: PrivacyPolicyPage},
   { path: '/terms', name: 'TermsPage', component: TermsPage},
-  { path: '/dashboard', name: 'DashboardPage', component: DashboardPage},
+  { path: '/dashboard', name: 'DashboardPage', component: DashboardPage, meta: { requiresAuth: true }},
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (requiresAuth && (!user || !user.token)) {
+    next("/login");
+    console.login("Info: The user is not logged in.")
+  } else {
+    next();
+  }
 });
 
 export default router;

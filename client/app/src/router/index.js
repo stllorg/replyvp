@@ -83,6 +83,15 @@ router.beforeEach((to, from, next) => {
     }
   }
 
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (requiresAuth && (!user || !user.token)) {
+    next("/login");
+    console.login("Info: The user is not logged in.")
+  } else {
+    next();
+  }
 });
 
 export default router;

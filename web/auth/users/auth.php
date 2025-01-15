@@ -14,8 +14,7 @@ use Firebase\JWT\SignatureInvalidException;
 use Firebase\JWT\BeforeValidException;
 use Firebase\JWT\ExpiredException;
 
-// Configurações
-$secretKey = 'sua_chave_secreta';
+$secretKey = 'secretIuK2f4eg3H_teSc_s';
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");

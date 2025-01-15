@@ -22,6 +22,12 @@
               <router-link class="nav-link" to="/messages">Ver Mensagens</router-link>
             </li>
           </ul>
+          <div v-if="isUserLogged" class="d-flex align-items-center" @click="logoutUser">
+            Logout
+          </div>
+          <div v-if="!isUserLogged" class="d-flex align-items-center" @click="navigateToLogin">
+            Sign in
+          </div>
           <img
             src="https://placehold.co/50x50.png"
             alt="profile"
@@ -31,22 +37,39 @@
         </div>
       </div>
     </nav>
-  </template>
+</template>
   
-  <script>
-  export default {
-    name: "AppNavbar",
-    methods: {
+<script>
+export default {
+  name: "AppNavbar",
+  data() {
+    return {
+      isUserLogged: false,
+    };
+  },
+  methods: {
     navigateToLogin() {
       this.$router.push('/login');
-    }
-  }
+    },
+    logoutUser() {
+      localStorage.removeItem("user");
+      this.isUserLogged = false;
+      this.$router.push("/");
+    },
+    // TODO: Usar um serviço para monitorar o estado de login
+    checkUserLogged() {
+      this.isUserLogged = localStorage.getItem("user") !== null;
+    },
+  },
+    mounted() {
+      this.checkUserLogged();
+    },
   };
-  </script>
-  
-  <style scoped>
-  img {
-    width: 50px;
-    height: 50px;
-  }
-  </style>
+</script>
+
+<style scoped>
+img {
+  width: 50px;
+  height: 50px;
+}
+</style>

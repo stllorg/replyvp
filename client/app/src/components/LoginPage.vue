@@ -59,20 +59,30 @@ export default {
       error: null
     };
   },
+  mounted() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.token){
+      this.$router.push("/dashboard");
+    }
+  },
   methods: {
     async loginUser() {
       this.error = null;
       try {
-        const response = await axios.post("http://localhost:8080/api/users/login.php", {
+        const response = await axios.post("http://localhost:8080/auth/users/auth.php", {
           username: this.username,
           password: this.password,
         });
 
-        if (response.data.success) {
+        if (response.status === 200) {
           const user = response.data.user;
-          localStorage.setItem("user", JSON.stringify({
+          const token = response.data.token;
+
+          localStorage.setItem('user', JSON.stringify({
             username: user.username,
             email: user.email,
+            roles: user.roles,
+            token: token,
           }));
 
           this.$router.push("/dashboard");

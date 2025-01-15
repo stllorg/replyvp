@@ -85,7 +85,12 @@ The following features are planned for implementation:
 ---
 ## Contributing
 
-Contributions are welcome! Feel free to submit issues or pull requests to improve this project.
+Contributions are always welcome! If you have any suggestions or improvements, feel free to submit issues or pull requests. This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/) specification for commit messages. 
+
+This project has a configuration file for Visual Studio Code(VSCode) that automatically loads identation specifications from the `./vscode` folder to ensure consistency across the development environment.
+- [ ] **Identation**
+  - .vue Vue.js files: 2 spaces.
+  - .php PHP files : 4 spaces.
 
 ---
 ## License

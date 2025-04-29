@@ -1,0 +1,5 @@
+# Environment files
+.env
+.env.test
+.env.*.local
+data/

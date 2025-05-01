@@ -7,15 +7,15 @@ require_once __DIR__ . '/libs/php-jwt-6.10.2/src/Key.php';
 require_once __DIR__ . '/routes.php';
 
 use Autoloader;
-use Controllers\AuthController;
-use Controllers\TicketController;
-use Controllers\MessageController;
-use Repositories\UserRepository;
-use Repositories\TicketRepository;
-use Repositories\MessageRepository;
-use Services\AuthService;
-use Services\TicketService;
-use Services\MessageService;
+use ReplyVP\Controllers\AuthController;
+use ReplyVP\Controllers\TicketController;
+use ReplyVP\Controllers\MessageController;
+use ReplyVP\Repositories\UserRepository;
+use ReplyVP\Repositories\TicketRepository;
+use ReplyVP\Repositories\MessageRepository;
+use ReplyVP\Services\AuthService;
+use ReplyVP\Services\TicketService;
+use ReplyVP\Services\MessageService;
 
 // Register autoloader
 Autoloader::register();

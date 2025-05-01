@@ -2,7 +2,7 @@
 
 namespace ReplyVP\Repositories;
 
-use Entities\Message;
+use ReplyVP\Entities\Message;
 
 class MessageRepository {
     private $db;

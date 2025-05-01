@@ -2,8 +2,8 @@
 
 namespace ReplyVP\Controllers;
 
-use Services\MessageService;
-use Services\AuthService;
+use ReplyVP\Services\MessageService;
+use ReplyVP\Services\AuthService;
 
 class MessageController {
     private $messageService;

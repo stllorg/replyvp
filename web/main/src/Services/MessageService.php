@@ -2,9 +2,9 @@
 
 namespace ReplyVP\Services;
 
-use Entities\Message;
-use Repositories\MessageRepository;
-use Repositories\TicketRepository;
+use ReplyVP\Entities\Message;
+use ReplyVP\Repositories\MessageRepository;
+use ReplyVP\Repositories\TicketRepository;
 
 class MessageService {
     private $messageRepository;

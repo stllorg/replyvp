@@ -1,8 +1,8 @@
 <?php
 
-namespace Controllers;
+namespace ReplyVP\Controllers;
 
-use Services\AuthService;
+use ReplyVP\Services\AuthService;
 
 class AuthController {
     private $authService;

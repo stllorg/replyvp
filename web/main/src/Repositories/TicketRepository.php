@@ -2,7 +2,7 @@
 
 namespace ReplyVP\Repositories;
 
-use Entities\Ticket;
+use ReplyVP\Entities\Ticket;
 
 class TicketRepository {
     private $db;

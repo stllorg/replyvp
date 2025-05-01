@@ -2,7 +2,7 @@
 
 namespace ReplyVP\Repositories;
 
-use Entities\User;
+use ReplyVP\Entities\User;
 
 class UserRepository {
     private $db;

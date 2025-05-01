@@ -2,8 +2,8 @@
 
 namespace ReplyVP\Services;
 
-use Entities\User;
-use Repositories\UserRepository;
+use ReplyVP\Entities\User;
+use ReplyVP\Repositories\UserRepository;
 use \Firebase\JWT\JWT;
 
 class AuthService {

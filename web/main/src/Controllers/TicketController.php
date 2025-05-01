@@ -2,8 +2,8 @@
 
 namespace ReplyVP\Controllers;
 
-use Services\TicketService;
-use Services\AuthService;
+use ReplyVP\Services\TicketService;
+use ReplyVP\Services\AuthService;
 
 class TicketController {
     private $ticketService;

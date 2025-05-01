@@ -2,8 +2,8 @@
 
 namespace ReplyVP\Services;
 
-use Entities\Ticket;
-use Repositories\TicketRepository;
+use ReplyVP\Entities\Ticket;
+use ReplyVP\Repositories\TicketRepository;
 
 class TicketService {
     private $ticketRepository;

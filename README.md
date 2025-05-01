@@ -27,7 +27,7 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
   - **Authentication**: `localhost:8080/auth` (For user login and registration)
   - **API**: `localhost:8080/api` (For interactions with the application, protected by JWT)
 - **Database Driver**: MySQLi (for communication with the MySQL database)
-- **Authentication**: Using Firebase `php-jwt` v6.10.2 for authentication and JWT token generation.
+- **Authentication**: Using Firebase `php-jwt` v6.11 for authentication and JWT token generation.
 - **Containers**: Docker Compose to simplify the development, build, and deployment process in isolated environments, with the API and authentication running in the `php-apache` container.
 
 ### Database

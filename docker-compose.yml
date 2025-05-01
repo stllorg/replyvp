@@ -6,8 +6,8 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DEFAULT_AUTHENTICATION_PLUGIN: mysql_native_password
     volumes:
-      - ./db/data:/var/lib/mysql
-      - ./db/init:/docker-entrypoint-initdb.d
+      - ./db/data:/var/lib/mysql:Z
+      - ./db/init:/docker-entrypoint-initdb.d:Z
     ports:
       - "3306:3306"
     restart: unless-stopped
@@ -17,8 +17,7 @@ services:
     container_name: php-container
     restart: always
     volumes:
-      - ./web/api:/var/www/html/api
-      - ./web/auth:/var/www/html/auth
+      - ./web/app:/var/www/html:Z
     ports:
       - "8080:80"
     depends_on:

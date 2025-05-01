@@ -1,12 +1,11 @@
 <?php
 
-require_once __DIR__ . '/src/Autoloader.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/libs/php-jwt-6.10.2/src/JWT.php';
 require_once __DIR__ . '/libs/php-jwt-6.10.2/src/Key.php';
 require_once __DIR__ . '/routes.php';
 
-use Autoloader;
 use ReplyVP\Controllers\AuthController;
 use ReplyVP\Controllers\TicketController;
 use ReplyVP\Controllers\MessageController;
@@ -17,8 +16,6 @@ use ReplyVP\Services\AuthService;
 use ReplyVP\Services\TicketService;
 use ReplyVP\Services\MessageService;
 
-// Register autoloader
-Autoloader::register();
 
 // Set headers
 header('Content-Type: application/json');

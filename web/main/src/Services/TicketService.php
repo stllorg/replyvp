@@ -12,8 +12,8 @@ class TicketService {
         $this->ticketRepository = $ticketRepository;
     }
 
-    public function createTicket($name, $userId) {
-        $ticket = new Ticket(null, $name, $userId);
+    public function createTicket($subject, $userId) {
+        $ticket = new Ticket(null, $subject, $userId);
         return $this->ticketRepository->create($ticket);
     }
 

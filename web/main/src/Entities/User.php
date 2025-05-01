@@ -1,6 +1,6 @@
 <?php
 
-namespace Entities;
+namespace ReplyVP\Entities;
 
 class User {
     private int $id;

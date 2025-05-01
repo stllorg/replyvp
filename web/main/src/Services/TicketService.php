@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace ReplyVP\Services;
 
 use Entities\Ticket;
 use Repositories\TicketRepository;

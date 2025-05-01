@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers;
+namespace ReplyVP\Controllers;
 
 use Services\MessageService;
 use Services\AuthService;

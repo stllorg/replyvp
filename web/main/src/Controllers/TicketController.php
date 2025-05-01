@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers;
+namespace ReplyVP\Controllers;
 
 use Services\TicketService;
 use Services\AuthService;

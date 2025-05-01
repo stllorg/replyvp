@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace ReplyVP\Services;
 
 use Entities\Message;
 use Repositories\MessageRepository;

@@ -7,14 +7,14 @@ require_once __DIR__ . '/libs/php-jwt-6.10.2/src/Key.php';
 
 use Autoloader;
 use Controllers\AuthController;
-use Controllers\ProductController;
-use Controllers\RatingController;
+use Controllers\TicketController;
+use Controllers\MessageController;
 use Repositories\UserRepository;
-use Repositories\ProductRepository;
-use Repositories\RatingRepository;
+use Repositories\TicketRepository;
+use Repositories\MessageRepository;
 use Services\AuthService;
-use Services\ProductService;
-use Services\RatingService;
+use Services\TicketService;
+use Services\MessageService;
 
 // Register autoloader
 Autoloader::register();
@@ -36,18 +36,18 @@ $db = getConnection();
 
 // Initialize repositories
 $userRepository = new UserRepository($db);
-$productRepository = new ProductRepository($db);
-$ratingRepository = new RatingRepository($db);
+$ticketRepository = new TicketRepository($db);
+$messageRepository = new MessageRepository($db);
 
 // Initialize services
 $authService = new AuthService($userRepository);
-$productService = new ProductService($productRepository);
-$ratingService = new RatingService($ratingRepository, $productRepository);
+$ticketService = new TicketService($ticketRepository);
+$messageService = new MessageService($messageRepository, $ticketRepository);
 
 // Initialize controllers
 $authController = new AuthController($authService);
-$productController = new ProductController($productService, $authService);
-$ratingController = new RatingController($ratingService, $authService);
+$ticketController = new TicketController($ticketService, $authService);
+$messageController = new MessageController($messageService, $authService);
 
 // Parse the URL
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -72,16 +72,16 @@ try {
             }
             break;
 
-        case 'products':
+        case 'tickets':
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'POST':
                     if (count($uri) === 1) {
-                        $productController->createProduct();
+                        $ticketController->createTicket();
                     }
                     break;
                 case 'GET':
                     if (count($uri) === 1) {
-                        $productController->getUserProducts();
+                        $ticketController->getUserTickets();
                     }
                     break;
                 default:
@@ -90,16 +90,16 @@ try {
             }
             break;
 
-        case 'ratings':
+        case 'messages':
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'POST':
                     if (isset($uri[1])) {
-                        $ratingController->createRating($uri[1]);
+                        $messageController->createMessage($uri[1]);
                     }
                     break;
                 case 'GET':
                     if (isset($uri[1])) {
-                        $ratingController->getProductRatings($uri[1]);
+                        $messageController->getTicketMessages($uri[1]);
                     }
                     break;
                 default:

@@ -28,7 +28,7 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
   - **API**: `localhost:8080/api` (For interactions with the application, protected by JWT)
 - **Database Driver**: MySQLi (for communication with the MySQL database)
 - **Authentication**: Using Firebase `php-jwt` v6.11 for authentication and JWT token generation.
-- **Containers**: Docker Compose to simplify the development, build, and deployment process in isolated environments, with the API and authentication running in the `php-apache` container.
+- **Containers**: Docker with Compose in compatibility with Podman Compose.
 
 ### Database
 - **Database**: MySQL 9.1.0
@@ -48,8 +48,21 @@ Clone the repository to your local machine:
 git clone <repository-url>
 cd <project-directory>
 ```
+### Step 2: Edit Passwords and Environment Variables
+Edit the environment variable values in the following files:
 
-### Step 2: Build and Start the Containers
+- `/.env`
+- `/web/app/.env.example`
+
+### Step 3: Rename `.env.example` Files to `.env`
+
+
+```bash
+mv .env.example .env
+mv web/app/.env.example web/app/.env
+```
+
+### Step 4: Build and Start the Containers
 To start the project with Docker, run the following in your terminal:
 
 ```bash
@@ -61,7 +74,7 @@ This will:
 - Expose the services on port `8080` (PHP) and `3306` (MySQL).
 - Automatically load MySQL data from the provided SQL script for initialization.
 
-### Step 3: Access the Application
+### Step 5: Access the Application
 Once the containers are up and running, you can access the application:
 
 - **PHP Application**: `http://localhost:8080`
@@ -86,7 +99,7 @@ docker-compose down
 
 ---
 
-## Features
+## Feature8080s
 
 This application is designed with the following key features:
 

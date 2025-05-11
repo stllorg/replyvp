@@ -7,4 +7,8 @@ COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY ./app /var/www/html
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+# Install required git and zip for Composer
+RUN apt-get update && apt-get install -y --no-install-recommends zip unzip git
+# Clear composer cache
+RUN composer clear-cache
 RUN [ -f composer.json ] && composer install --no-dev --optimize-autoloader || true

@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import userService from "@/services/UserService";
+import userService from "@/services/userService";
 import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";

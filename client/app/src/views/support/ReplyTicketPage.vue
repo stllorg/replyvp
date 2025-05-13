@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import ticketService from "@/services/TicketService";
+import ticketService from "@/services/ticketService";
 import { formatMessageTime } from "@/utils/dateUtils";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";

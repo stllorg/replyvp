@@ -38,7 +38,7 @@
 
 <script setup>
 import { useToast } from "vue-toastification";
-import supportService from "@/services/SupportService";
+import supportService from "@/services/supportService";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/authStore";

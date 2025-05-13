@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import ticketService from "@/services/TicketService";
+import ticketService from "@/services/ticketService";
 import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "vue-router";

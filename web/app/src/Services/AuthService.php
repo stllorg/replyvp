@@ -22,7 +22,7 @@ class AuthService {
         }
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User(null, $username, $email, $hashedPassword);
+        $user = new User(0, $username, $email, $hashedPassword);
         return $this->userRepository->create($user);
     }
 

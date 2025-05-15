@@ -20,4 +20,14 @@ RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 RUN apt-get update && apt-get install -y --no-install-recommends zip unzip git
 # Clear composer cache
 RUN composer clear-cache
-RUN [ -f composer.json ] && composer install --no-dev --optimize-autoloader || true
+
+ARG APP_ENV
+ENV APP_ENV=${APP_ENV}
+
+# Install required dependencies
+RUN if [ "$APP_ENV" = "development" ]; \
+      then composer install; \
+      else \
+      composer install --no-dev --optimize-autoloader; \
+      fi
+RUN echo "The project environment is ${APP_ENV}"

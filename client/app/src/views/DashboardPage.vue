@@ -74,7 +74,7 @@
 </template>
 
 <script setup>
-import ticketService from "@/services/TicketService";
+import ticketService from "@/services/ticketService";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";

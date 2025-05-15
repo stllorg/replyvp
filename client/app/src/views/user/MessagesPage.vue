@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import ticketService from "@/services/TicketService";
+import ticketService from "@/services/ticketService";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";

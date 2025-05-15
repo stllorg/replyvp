@@ -50,7 +50,7 @@
 
 <script setup>
 import { useToast } from "vue-toastification";
-import adminService from "@/services/AdminService";
+import adminService from "@/services/adminService";
 import { onMounted, ref } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 

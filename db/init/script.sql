@@ -43,13 +43,13 @@ CREATE TABLE IF NOT EXISTS ticket_messages (
 );
 
 INSERT INTO users (username, email, password) VALUES
-('admin', 'adm@testmail.com', '$2y$12$YoNlYGmgPytN/KCtSGx9AO5YUaoVVCjCm8SSTgtHUecLpNF8mTyxG'),
-('manager', 'manager@email.com', '$2y$12$YoNlYGmgPytN/KCtSGx9AO5YUaoVVCjCm8SSTgtHUecLpNF8mTyxG'),
-('support', 'support@email.com', '$2y$12$YoNlYGmgPytN/KCtSGx9AO5YUaoVVCjCm8SSTgtHUecLpNF8mTyxG'),
-('usera1', 'usuario4@email.com', '$2y$12$YoNlYGmgPytN/KCtSGx9AO5YUaoVVCjCm8SSTgtHUecLpNF8mTyxG'),
-('usera2', 'usuario5@email.com', '$2y$12$YoNlYGmgPytN/KCtSGx9AO5YUaoVVCjCm8SSTgtHUecLpNF8mTyxG'),
-('usera3', 'usuario6@email.com', '$2y$12$YoNlYGmgPytN/KCtSGx9AO5YUaoVVCjCm8SSTgtHUecLpNF8mTyxG'),
-('usera4', 'usuario7@email.com', '$2y$12$YoNlYGmgPytN/KCtSGx9AO5YUaoVVCjCm8SSTgtHUecLpNF8mTyxG');
+('admin', 'adm@testmail.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('manager', 'manager@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('support', 'support@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('usera1', 'usuario4@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('usera2', 'usuario5@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('usera3', 'usuario6@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('usera4', 'usuario7@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO');
 
 INSERT INTO roles (name) VALUES
 ('admin'),

@@ -26,8 +26,17 @@ class AuthService {
         return $this->userRepository->create($user);
     }
 
-    public function login($email, $password) {
+    public function loginWithEmail($email, $password) {
         $user = $this->userRepository->findByEmail($email);
+        if (!$user || !password_verify($password, $user->getPassword())) {
+            throw new \Exception('Invalid credentials');
+        }
+
+        return $this->generateToken($user);
+    }
+
+    public function login($username, $password) {
+        $user = $this->userRepository->findByUsername($username);
         if (!$user || !password_verify($password, $user->getPassword())) {
             throw new \Exception('Invalid credentials');
         }

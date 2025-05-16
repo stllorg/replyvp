@@ -33,6 +33,17 @@ class UserRepository {
         return null;
     }
 
+    public function findByUsername($username) {
+        $stmt = $this->db->prepare("SELECT id, username, password FROM users WHERE email = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            return new User($row['id'], $row['username'], $row['password']);
+        }
+        return null;
+    } 
+
     public function findById($id) {
         $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE id = ?");
         $stmt->bind_param("i", $id);

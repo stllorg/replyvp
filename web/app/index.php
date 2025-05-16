@@ -94,6 +94,8 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
                         $authController->register();
                     } elseif (($uri[1] ?? '') === 'login') {
                         $authController->login();
+                    } elseif (($uri[1] ?? '') === 'authenticate') {
+                        $authController->validate();
                     } else {
                         http_response_code(404);
                         echo json_encode(['error' => 'Not found']);
@@ -124,16 +126,6 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
                     http_response_code(405);
                     echo json_encode(['error' => 'Method not allowed']);
                 }
-                break;
-            case 'test':
-                http_response_code(200);
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Hello World',
-                    'timestamp' => date('Y-m-d H:i:s'),
-                    'php_version' => phpversion()
-                ];
-                echo json_encode($response, JSON_PRETTY_PRINT);
                 break;
 
             default:

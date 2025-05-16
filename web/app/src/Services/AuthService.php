@@ -38,7 +38,12 @@ class AuthService {
     public function validateToken($token) {
         try {
             $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
-            return $this->userRepository->findById($decoded->userId);
+            $userId = $decoded->userId;
+            $userRoles = $decoded->roles;
+            return [
+                'userId' => $userId,
+                'roles' => $roles,
+            ];
         } catch (\Exception $e) {
             return null;
         }
@@ -47,7 +52,8 @@ class AuthService {
     private function generateToken(User $user) {
         $payload = [
             'userId' => $user->getId(),
-            'email' => $user->getEmail(),
+            'roles' => $user->getUserRoles(),
+            "iat" => time(),
             'exp' => time() + (60 * 60 * 24) // token expiration time : 24 hours
         ];
 

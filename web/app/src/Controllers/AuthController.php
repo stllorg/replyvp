@@ -39,16 +39,18 @@ class AuthController {
         if (!isset($data['username']) || !isset($data['email']) || !isset($data['password'])) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing required fields']);
-            return;
+            exit;
         }
 
         try {
             $user = $this->authService->register($data['username'], $data['email'], $data['password']);
             http_response_code(201);
             echo json_encode(['message' => 'User registered successfully']);
+            return;
         } catch (\Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
+            exit;
         }
     }
 
@@ -62,11 +64,13 @@ class AuthController {
         }
 
         try {
-            $token = $this->authService->login($data['username'], $data['password']);
-            echo json_encode(['token' => $token]);
+            $response_json = $this->authService->login($data['username'], $data['password']);
+            echo $response_json;
+            return;
         } catch (\Exception $e) {
             http_response_code(401);
             echo json_encode(['error' => $e->getMessage()]);
+            exit;
         }
     }
 } 

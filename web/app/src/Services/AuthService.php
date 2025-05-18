@@ -59,13 +59,31 @@ class AuthService {
     }
 
     private function generateToken(User $user) {
+        $userId = $user->getId();
+        $userUsername = $user->getUsername(); 
+        $roles = $this->userRepository->getUserRole($userId);
         $payload = [
-            'userId' => $user->getId(),
-            'roles' => $user->getUserRoles(),
             "iat" => time(),
-            'exp' => time() + (60 * 60 * 24) // token expiration time : 24 hours
+            'exp' => time() + (60 * 60 * 24),
+            'data' => [
+                'id' => $userId,
+                'roles' => $roles
+            ]
         ];
 
-        return JWT::encode($payload, $this->jwtSecret, 'HS256');
+        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
+
+        $responseData =  [
+            "success" => true,
+            "message" => "Login successful.",
+            "token" => $jwt,
+            "user" => [
+                "id" => $userId,
+                "username" => $userUsername,
+                "roles" => $roles
+                ]
+            ];
+        
+        return json_encode($responseData);
     }
 } 

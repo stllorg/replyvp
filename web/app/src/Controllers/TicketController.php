@@ -80,15 +80,21 @@ class TicketController {
     }
 
     public function getAllPendingTickets() {
+        $admin = $this->authenticate();
+        if (!$admin) return;
+        if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {
+            http_response_code(403);
+            echo json_encode(["error" => "The 'admin' role is required to access this resource."]);
+            return;
+        };
+
         try {
             $tickets[] = $this->ticketService->getAllOpenTickets();
-            
             header('Content-Type: application/json');
             echo json_encode($tickets);
         } catch (\Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
         }
-
     }
 } 

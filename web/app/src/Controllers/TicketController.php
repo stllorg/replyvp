@@ -96,9 +96,11 @@ class TicketController {
             $tickets[] = $this->ticketService->getAllOpenTickets();
             header('Content-Type: application/json');
             echo json_encode($tickets);
+            return null;
         } catch (\Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
+            return null;
         }
     }
 } 

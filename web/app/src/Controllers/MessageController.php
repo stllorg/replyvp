@@ -62,7 +62,7 @@ class MessageController {
 
     public function getTicketMessages($ticketId): ?array {
         $user = $this->authenticate();
-        if (!$user) return;
+        if (!$user) return null;
 
         try {
             $messages = $this->messageService->getTicketMessages($ticketId, $user->getId());

@@ -62,13 +62,13 @@ class TicketController {
         }
     }
 
-    // Authenticates the user, if sucess returns an array with all user tickets
+    // Authenticates the user, if sucess returns an array with all tickets created by the user
     public function getUserTickets(): ?array {
         $user = $this->authenticate();
-        if (!$user) return;
+        if (!$user) return null;
 
         try {
-            $tickets = $this->ticketService->getUserTickets($user->getId());
+            $tickets = $this->ticketService->getUserTickets($user['userId']);
             echo json_encode(array_map(function($ticket) {
                 return [
                     'id' => $ticket->getId(),
@@ -81,9 +81,8 @@ class TicketController {
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-  
-    // Validates admin, if sucess returns all pending tickets from database.
-    public function getAllPendingTickets(): ?array {
+
+    public function getTicketById($id): void {
         $admin = $this->authenticate();
         if (!$admin) return;
         if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {
@@ -93,12 +92,45 @@ class TicketController {
         };
 
         try {
-            $tickets[] = $this->ticketService->getAllOpenTickets();
-            header('Content-Type: application/json');
-            echo json_encode($tickets);
+            $ticket = $this->ticketService->getTicketById((int)$id);
+            if (!$ticket) {
+                sendResponse(404, ['error' => 'Ticket not found']);
+                return;
+            }
+            $foundTicket = [
+                'id' => $ticket->getId(),
+                'subject' => $ticket->getSubject(),
+                'userId' => $ticket->getUserId()
+            ];
+            http_response_code(200);
+            echo json_encode($foundTicket);
+            return;
         } catch (\Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    // Validates admin, if sucess returns all pending tickets from database.
+    public function getAllPendingTickets(): ?array {
+        $admin = $this->authenticate();
+        if (!$admin) return null;
+        if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {
+            http_response_code(403);
+            echo json_encode(["error" => "The 'admin' role is required to access this resource."]);
+            return null;
+
+        };
+
+        try {
+            $tickets[] = $this->ticketService->getAllOpenTickets();
+            header('Content-Type: application/json');
+            echo json_encode($tickets);
+            return null;
+        } catch (\Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+            return null;
         }
     }
 } 

@@ -40,7 +40,7 @@ class TicketController {
 
         $data = json_decode(file_get_contents('php://input'), true);
         
-        if (!isset($data['name'])) {
+        if (!isset($data['subject'])) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing ticket subject']);
             return;

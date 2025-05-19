@@ -47,8 +47,8 @@ class AuthService {
     public function validateToken($token) {
         try {
             $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
-            $userId = $decoded->userId;
-            $roles = $decoded->roles;
+            $userId = $decoded->data->id;
+            $roles = $decoded->data->roles; 
             return [
                 'userId' => $userId,
                 'roles' => $roles,

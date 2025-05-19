@@ -47,7 +47,7 @@ class TicketController {
         }
 
         try {
-            $ticket = $this->ticketService->createTicket($data['subject'], $user->getId());
+            $ticket = $this->ticketService->createTicket($data['subject'], $user['userId']);
             http_response_code(201);
             echo json_encode([
                 'id' => $ticket->getId(),

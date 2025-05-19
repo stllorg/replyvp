@@ -21,6 +21,10 @@ class TicketService {
         return $this->ticketRepository->findByUserId($userId);
     }
 
+    public function getAllOpenTickets() {
+        return $this->ticketRepository->findAllOpenTickets();
+    }
+
     public function getTicket($ticketId) {
         return $this->ticketRepository->findById($ticketId);
     }

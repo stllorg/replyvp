@@ -43,4 +43,20 @@ class TicketRepository {
         }
         return null;
     }
+
+    public function findAllOpenTickets() {
+        $query = "SELECT t.id, t.subject, t.created_at FROM tickets t JOIN users u ON t.user_id = u.id WHERE t.status = 'open'";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $tickets = [];
+        while ($row = $result->fetch_assoc()) {
+            $tickets[] = [
+                "id" => $row['id'],
+                "subject" => $row['subject'],
+                "created_at" => $row['created_at']
+            ];
+        }
+        return $tickets;
+    }
 } 

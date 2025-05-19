@@ -78,4 +78,17 @@ class TicketController {
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
+
+    public function getAllPendingTickets() {
+        try {
+            $tickets[] = $this->ticketService->getAllOpenTickets();
+            
+            header('Content-Type: application/json');
+            echo json_encode($tickets);
+        } catch (\Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+
+    }
 } 

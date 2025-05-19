@@ -21,7 +21,7 @@ class TicketService {
         return $this->ticketRepository->create($ticket);
     }
 
-    public function getUserTickets($userId): Ticket {
+    public function getUserTickets($userId): array {
         return $this->ticketRepository->findByUserId($userId);
     }
 

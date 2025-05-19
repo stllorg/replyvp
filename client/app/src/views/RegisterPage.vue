@@ -14,37 +14,37 @@
             </div>
             <form @submit.prevent="register">
               <div class="form-floating mb-3">
+                <input
+                type="text"
+                id="username"
+                class="form-control"
+                v-model="username"
+                placeholder=""
+                required
+                />
                 <label for="username" class="form-label">Nome de usuário</label>
-                <input
-                  type="text"
-                  id="username"
-                  class="form-control"
-                  v-model="username"
-                  placeholder=""
-                  required
-                />
               </div>
               <div class="form-floating mb-3">
+                <input
+                type="email"
+                id="email"
+                class="form-control"
+                v-model="email"
+                placeholder="Digite seu endereço de email"
+                required
+                />
                 <label for="email" class="form-label">Endereço de email</label>
-                <input
-                  type="email"
-                  id="email"
-                  class="form-control"
-                  v-model="email"
-                  placeholder="Digite seu endereço de email"
-                  required
-                />
               </div>
               <div class="form-floating mb-3">
-                <label for="password" class="form-label">Senha</label>
                 <input
-                  type="password"
-                  id="password"
-                  class="form-control"
-                  v-model="password"
-                  placeholder="Digite sua senha"
-                  required
+                type="password"
+                id="password"
+                class="form-control"
+                v-model="password"
+                placeholder="Digite sua senha"
+                required
                 />
+                <label for="password" class="form-label">Senha</label>
               </div>
               <div class="mb-3">
                 <input
@@ -139,11 +139,11 @@ const register = async () => {
   }
   const response = await userService.registerUser(username.value, email.value, password.value);
   if (response.status === 201) {
-    toast.sucess(`Você se registrou com sucesso ${username.value}`, { timeout: 6000 });
+    toast.success(`Você se registrou com sucesso ${username.value}`, { timeout: 6000 });
     username.value = "";
     password.value = "";
     email.value = "";
-    router.push("/dashboard");
+    router.push("/login");
   } else {
     error.value = response.error || "Erro ao registar usuário.";
   }

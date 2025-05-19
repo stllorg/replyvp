@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/authStore";
 
-const AUTH_URL = "http://localhost:8080/auth/users/auth.php";
+const AUTH_URL = "http://localhost:8080/auth";
+const validationUrl = `${AUTH_URL}/authenticate`;
+const loginUrl = `${AUTH_URL}/login`;
 
 export function getUserToken() {
   const authStore = useAuthStore();
@@ -15,7 +17,7 @@ export async function validateToken(token) {
   }
 
   try {
-    const response = await axios.get(AUTH_URL, {
+    const response = await axios.get(validationUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -31,7 +33,7 @@ export async function validateToken(token) {
 
 export async function loginUser(username, password) {
   try {
-    const response = await axios.post(AUTH_URL, { username, password });
+    const response = await axios.post(loginUrl, { username, password });
 
     if (response.status === 200) {
       const user = response.data.user;

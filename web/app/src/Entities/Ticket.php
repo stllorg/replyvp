@@ -17,20 +17,13 @@ class Ticket {
     public function __construct(
         int $id,
         string $subject,
-        string $status = self::STATUS_OPEN, // Assign new tickets with status 'open'
-        bool $isRepeat = false,
-        \DateTime $createdAt,
         int $userId = 0,
     ) {
-        if (!in_array($status, [self::STATUS_OPEN, self::STATUS_IN_PROGRESS, self::STATUS_CLOSED], true)) {
-            throw new \InvalidArgumentException("Invalid value for ENUM status: {$status}");
-        }
-
         $this->id = $id; // Ticket ID created by database
         $this->subject = $subject;
-        $this->status = $status;
-        $this->isRepeat = $isRepeat;
-        $this->createdAt = $createdAt; // TIMESTAMP created by database
+        $this->status = self::STATUS_OPEN;
+        $this->isRepeat = false;
+        $this->createdAt = null; // TIMESTAMP created by database
         $this->userId = $userId;
     }
 

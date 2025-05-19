@@ -62,7 +62,7 @@ class TicketController {
         }
     }
 
-    // Authenticates the user, if sucess returns an array with all user tickets
+    // Authenticates the user, if sucess returns an array with all tickets created by the user
     public function getUserTickets(): ?array {
         $user = $this->authenticate();
         if (!$user) return null;

@@ -48,7 +48,7 @@ class AuthService {
         try {
             $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
             $userId = $decoded->userId;
-            $userRoles = $decoded->roles;
+            $roles = $decoded->roles;
             return [
                 'userId' => $userId,
                 'roles' => $roles,

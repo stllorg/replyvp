@@ -9,7 +9,7 @@ use \Firebase\JWT\Key;
 
 class AuthService {
     private $userRepository;
-    private $jwtSecret; // before defined as secretKey
+    private $jwtSecret;
 
     public function __construct(UserRepository $userRepository) {
         $this->userRepository = $userRepository;

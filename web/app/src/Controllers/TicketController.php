@@ -68,7 +68,7 @@ class TicketController {
         if (!$user) return null;
 
         try {
-            $tickets = $this->ticketService->getUserTickets($user->getId());
+            $tickets = $this->ticketService->getUserTickets($user['userId']);
             echo json_encode(array_map(function($ticket) {
                 return [
                     'id' => $ticket->getId(),

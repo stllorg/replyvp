@@ -81,7 +81,7 @@ class TicketController {
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
+  
     // Validates admin, if sucess returns all pending tickets from database.
     public function getAllPendingTickets(): ?array {
         $admin = $this->authenticate();

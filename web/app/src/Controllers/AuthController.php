@@ -11,7 +11,8 @@ class AuthController {
         $this->authService = $authService;
     }
 
-    public function validate() {
+    // Validate JWT Token, if valid returns an array with userId and userRole
+    public function validate(): ?array {
         $headers = getallheaders();
 
         if (!isset($headers['Authorization'])) {
@@ -26,6 +27,7 @@ class AuthController {
         try {
             $userData = $this->authService->validate($token);
             echo json_encode($userData);
+            return;
         } catch (\Exception $e) {
             http_response_code(401);
             echo json_encode(["error" => "Invalid or expired token.", "details" => $e->getMessage()]);
@@ -33,7 +35,7 @@ class AuthController {
         }
     }
 
-    public function register() {
+    public function register(): void {
         $data = json_decode(file_get_contents('php://input'), true);
         
         if (!isset($data['username']) || !isset($data['email']) || !isset($data['password'])) {
@@ -54,7 +56,7 @@ class AuthController {
         }
     }
 
-    public function login() {
+    public function login(): void {
         $data = json_decode(file_get_contents('php://input'), true);
         
         if (!isset($data['username']) || !isset($data['password'])) {

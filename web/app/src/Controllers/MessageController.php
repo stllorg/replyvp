@@ -14,7 +14,7 @@ class MessageController {
         $this->authService = $authService;
     }
 
-    private function authenticate() {
+    private function authenticate(): ?array {
         $headers = getallheaders();
         if (!isset($headers['Authorization'])) {
             http_response_code(401);
@@ -34,7 +34,7 @@ class MessageController {
         return $user;
     }
 
-    public function createMessage($ticketId) {
+    public function createMessage($ticketId): void {
         $user = $this->authenticate();
         if (!$user) return;
 
@@ -60,7 +60,7 @@ class MessageController {
         }
     }
 
-    public function getTicketMessages($ticketId) {
+    public function getTicketMessages($ticketId): ?array {
         $user = $this->authenticate();
         if (!$user) return;
 

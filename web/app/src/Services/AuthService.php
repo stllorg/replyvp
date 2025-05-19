@@ -16,7 +16,8 @@ class AuthService {
         $this->jwtSecret = $_ENV['JWT_SECRET'];
     }
 
-    public function register($username, $email, $password) {
+    // Creates a new User and returns it
+    public function register($username, $email, $password): User {
         if ($this->userRepository->findByEmail($email)) {
             throw new \Exception('Email already registered');
         }
@@ -26,7 +27,8 @@ class AuthService {
         return $this->userRepository->create($user);
     }
 
-    public function loginWithEmail($email, $password) {
+    // Check user email and password and returns a JSON string
+    public function loginWithEmail($email, $password): string {
         $user = $this->userRepository->findByEmail($email);
         if (!$user || !password_verify($password, $user->getPassword())) {
             throw new \Exception('Invalid credentials');
@@ -35,7 +37,8 @@ class AuthService {
         return $this->generateToken($user);
     }
 
-    public function login($username, $password) {
+    // Check user credentials and returns JSON string
+    public function login($username, $password): string {
         $user = $this->userRepository->findByUsername($username);
         if (!$user || !password_verify($password, $user->getPassword())) {
             throw new \Exception('Invalid credentials');
@@ -44,7 +47,8 @@ class AuthService {
         return $this->generateToken($user);
     }
 
-    public function validateToken($token) {
+    // Decode token, if valid returns an array
+    public function validateToken($token): ?array {
         try {
             $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
             $userId = $decoded->data->id;
@@ -58,7 +62,8 @@ class AuthService {
         }
     }
 
-    private function generateToken(User $user) {
+    // Generates a JWT token and returns a JSON strings
+    private function generateToken(User $user): string {
         $userId = $user->getId();
         $userUsername = $user->getUsername(); 
         $roles = $this->userRepository->getUserRole($userId);

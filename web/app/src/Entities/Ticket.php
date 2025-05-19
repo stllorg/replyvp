@@ -63,7 +63,7 @@ class Ticket {
         $this->subject = $subject;
     }
     
-    public function setUserId(int $userid) {
+    public function setUserId(int $userid): void {
         $this->userId = $userId;
     }
 

@@ -11,7 +11,7 @@ class UserRepository {
         $this->db = $db;
     }
 
-    public function create(User $user) {
+    public function create(User $user): User {
         $stmt = $this->db->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
         $username = $user->getUsername();
         $email = $user->getEmail();
@@ -22,7 +22,7 @@ class UserRepository {
         return $user;
     }
 
-    public function findByEmail($email) {
+    public function findByEmail($email): User {
         $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -33,7 +33,7 @@ class UserRepository {
         return null;
     }
 
-    public function findByUsername($username) {
+    public function findByUsername($username): User {
         $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE email = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -44,7 +44,7 @@ class UserRepository {
         return null;
     } 
 
-    public function findById($id) {
+    public function findById($id): User {
         $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -55,7 +55,7 @@ class UserRepository {
         return null;
     }
 
-    public function getUserRole($id) {
+    public function getUserRole($id): array {
         $stmt = $this->db->prepare("SELECT r.name FROM roles r INNER JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = ?");
         $stmt->bind_param('i',$id);
         $stmt->execute();

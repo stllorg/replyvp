@@ -11,7 +11,7 @@ class TicketRepository {
         $this->db = $db;
     }
 
-    public function create(Ticket $ticket) {
+    public function create(Ticket $ticket): Ticket {
         $stmt = $this->db->prepare("INSERT INTO tickets (subject, status, user_id) VALUES (?, 'open', ?)");
         $subject = $ticket->getName();
         $userId = $ticket->getUserId();
@@ -21,7 +21,7 @@ class TicketRepository {
         return $ticket;
     }
 
-    public function findByUserId($userId) {
+    public function findByUserId($userId): array {
         $stmt = $this->db->prepare("SELECT id, subject, user_id FROM tickets WHERE user_id = ?");
         $stmt->bind_param("i", $userId);
         $stmt->execute();
@@ -33,7 +33,7 @@ class TicketRepository {
         return $tickets;
     }
 
-    public function findById($id) {
+    public function findById($id): Ticket {
         $stmt = $this->db->prepare("SELECT id, subject, user_id FROM tickets WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -44,7 +44,7 @@ class TicketRepository {
         return null;
     }
 
-    public function findAllOpenTickets() {
+    public function findAllOpenTickets(): array {
         $query = "SELECT t.id, t.subject, t.created_at FROM tickets t JOIN users u ON t.user_id = u.id WHERE t.status = 'open'";
         $stmt = $this->db->prepare($query);
         $stmt->execute();

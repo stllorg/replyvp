@@ -46,11 +46,11 @@ class User {
         $this->username = $username;
     }
 
-    public function setEmail(string $email) {
+    public function setEmail(string $email): void {
         $this->email = $email;
     }
 
-    public function setPassword(string $password) {
+    public function setPassword(string $password): void {
         $this->password = $password;
     }
 }

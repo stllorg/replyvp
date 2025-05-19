@@ -14,7 +14,8 @@ class TicketController {
         $this->authService = $authService;
     }
 
-    private function authenticate() {
+    // Validate token, if valid returns an array with userId and userRoles
+    private function authenticate(): ?array {
         $headers = getallheaders();
         if (!isset($headers['Authorization'])) {
             http_response_code(401);
@@ -34,7 +35,8 @@ class TicketController {
         return $user;
     }
 
-    public function createTicket() {
+    // TODO: Return the new user id?
+    public function createTicket(): void {
         $user = $this->authenticate();
         if (!$user) return;
 
@@ -60,7 +62,8 @@ class TicketController {
         }
     }
 
-    public function getUserTickets() {
+    // Authenticates the user, if sucess returns an array with all user tickets
+    public function getUserTickets(): ?array {
         $user = $this->authenticate();
         if (!$user) return;
 
@@ -78,8 +81,9 @@ class TicketController {
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
-    public function getAllPendingTickets() {
+  
+    // Validates admin, if sucess returns all pending tickets from database.
+    public function getAllPendingTickets(): ?array {
         $admin = $this->authenticate();
         if (!$admin) return;
         if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {

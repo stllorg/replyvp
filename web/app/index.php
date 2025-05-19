@@ -86,56 +86,34 @@ $uri = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'))
 
 // Route logic
 function routeRequest($uri, $authController, $ticketController, $messageController) {
-    try {
-        switch ($uri[0] ?? '') {
-            case 'auth':
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    if (($uri[1] ?? '') === 'register') {
-                        $authController->register();
-                    } elseif (($uri[1] ?? '') === 'login') {
-                        $authController->login();
-                    } elseif (($uri[1] ?? '') === 'authenticate') {
-                        $authController->validate();
-                    } else {
-                        http_response_code(404);
-                        echo json_encode(['error' => 'Not found']);
-                    }
-                } else {
-                    http_response_code(405);
-                    echo json_encode(['error' => 'Method not allowed']);
-                }
-                break;
+    $routes = [
+        'POST' => [
+            'auth/register'     => [$authController, 'register'],
+            'auth/login'        => [$authController, 'login'],
+            'auth/authenticate' => [$authController, 'validate'],
+            'tickets'           => [$ticketController, 'createTicket'],
+            'messages/{id}'     => [$messageController, 'createMessage'],
+        ],
+        'GET' => [
+            'tickets'           => [$ticketController, 'getUserTickets'],
+            'open-tickets'      => [$ticketController, 'getAllPendingTickets'],
+            'messages/{id}'     => [$messageController, 'getTicketMessages'],
+        ],
+    ];
 
-            case 'tickets':
-                if ($_SERVER['REQUEST_METHOD'] === 'POST' && count($uri) === 1) {
-                    $ticketController->createTicket();
-                } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && count($uri) === 1) {
-                    $ticketController->getUserTickets();
-                } else {
-                    http_response_code(405);
-                    echo json_encode(['error' => 'Method not allowed']);
-                }
-                break;
+    $method = $_SERVER['REQUEST_METHOD'];
+    $path = implode('/', $uri);
 
-            case 'messages':
-                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($uri[1])) {
-                    $messageController->createMessage($uri[1]);
-                } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($uri[1])) {
-                    $messageController->getTicketMessages($uri[1]);
-                } else {
-                    http_response_code(405);
-                    echo json_encode(['error' => 'Method not allowed']);
-                }
-                break;
-
-            default:
-                http_response_code(404);
-                echo json_encode(['error' => 'Not found']);
+    foreach ($routes[$method] ?? [] as $pattern => $handler) {
+        if (preg_match('#^' . preg_replace('#\{[^/]+\}#', '([^/]+)', $pattern) . '$#', $path, $matches)) {
+            array_shift($matches); // remove full match
+            call_user_func_array($handler, $matches);
+            return;
         }
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['error' => 'Internal server error']);
     }
+
+    http_response_code(404);
+    echo json_encode(['error' => 'Not found']);
 }
 
 // Run routing

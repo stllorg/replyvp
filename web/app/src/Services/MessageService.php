@@ -15,7 +15,8 @@ class MessageService {
         $this->ticketRepository = $ticketRepository;
     }
 
-    public function createMessage($ticketId, $message) { // ticket id and message content 
+    // Executes logic to create Message, if sucess returns the new Message with id
+    public function createMessage($ticketId, $message): Message { // ticket id and message content 
         $length = strlen($message);
         if ($length < 1 || $length > 249) {
             throw new \Exception('Message must be between 1 and 249 characters');

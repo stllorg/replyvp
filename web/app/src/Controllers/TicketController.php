@@ -119,6 +119,7 @@ class TicketController {
             http_response_code(403);
             echo json_encode(["error" => "The 'admin' role is required to access this resource."]);
             return null;
+
         };
 
         try {

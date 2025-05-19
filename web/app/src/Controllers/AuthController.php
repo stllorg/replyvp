@@ -28,6 +28,7 @@ class AuthController {
             $userData = $this->authService->validate($token);
             echo json_encode($userData);
             return null;
+
         } catch (\Exception $e) {
             http_response_code(401);
             echo json_encode(["error" => "Invalid or expired token.", "details" => $e->getMessage()]);

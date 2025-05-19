@@ -82,6 +82,35 @@ class TicketController {
         }
     }
 
+    public function getTicketById($id): void {
+        $admin = $this->authenticate();
+        if (!$admin) return;
+        if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {
+            http_response_code(403);
+            echo json_encode(["error" => "The 'admin' role is required to access this resource."]);
+            return;
+        };
+
+        try {
+            $ticket = $this->ticketService->getTicketById((int)$id);
+            if (!$ticket) {
+                sendResponse(404, ['error' => 'Ticket not found']);
+                return;
+            }
+            $foundTicket = [
+                'id' => $ticket->getId(),
+                'subject' => $ticket->getSubject(),
+                'userId' => $ticket->getUserId()
+            ];
+            http_response_code(200);
+            echo json_encode($foundTicket);
+            return;
+        } catch (\Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
     // Validates admin, if sucess returns all pending tickets from database.
     public function getAllPendingTickets(): ?array {
         $admin = $this->authenticate();

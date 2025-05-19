@@ -7,7 +7,7 @@ class Ticket {
     private string $subject;
     private string $status;
     private bool $isRepeat;
-    private \DateTime $createdAt;
+    private ?\DateTime $createdAt;
     private int $userId;
 
     const STATUS_OPEN = 'open';

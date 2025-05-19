@@ -9,7 +9,7 @@ use \Firebase\JWT\Key;
 
 class AuthService {
     private $userRepository;
-    private $jwtSecret; // before defined as secretKey
+    private $jwtSecret;
 
     public function __construct(UserRepository $userRepository) {
         $this->userRepository = $userRepository;
@@ -47,8 +47,8 @@ class AuthService {
     public function validateToken($token) {
         try {
             $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
-            $userId = $decoded->userId;
-            $userRoles = $decoded->roles;
+            $userId = $decoded->data->id;
+            $roles = $decoded->data->roles; 
             return [
                 'userId' => $userId,
                 'roles' => $roles,

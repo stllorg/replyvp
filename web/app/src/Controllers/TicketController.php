@@ -40,14 +40,14 @@ class TicketController {
 
         $data = json_decode(file_get_contents('php://input'), true);
         
-        if (!isset($data['name'])) {
+        if (!isset($data['subject'])) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing ticket subject']);
             return;
         }
 
         try {
-            $ticket = $this->ticketService->createTicket($data['subject'], $user->getId());
+            $ticket = $this->ticketService->createTicket($data['subject'], $user['userId']);
             http_response_code(201);
             echo json_encode([
                 'id' => $ticket->getId(),
@@ -73,6 +73,25 @@ class TicketController {
                     'userId' => $ticket->getUserId()
                 ];
             }, $tickets));
+        } catch (\Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function getAllPendingTickets() {
+        $admin = $this->authenticate();
+        if (!$admin) return;
+        if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {
+            http_response_code(403);
+            echo json_encode(["error" => "The 'admin' role is required to access this resource."]);
+            return;
+        };
+
+        try {
+            $tickets[] = $this->ticketService->getAllOpenTickets();
+            header('Content-Type: application/json');
+            echo json_encode($tickets);
         } catch (\Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);

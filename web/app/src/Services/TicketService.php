@@ -13,7 +13,11 @@ class TicketService {
     }
 
     public function createTicket($subject, $userId): Ticket {
-        $ticket = new Ticket(null, $subject, $userId);
+        // Assign 0 to ticket id
+        $ticket = new Ticket(
+            id: 0,
+            subject: $subject,
+            userId: $userId);
         return $this->ticketRepository->create($ticket);
     }
 

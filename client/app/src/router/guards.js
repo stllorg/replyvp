@@ -14,8 +14,6 @@ router.beforeEach((to, from, next) => {
   if (user && user.roles && user.roles.includes('admin')) {
     toast.info('Você possui diretos de administradores!', { timeout: 3000 });
 
-  } else {
-    console.log('O usuário não tem o papel de admin ou os dados do usuário são inválidos.');
   }
 
   if (requiresAuth) {

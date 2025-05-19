@@ -65,7 +65,7 @@ class TicketController {
     // Authenticates the user, if sucess returns an array with all user tickets
     public function getUserTickets(): ?array {
         $user = $this->authenticate();
-        if (!$user) return;
+        if (!$user) return null;
 
         try {
             $tickets = $this->ticketService->getUserTickets($user->getId());
@@ -85,11 +85,11 @@ class TicketController {
     // Validates admin, if sucess returns all pending tickets from database.
     public function getAllPendingTickets(): ?array {
         $admin = $this->authenticate();
-        if (!$admin) return;
+        if (!$admin) return null;
         if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {
             http_response_code(403);
             echo json_encode(["error" => "The 'admin' role is required to access this resource."]);
-            return;
+            return null;
         };
 
         try {

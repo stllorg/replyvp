@@ -29,7 +29,7 @@ class TicketService {
         return $this->ticketRepository->findAllOpenTickets();
     }
 
-    public function getTicket($ticketId): Ticket {
+    public function getTicketById($ticketId): ?Ticket {
         return $this->ticketRepository->findById($ticketId);
     }
 } 

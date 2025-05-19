@@ -34,7 +34,8 @@ class TicketRepository {
         return $tickets;
     }
 
-    public function findById($id): Ticket {
+    // Find a ticket by ID, if sucess returns the ticket, else returns null
+    public function findById($id): ?Ticket {
         $stmt = $this->db->prepare("SELECT id, subject, user_id FROM tickets WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();

@@ -143,7 +143,7 @@ const register = async () => {
     username.value = "";
     password.value = "";
     email.value = "";
-    router.push("/dashboard");
+    router.push("/login");
   } else {
     error.value = response.error || "Erro ao registar usuário.";
   }

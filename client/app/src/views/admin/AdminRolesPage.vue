@@ -115,7 +115,7 @@ const updateUserRoles = async (userId, newRoles) => {
     const response = await adminService.updateUserRoles(userId, newRoles, token);
     if (response.data.success) {
       console.log("User updated");
-      toast.sucess("User updated.", {
+      toast.success("User updated.", {
         timeout: 2000,
       });
     }

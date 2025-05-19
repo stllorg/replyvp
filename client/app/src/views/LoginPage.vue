@@ -14,15 +14,15 @@
             </div>
             <form @submit.prevent="handleUserSignIn">
               <div class="form-floating mb-3">
-                <label for="username" class="form-label">Nome de usuário</label>
                 <input
-                  type="text"
-                  id="username"
-                  class="form-control"
-                  v-model="username"
-                  placeholder=""
-                  required
+                type="text"
+                id="username"
+                class="form-control"
+                v-model="username"
+                placeholder=""
+                required
                 />
+                <label for="username" class="form-label">E-mail de login</label>
               </div>
               <div class="form-floating mb-3">
                 <input

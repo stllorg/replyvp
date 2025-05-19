@@ -1,18 +1,20 @@
 import axios from "axios";
 
 const USERS_API_URL = "http://localhost:8080/api/users";
+const AUTH_URL = "http://localhost:8080/auth";
+const registerUrl = `${AUTH_URL}/register`;
 
 const userService = {
   
   async registerUser(username, email, password) {
     try{
-    const response = await axios.post(`${USERS_API_URL}/register.php`, {
+    const response = await axios.post(registerUrl, {
         username: username,
         email: email,
         password: password,
       });
     if (response.status === 201) {
-     return response.status;
+     return response;
     }
     } catch(error) {
       console.error("Erro ao registrar usuário:", error);
@@ -36,7 +38,7 @@ const userService = {
        return response.status;
       }
     } catch (error) {
-      console.error("Erro ao registrar usuário", error);
+      console.error("Erro ao atualizar usuário", error);
       throw error;
     }
   },

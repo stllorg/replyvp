@@ -34,12 +34,12 @@ class UserRepository {
     }
 
     public function findByUsername($username) {
-        $stmt = $this->db->prepare("SELECT id, username, password FROM users WHERE email = ?");
+        $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE email = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
-            return new User($row['id'], $row['username'], $row['password']);
+            return new User($row['id'], $row['username'], $row['email'], $row['password']);
         }
         return null;
     } 

@@ -12,20 +12,20 @@ class TicketService {
         $this->ticketRepository = $ticketRepository;
     }
 
-    public function createTicket($subject, $userId) {
+    public function createTicket($subject, $userId): Ticket {
         $ticket = new Ticket(null, $subject, $userId);
         return $this->ticketRepository->create($ticket);
     }
 
-    public function getUserTickets($userId) {
+    public function getUserTickets($userId): Ticket {
         return $this->ticketRepository->findByUserId($userId);
     }
 
-    public function getAllOpenTickets() {
+    public function getAllOpenTickets(): array {
         return $this->ticketRepository->findAllOpenTickets();
     }
 
-    public function getTicket($ticketId) {
+    public function getTicket($ticketId): Ticket {
         return $this->ticketRepository->findById($ticketId);
     }
 } 

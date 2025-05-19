@@ -11,17 +11,18 @@ class MessageRepository {
         $this->db = $db;
     }
 
-    public function create(Message $reply) {
+    // Stores a message and returns a Message with id
+    public function create(Message $msg): Message {
         $stmt = $this->db->prepare("INSERT INTO messages (ticket_id, message) VALUES (?, ?)");
-        $ticketId = $reply->getTicketId();
-        $message = $reply->getMessage();
-        $stmt->bind_param("ii", $ticketId, $message);
+        $ticketId = $msg->getTicketId();
+        $msgText = $msg->getMessage();
+        $stmt->bind_param("ii", $ticketId, $msgText);
         $stmt->execute();
         $reply->setId($stmt->insert_id);
-        return $reply;
+        return $msg;
     }
 
-    public function findByTicketId($ticketId) {
+    public function findByTicketId($ticketId): array {
         $stmt = $this->db->prepare("SELECT id, ticket_id, message FROM messages WHERE ticket_id = ?");
         $stmt->bind_param("i", $ticketId);
         $stmt->execute();

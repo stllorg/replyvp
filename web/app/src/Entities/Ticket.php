@@ -56,8 +56,8 @@ class Ticket {
         $this->subject = $subject;
     }
     
-    public function setUserId(int $userid): void {
-        $this->userId = $userId;
+    public function setId(int $id): void {
+        $this->id = $id;
     }
 
     public function setStatus(string $status): void {

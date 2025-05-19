@@ -12,7 +12,7 @@ class TicketRepository {
     }
 
     public function create(Ticket $ticket) {
-        $stmt = $this->db->prepare("INSERT INTO tickets (subject, user_id) VALUES (?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO tickets (subject, status, user_id) VALUES (?, 'open', ?)");
         $subject = $ticket->getName();
         $userId = $ticket->getUserId();
         $stmt->bind_param("si", $subject, $userId);

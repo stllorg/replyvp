@@ -97,7 +97,7 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
         'GET' => [
             'users/tickets'     => [$ticketController, 'getUserTickets'],
             'search-ticket/{id}' => [$ticketController, 'getTicketById'],
-            'open-tickets'      => [$ticketController, 'getAllPendingTickets'],
+            'tickets/open'      => [$ticketController, 'getAllPendingTickets'],
             'messages/{id}'     => [$messageController, 'getTicketMessages'],
         ],
     ];

@@ -66,11 +66,4 @@ class Ticket {
         }
         $this->status = $status;
     }
-
-    public function setStatus(string $status): void {
-        if (!in_array($status, [self::STATUS_OPEN, self::STATUS_IN_PROGRESS, self::STATUS_CLOSED], true)) {
-            throw new \InvalidArgumentException("Invalid value for ENUM status: {$status}");
-        }
-        $this->status = $status;
-    }
 }

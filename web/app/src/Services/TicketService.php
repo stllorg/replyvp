@@ -32,4 +32,9 @@ class TicketService {
     public function getTicketById($ticketId): ?Ticket {
         return $this->ticketRepository->findById($ticketId);
     }
+
+    public function getTicketCreator($ticketId): ?int {
+        $creatorUserId = $this->ticketRepository->findCreatorIdByTicketId($ticketId);
+        return $creatorUserId;
+    }
 } 

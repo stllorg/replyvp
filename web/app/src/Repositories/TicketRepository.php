@@ -61,4 +61,16 @@ class TicketRepository {
         }
         return $tickets;
     }
+
+    public function findCreatorIdByTicketId(int $id): ?int {
+        $stmt = $this->db->prepare("SELECT id, user_id FROM tickets WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $creatorId = $row['user_id'];
+            return $creatorId;
+        }
+        return null;
+    }
 } 

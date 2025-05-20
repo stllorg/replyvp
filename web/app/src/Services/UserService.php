@@ -9,6 +9,7 @@ class UserService {
     private $userRepository;
 
     public function __construct(UserRepository $userRepository) {
+        $this->userRepository = $userRepository;
     }
 
     public function createUser($user): User {
@@ -28,6 +29,6 @@ class UserService {
     }
 
     public function getUserRoles($userId): array {
-        return this->userRepository->findRolesByUserId($userId);
+        return $this->userRepository->findRolesByUserId($userId);
     }
 } 

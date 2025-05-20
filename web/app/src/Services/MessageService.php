@@ -9,12 +9,10 @@ use ReplyVP\Repositories\TicketRepository;
 class MessageService {
     private $messageRepository;
     private $ticketService;
-    private $userService;
 
-    public function __construct(MessageRepository $messageRepository, TicketService $ticketService, UserService $userService) {
+    public function __construct(MessageRepository $messageRepository, TicketService $ticketService) {
         $this->messageRepository = $messageRepository;
         $this->ticketService = $ticketService;
-        $this->userService = $userService;
     }
 
     // Executes logic to create Message, if sucess returns the new Message with id

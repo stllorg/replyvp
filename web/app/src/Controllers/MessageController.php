@@ -47,8 +47,24 @@ class MessageController {
         }
 
         try {
-            $message = $this->messageService->createMessage($ticketId, $user['userId'], $data['content']);
-            // http_response_code(201); // Created object
+
+            $userId = $user['userId'];
+            $ticketCreatorId = $this->ticketService->getTicketCreator($ticketId);
+
+            if ($userId != ticketCreatorId) { // Check if is not the ticket creator
+
+                $guestRoles = $this->userService->getUserRoles($userId);
+                $isGuestStaff = in_array("admin", $guestRoles);
+
+                if (!isGuestStaff) { // Check if is not staff
+                    http_response_code(403);
+                    echo json_encode(["error" => "You do not have permission to access this ticket."]);
+                    return;
+                }
+            }
+
+            $message = $this->messageService->createMessage($ticketId, $userId, $data['content']);
+            http_response_code(201); // Created object
             echo json_encode([
                 'id' => $message->getId(),
                 'ticketId' => $message->getTicketId(),

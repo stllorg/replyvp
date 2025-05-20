@@ -33,7 +33,7 @@ class UserRepository {
         return null;
     }
 
-    public function findByUsername($username): User {
+    public function findByUsername(string $username): ?User {
         $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE email = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -44,7 +44,7 @@ class UserRepository {
         return null;
     } 
 
-    public function findById($id): User {
+    public function findById($id): ?User {
         $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -55,13 +55,20 @@ class UserRepository {
         return null;
     }
 
-    public function getUserRole($id): array {
+    public function findRolesByUserId($id): array {
+        $roles = [];
+
         $stmt = $this->db->prepare("SELECT r.name FROM roles r INNER JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = ?");
+
+        if (!stmt) {
+            throw new Exception("Database prepare failed: " . $this->db->error);
+        }
+
         $stmt->bind_param('i',$id);
         $stmt->execute();
+
         $result = $stmt->get_result();
 
-        $roles = [];
         while ($row = $result-> fetch_assoc()) {
             $roles[] = $row['name'];
         }

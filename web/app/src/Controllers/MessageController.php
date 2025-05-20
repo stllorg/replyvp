@@ -65,7 +65,22 @@ class MessageController {
         if (!$user) return;
 
         try {
-            $messages = $this->messageService->getTicketMessages($ticketId, $user['userId']);
+            $userId = $user['userId'];
+            $ticketCreatorId = $this->ticketService->getTicketCreator($ticketId);
+
+            if ($userId != ticketCreatorId) { // Check if is not the ticket creator
+
+                $guestRoles = $this->userService->getUserRoles($userId);
+                $isGuestStaff = in_array("admin", $guestRoles);
+
+                if (!isGuestStaff) { // Check if is not staff
+                    http_response_code(403);
+                    echo json_encode(["error" => "You do not have permission to access this ticket."]);
+                    return;
+                }
+            }
+
+            $messages = $this->messageService->getTicketMessages($ticketId);
             if (!$messages) {
                 sendResponse(404, ['error' => 'Messages not found']);
                 return;

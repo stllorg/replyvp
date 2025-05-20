@@ -16,13 +16,17 @@ class MessageService {
     }
 
     // Executes logic to create Message, if sucess returns the new Message with id
-    public function createMessage($ticketId, $message): Message { // ticket id and message content 
-        $length = strlen($message);
+    public function createMessage($ticketId, $userId, $content): Message { // ticket id and message content 
+        $length = strlen($content);
         if ($length < 1 || $length > 249) {
             throw new \Exception('Message must be between 1 and 249 characters');
         }
 
-        $message = new Message(null, $ticketId, $message); // message id, ticket id, message content
+        $message = new Message($ticketId, $userId, $content); // ticket id, user id, message content
+        $message = new Message(
+            ticketId: $ticketId,
+            userId: $userId,
+            content: $content);
         return $this->messageRepository->create($message);
     }
 

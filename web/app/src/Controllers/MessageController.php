@@ -5,16 +5,19 @@ namespace ReplyVP\Controllers;
 use ReplyVP\Services\MessageService;
 use ReplyVP\Services\AuthService;
 use ReplyVP\Services\UserService;
+use ReplyVP\Services\TicketService;
 
 class MessageController {
     private $messageService;
     private $authService;
     private $userService;
+    private $ticketService;
 
-    public function __construct(MessageService $messageService, AuthService $authService, UserService $userService) {
+    public function __construct(MessageService $messageService, AuthService $authService, UserService $userService, TicketService $ticketService) {
         $this->messageService = $messageService;
         $this->authService = $authService;
         $this->userService = $userService;
+        $this->ticketService = $ticketService;
     }
 
     private function authenticate(): ?array {
@@ -86,7 +89,7 @@ class MessageController {
             $userId = $user['userId'];
             $ticketCreatorId = $this->ticketService->getTicketCreator($ticketId);
 
-            if ($userId != ticketCreatorId) { // Check if is not the ticket creator
+            if ($userId != $ticketCreatorId) { // Check if is not the ticket creator
 
                 $guestRoles = $this->userService->getUserRoles($userId);
                 $isGuestStaff = in_array("admin", $guestRoles);

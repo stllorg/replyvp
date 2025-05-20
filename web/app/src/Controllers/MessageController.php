@@ -40,19 +40,19 @@ class MessageController {
 
         $data = json_decode(file_get_contents('php://input'), true);
         
-        if (!isset($data['message'])) {
+        if (!isset($data['content'])) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing message value']);
             return;
         }
 
         try {
-            $message = $this->messageService->createMessage($ticketId, $data['message']);
-            http_response_code(201);
+            $message = $this->messageService->createMessage($ticketId, $user['userId'], $data['content']);
+            // http_response_code(201); // Created object
             echo json_encode([
                 'id' => $message->getId(),
                 'ticketId' => $message->getTicketId(),
-                'message' => $message->getMessage()
+                'content' => $message->getContent()
             ]);
         } catch (\Exception $e) {
             http_response_code(400);
@@ -60,23 +60,29 @@ class MessageController {
         }
     }
 
-    public function getTicketMessages($ticketId): ?array {
+    public function getTicketMessages($ticketId): void {
         $user = $this->authenticate();
-        if (!$user) return null;
+        if (!$user) return;
 
         try {
             $messages = $this->messageService->getTicketMessages($ticketId, $user['userId']);
+            if (!$messages) {
+                sendResponse(404, ['error' => 'Messages not found']);
+                return;
+            }
+
             echo json_encode(array_map(function($message) {
                 return [
                     'id' => $message->getId(),
                     'ticketId' => $message->getTicketId(),
-                    'message' => $message->getMessage()
+                    'content' => $message->getContent()
                 ];
             }, $messages));
+            return;
         } catch (\Exception $e) {
             http_response_code(403);
             echo json_encode(['error' => $e->getMessage()]);
-            return null;
+            return;
         }
     }
 } 

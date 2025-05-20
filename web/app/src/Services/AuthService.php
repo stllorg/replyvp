@@ -4,6 +4,7 @@ namespace ReplyVP\Services;
 
 use ReplyVP\Entities\User;
 use ReplyVP\Repositories\UserRepository;
+use ReplyVP\Services\UserService;
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 
@@ -11,20 +12,27 @@ class AuthService {
     private $userRepository;
     private $jwtSecret;
 
-    public function __construct(UserRepository $userRepository) {
-        $this->userRepository = $userRepository;
+    public function __construct(UserService $userService) {
+        $this->userService = $userService;
         $this->jwtSecret = $_ENV['JWT_SECRET'];
     }
 
     // Creates a new User and returns it
-    public function register($username, $email, $password): User {
+    public function register($username, $email, $password): ?User {
         if ($this->userRepository->findByEmail($email)) {
             throw new \Exception('Email already registered');
         }
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $user = new User(0, $username, $email, $hashedPassword);
-        return $this->userRepository->create($user);
+        $registeredUser = $this->userService->createUser($user);
+
+        if (!$registeredUser) {
+            throw new \Exception('Failed to register user');
+            return null;
+        }
+
+        return $registeredUser;
     }
 
     // Check user email and password and returns a JSON string
@@ -66,7 +74,7 @@ class AuthService {
     private function generateToken(User $user): string {
         $userId = $user->getId();
         $userUsername = $user->getUsername(); 
-        $roles = $this->userRepository->getUserRole($userId);
+        $roles = $this->userService->getUserRoles($userId);
         $payload = [
             "iat" => time(),
             'exp' => time() + (60 * 60 * 24),

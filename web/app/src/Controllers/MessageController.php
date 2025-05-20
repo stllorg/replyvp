@@ -47,7 +47,6 @@ class MessageController {
         }
 
         try {
-
             $userId = $user['userId'];
             $ticketCreatorId = $this->ticketService->getTicketCreator($ticketId);
 

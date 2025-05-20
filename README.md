@@ -31,7 +31,7 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
 - **Containers**: Docker with Compose in compatibility with Podman Compose.
 
 ### Database
-- **Database**: MySQL 9.1.0
+- **Database**: MySQL
 
 ### Frontend
 - **Framework**: Vue.js (Client-side)
@@ -77,8 +77,19 @@ This will:
 ### Step 5: Access the Application
 Once the containers are up and running, you can access the application:
 
-- **PHP Application**: `http://localhost:8080`
-- **MySQL Database**: `localhost:3306` 
+### Endpoints:
+GET  
+http://localhost:8080/users/tickets - Retrieve user tickets.    
+http://localhost:8080/tickets/{id} - Retrieve a ticket by id.   
+http://localhost:8080/tickets/open - Retrieve pending tickets or not answered.   
+http://localhost:8080/tickets/{id}/messages - Retrieve ticket messages.   
+
+POST  
+http://localhost:8080/users/tickets - Create a new ticket.    
+http://localhost:8080/auth/login - Sign in with user credentials.   
+http://localhost:8080/auth/register - Register a new user. 
+http://localhost:8080/auth/authenticate - Verify if JWT Token is invalid, if not sends user id and user role. 
+http://localhost:8080/tickets/{id}/messages - Create a new message on ticket {id}.
 
 For the Vue client (development mode):
 

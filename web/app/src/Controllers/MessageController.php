@@ -65,7 +65,7 @@ class MessageController {
         if (!$user) return null;
 
         try {
-            $messages = $this->messageService->getTicketMessages($ticketId, $user->getId());
+            $messages = $this->messageService->getTicketMessages($ticketId, $user['userId']);
             echo json_encode(array_map(function($message) {
                 return [
                     'id' => $message->getId(),

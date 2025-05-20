@@ -34,12 +34,13 @@ class UserRepository {
     }
 
     public function findByUsername(string $username): ?User {
-        $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE email = ?");
+        $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
-            return new User($row['id'], $row['username'], $row['email'], $row['password']);
+            $user = new User($row['id'], $row['username'], $row['email'], $row['password']);
+            return $user;
         }
         return null;
     } 
@@ -60,7 +61,7 @@ class UserRepository {
 
         $stmt = $this->db->prepare("SELECT r.name FROM roles r INNER JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = ?");
 
-        if (!stmt) {
+        if (!$stmt) {
             throw new Exception("Database prepare failed: " . $this->db->error);
         }
 

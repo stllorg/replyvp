@@ -76,6 +76,7 @@ class MessageController {
         } catch (\Exception $e) {
             http_response_code(403);
             echo json_encode(['error' => $e->getMessage()]);
+            return null
         }
     }
 } 

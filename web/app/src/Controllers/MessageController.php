@@ -4,14 +4,17 @@ namespace ReplyVP\Controllers;
 
 use ReplyVP\Services\MessageService;
 use ReplyVP\Services\AuthService;
+use ReplyVP\Services\UserService;
 
 class MessageController {
     private $messageService;
     private $authService;
+    private $userService;
 
-    public function __construct(MessageService $messageService, AuthService $authService) {
+    public function __construct(MessageService $messageService, AuthService $authService, UserService $userService) {
         $this->messageService = $messageService;
         $this->authService = $authService;
+        $this->userService = $userService;
     }
 
     private function authenticate(): ?array {

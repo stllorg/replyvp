@@ -11,6 +11,7 @@ use ReplyVP\Repositories\MessageRepository;
 use ReplyVP\Services\AuthService;
 use ReplyVP\Services\TicketService;
 use ReplyVP\Services\MessageService;
+use ReplyVP\Services\UserService;
 use Dotenv\Dotenv;
 
 // Load environment variables
@@ -72,14 +73,15 @@ $ticketRepository = new TicketRepository($db);
 $messageRepository = new MessageRepository($db);
 
 // Initialize services
-$authService = new AuthService($userRepository);
+$userService = new UserService($userRepository);
+$authService = new AuthService($userService);
 $ticketService = new TicketService($ticketRepository);
-$messageService = new MessageService($messageRepository, $ticketRepository);
+$messageService = new MessageService($messageRepository, $ticketService, $userService);
 
 // Initialize controllers
 $authController = new AuthController($authService);
 $ticketController = new TicketController($ticketService, $authService);
-$messageController = new MessageController($messageService, $authService);
+$messageController = new MessageController($messageService, $authService, $userService);
 
 // Parse request URI
 $uri = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'));

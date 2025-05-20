@@ -92,13 +92,13 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
             'auth/login'        => [$authController, 'login'],
             'auth/authenticate' => [$authController, 'validate'],
             'users/tickets'     => [$ticketController, 'createTicket'],
-            'messages/{id}'     => [$messageController, 'createMessage'],
+            'tickets/{id}/messages'     => [$messageController, 'createMessage'],
         ],
         'GET' => [
             'users/tickets'     => [$ticketController, 'getUserTickets'],
             'tickets/{id}' => [$ticketController, 'getTicketById'],
             'tickets/open'      => [$ticketController, 'getAllPendingTickets'],
-            'messages/{id}'     => [$messageController, 'getTicketMessages'],
+            'tickets/{id}/messages'     => [$messageController, 'getTicketMessages'],
         ],
     ];
 

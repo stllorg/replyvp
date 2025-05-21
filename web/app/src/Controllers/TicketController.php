@@ -63,9 +63,9 @@ class TicketController {
     }
 
     // Authenticates the user, if sucess returns an array with all tickets created by the user
-    public function getUserTickets(): ?array {
+    public function getUserTickets(): void {
         $user = $this->authenticate();
-        if (!$user) return null;
+        if (!$user) return;
 
         try {
             $tickets = $this->ticketService->getUserTickets($user['userId']);
@@ -73,12 +73,14 @@ class TicketController {
                 return [
                     'id' => $ticket->getId(),
                     'subject' => $ticket->getSubject(),
-                    'userId' => $ticket->getUserId()
+                    'status' => $ticket->getStatus(),
+                    'createdAt' => $ticket->getCreatedAt()->format(\DateTime::ATOM),
                 ];
             }, $tickets));
         } catch (\Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
+            return;
         }
     }
 

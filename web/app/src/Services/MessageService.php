@@ -9,12 +9,10 @@ use ReplyVP\Repositories\TicketRepository;
 class MessageService {
     private $messageRepository;
     private $ticketService;
-    private $userService;
 
-    public function __construct(MessageRepository $messageRepository, TicketService $ticketService, UserService $userService) {
+    public function __construct(MessageRepository $messageRepository, TicketService $ticketService) {
         $this->messageRepository = $messageRepository;
         $this->ticketService = $ticketService;
-        $this->userService = $userService;
     }
 
     // Executes logic to create Message, if sucess returns the new Message with id
@@ -24,8 +22,8 @@ class MessageService {
             throw new \Exception('Message must be between 1 and 249 characters');
         }
 
-        $message = new Message($ticketId, $userId, $content); // ticket id, user id, message content
         $message = new Message(
+            id: 0,
             ticketId: $ticketId,
             userId: $userId,
             content: $content);

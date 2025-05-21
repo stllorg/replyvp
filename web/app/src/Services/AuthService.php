@@ -3,13 +3,12 @@
 namespace ReplyVP\Services;
 
 use ReplyVP\Entities\User;
-use ReplyVP\Repositories\UserRepository;
 use ReplyVP\Services\UserService;
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 
 class AuthService {
-    private $userRepository;
+    private $userService;
     private $jwtSecret;
 
     public function __construct(UserService $userService) {
@@ -19,7 +18,7 @@ class AuthService {
 
     // Creates a new User and returns it
     public function register($username, $email, $password): ?User {
-        if ($this->userRepository->findByEmail($email)) {
+        if ($this->userService->getUserByEmail($email)) {
             throw new \Exception('Email already registered');
         }
 
@@ -37,7 +36,7 @@ class AuthService {
 
     // Check user email and password and returns a JSON string
     public function loginWithEmail($email, $password): string {
-        $user = $this->userRepository->findByEmail($email);
+        $user = $this->userService->getUserByEmail($email);
         if (!$user || !password_verify($password, $user->getPassword())) {
             throw new \Exception('Invalid credentials');
         }
@@ -47,7 +46,7 @@ class AuthService {
 
     // Check user credentials and returns JSON string
     public function login($username, $password): string {
-        $user = $this->userRepository->findByUsername($username);
+        $user = $this->userService->getUserByUsername($username);
         if (!$user || !password_verify($password, $user->getPassword())) {
             throw new \Exception('Invalid credentials');
         }

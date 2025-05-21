@@ -31,7 +31,7 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
 - **Containers**: Docker with Compose in compatibility with Podman Compose.
 
 ### Database
-- **Database**: MySQL 9.1.0
+- **Database**: MySQL
 
 ### Frontend
 - **Framework**: Vue.js (Client-side)
@@ -77,8 +77,76 @@ This will:
 ### Step 5: Access the Application
 Once the containers are up and running, you can access the application:
 
-- **PHP Application**: `http://localhost:8080`
-- **MySQL Database**: `localhost:3306` 
+### Endpoints:
+
+### GET  
+> http://localhost:8080/users/tickets - Retrieve user tickets.
+```curl
+curl --location 'http://localhost:8080/users/tickets' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
+```   
+> http://localhost:8080/tickets/{id} - Retrieve a ticket by id.
+```curl
+curl --location 'http://localhost:8080/tickets/8' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
+```
+
+> http://localhost:8080/tickets/open - Retrieve pending tickets or not answered.
+```curl
+curl --location 'http://localhost:8080/tickets/open' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
+```
+
+
+
+
+> http://localhost:8080/tickets/{id}/messages - Retrieve ticket messages.
+```curl
+curl --location 'http://localhost:8080/tickets/{id}/messages' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'   
+```
+
+
+
+### POST  
+> http://localhost:8080/users/tickets - Create a new ticket.
+```curl
+curl --location 'http://localhost:8080/users/tickets' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g' \
+--header 'Content-Type: application/json' \
+--data '{
+    "subject":"Sample text"
+}
+```   
+> http://localhost:8080/auth/login - Sign in with user credentials.
+```curl
+curl --location 'http://localhost:8080/auth/login' \
+--header 'Content-Type: text/plain' \
+--data-raw '{
+    "username": "admin",
+    "password": "test@test.com"
+}'
+```
+
+> http://localhost:8080/auth/register - Register a new user.
+> http://localhost:8080/auth/authenticate - Verify if JWT Token is invalid, if not sends user id and user role.
+
+
+> http://localhost:8080/tickets/{id}/messages - Create a new message on ticket {id}. 
+```curl
+curl --location 'http://localhost:8080/tickets/{id}/messages' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g' \
+--data '{
+    "ticketId": "{id}",
+    "content": "A sample message."
+  }'
+```
+
+
+Create a new ticket
+
 
 For the Vue client (development mode):
 
@@ -99,7 +167,7 @@ docker-compose down
 
 ---
 
-## Feature8080s
+## Feature
 
 This application is designed with the following key features:
 

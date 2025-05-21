@@ -4,14 +4,20 @@ namespace ReplyVP\Controllers;
 
 use ReplyVP\Services\MessageService;
 use ReplyVP\Services\AuthService;
+use ReplyVP\Services\UserService;
+use ReplyVP\Services\TicketService;
 
 class MessageController {
     private $messageService;
     private $authService;
+    private $userService;
+    private $ticketService;
 
-    public function __construct(MessageService $messageService, AuthService $authService) {
+    public function __construct(MessageService $messageService, AuthService $authService, UserService $userService, TicketService $ticketService) {
         $this->messageService = $messageService;
         $this->authService = $authService;
+        $this->userService = $userService;
+        $this->ticketService = $ticketService;
     }
 
     private function authenticate(): ?array {
@@ -50,7 +56,7 @@ class MessageController {
             $userId = $user['userId'];
             $ticketCreatorId = $this->ticketService->getTicketCreator($ticketId);
 
-            if ($userId != ticketCreatorId) { // Check if is not the ticket creator
+            if ($userId != $ticketCreatorId) { // Check if is not the ticket creator
 
                 $guestRoles = $this->userService->getUserRoles($userId);
                 $isGuestStaff = in_array("admin", $guestRoles);
@@ -65,8 +71,9 @@ class MessageController {
             $message = $this->messageService->createMessage($ticketId, $userId, $data['content']);
             http_response_code(201); // Created object
             echo json_encode([
-                'id' => $message->getId(),
+                'messageId' => $message->getId(),
                 'ticketId' => $message->getTicketId(),
+                'userId' => $message->getUserId(),
                 'content' => $message->getContent()
             ]);
         } catch (\Exception $e) {
@@ -83,7 +90,7 @@ class MessageController {
             $userId = $user['userId'];
             $ticketCreatorId = $this->ticketService->getTicketCreator($ticketId);
 
-            if ($userId != ticketCreatorId) { // Check if is not the ticket creator
+            if ($userId != $ticketCreatorId) { // Check if is not the ticket creator
 
                 $guestRoles = $this->userService->getUserRoles($userId);
                 $isGuestStaff = in_array("admin", $guestRoles);
@@ -105,7 +112,9 @@ class MessageController {
                 return [
                     'id' => $message->getId(),
                     'ticketId' => $message->getTicketId(),
-                    'content' => $message->getContent()
+                    'userId' => $message->getUserId(),
+                    'content' => $message->getContent(),
+                    'createdAt' => $message->getCreatedAt()->format(\DateTime::ATOM),
                 ];
             }, $messages));
             return;

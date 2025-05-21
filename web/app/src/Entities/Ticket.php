@@ -17,13 +17,15 @@ class Ticket {
     public function __construct(
         int $id,
         string $subject,
-        int $userId = 0,
+        string $status = 'open',
+        ?\DateTime $createdAt = null,
+        int $userId = 0
     ) {
         $this->id = $id; // Ticket ID created by database
         $this->subject = $subject;
         $this->status = self::STATUS_OPEN;
         $this->isRepeat = false;
-        $this->createdAt = null; // TIMESTAMP created by database
+        $this->createdAt = $createdAt; // TIMESTAMP created by database
         $this->userId = $userId;
     }
 

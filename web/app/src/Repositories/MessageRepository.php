@@ -11,7 +11,14 @@ class MessageRepository {
         $this->db = $db;
     }
 
-    // Stores a message and returns a Message with id
+    /*
+    Stores a message with:
+    - ticket_id: Id of the ticket that will get the new message
+    - user_id: User id
+    - message: Message content
+    
+    Returns the created message with id
+    */
     public function create(Message $msg): Message {
         $stmt = $this->db->prepare("INSERT INTO ticket_messages (ticket_id, message, user_id) VALUES (?, ?, ?)");
         $ticketId = $msg->getTicketId();

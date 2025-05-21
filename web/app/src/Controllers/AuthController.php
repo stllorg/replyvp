@@ -25,7 +25,7 @@ class AuthController {
         $token = str_replace('Bearer ', '', $authHeader);
 
         try {
-            $userData = $this->authService->validate($token);
+            $userData = $this->authService->validateToken($token);
             echo json_encode($userData);
             return null;
 

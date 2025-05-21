@@ -56,7 +56,7 @@ class MessageController {
             $userId = $user['userId'];
             $ticketCreatorId = $this->ticketService->getTicketCreator($ticketId);
 
-            if ($userId != ticketCreatorId) { // Check if is not the ticket creator
+            if ($userId != $ticketCreatorId) { // Check if is not the ticket creator
 
                 $guestRoles = $this->userService->getUserRoles($userId);
                 $isGuestStaff = in_array("admin", $guestRoles);
@@ -71,8 +71,9 @@ class MessageController {
             $message = $this->messageService->createMessage($ticketId, $userId, $data['content']);
             http_response_code(201); // Created object
             echo json_encode([
-                'id' => $message->getId(),
+                'messageId' => $message->getId(),
                 'ticketId' => $message->getTicketId(),
+                'userId' => $message->getUserId(),
                 'content' => $message->getContent()
             ]);
         } catch (\Exception $e) {
@@ -111,7 +112,9 @@ class MessageController {
                 return [
                     'id' => $message->getId(),
                     'ticketId' => $message->getTicketId(),
-                    'content' => $message->getContent()
+                    'userId' => $message->getUserId(),
+                    'content' => $message->getContent(),
+                    'createdAt' => $message->getCreatedAt()->format(\DateTime::ATOM),
                 ];
             }, $messages));
             return;

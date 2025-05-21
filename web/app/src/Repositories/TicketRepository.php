@@ -23,14 +23,20 @@ class TicketRepository {
     }
 
     public function findByUserId($userId): array {
-        $stmt = $this->db->prepare("SELECT id, subject, user_id FROM tickets WHERE user_id = ?");
+        $stmt = $this->db->prepare("SELECT id, subject, status, created_at FROM tickets WHERE user_id = ?");
         $stmt->bind_param("i", $userId);
         $stmt->execute();
         $result = $stmt->get_result();
         $tickets = [];
+
         while ($row = $result->fetch_assoc()) {
-            $tickets[] = new Ticket($row['id'], $row['subject'], $row['user_id']);
+            $tickets[] = new Ticket(
+                id: $row['id'],
+                subject: $row['subject'],
+                status: $row['status'],
+                createdAt: new \DateTime($row['created_at']));
         }
+
         return $tickets;
     }
 

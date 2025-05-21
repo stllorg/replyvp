@@ -115,6 +115,7 @@ class MessageController {
                     'userId' => $message->getUserId(),
                     'content' => $message->getContent(),
                     'createdAt' => $message->getCreatedAt()->format(\DateTime::ATOM),
+                    'equipments' => $this->userService->getUserRoles($message->getUserId()),
                 ];
             }, $messages));
             return;

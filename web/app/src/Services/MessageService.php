@@ -22,8 +22,8 @@ class MessageService {
             throw new \Exception('Message must be between 1 and 249 characters');
         }
 
-        $message = new Message($ticketId, $userId, $content); // ticket id, user id, message content
         $message = new Message(
+            id: 0,
             ticketId: $ticketId,
             userId: $userId,
             content: $content);

@@ -10,20 +10,20 @@ class Message {
     private ?\DateTime $createdAt; // Generated on database
 
     public function __construct(
+        int $id,
         int $ticketId,
         int $userId,
         string $content,
-        ?int $id = null,
         ?\DateTime $createdAt = null
     ) {
-        $this->id = $id ?? 0;
+        $this->id = $id;
         $this->ticketId = $ticketId;
         $this->userId = $userId;
         $this->content = $content;
         $this->createdAt = $createdAt;
     }
 
-    public function getId(): string {
+    public function getId(): int {
         return $this->id;
     }
 
@@ -44,9 +44,9 @@ class Message {
     } 
 
     public function setId(int $id): void {
-        $this->$id = $id;
+        $this->id = $id;
     }
-
+    
     public function setTicketId(int $ticketId): void {
         $this->ticketId = $ticketId;
     }

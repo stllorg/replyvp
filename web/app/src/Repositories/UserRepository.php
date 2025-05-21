@@ -63,6 +63,19 @@ class UserRepository {
         }
     }
 
+    public function updateUserRolesByUserId(int $userId, array $roles): void {
+        $stmt = $this->db->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)");
+        if (!$stmt) {
+            throw new Exception("Database prepare failed: " . $this->db->error);
+        }
+
+        $roleCode = "UserRole::fromRoleName($roleName)";
+
+        $stmt->bind_param("is", $userId, $roleCode);
+        $stmt->execute();
+        return;
+    }
+
     public function findByEmail($email): ?User {
         $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);

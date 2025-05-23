@@ -108,16 +108,18 @@ class MessageController {
                 return;
             }
 
-            echo json_encode(array_map(function($message) {
+            $outputMessage = function($message) {
                 return [
                     'id' => $message->getId(),
                     'ticketId' => $message->getTicketId(),
                     'userId' => $message->getUserId(),
                     'content' => $message->getContent(),
                     'createdAt' => $message->getCreatedAt()->format(\DateTime::ATOM),
-                    'equipments' => $this->userService->getUserRoles($message->getUserId()),
+                    'roles' => $this->userService->getUserRoles($message->getUserId()),
                 ];
-            }, $messages));
+            };
+
+            echo json_encode(array_map($outputMessage, $messages));
             return;
         } catch (\Exception $e) {
             http_response_code(403);

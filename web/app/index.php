@@ -5,6 +5,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use ReplyVP\Controllers\AuthController;
 use ReplyVP\Controllers\TicketController;
 use ReplyVP\Controllers\MessageController;
+use ReplyVP\Controllers\UserController;
 use ReplyVP\Repositories\UserRepository;
 use ReplyVP\Repositories\TicketRepository;
 use ReplyVP\Repositories\MessageRepository;
@@ -82,13 +83,13 @@ $messageService = new MessageService($messageRepository, $ticketService, $userSe
 $authController = new AuthController($authService);
 $ticketController = new TicketController($ticketService, $authService);
 $messageController = new MessageController($messageService, $authService, $userService, $ticketService);
-$userController = new UserController();
+$userController = new UserController($userService, $authService);
 
 // Parse request URI
 $uri = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'));
 
 // Route logic
-function routeRequest($uri, $authController, $ticketController, $messageController) {
+function routeRequest($uri, $authController, $ticketController, $messageController, $userController) {
     $routes = [
         'POST' => [
             'auth/register'          => [$authController, 'register'],
@@ -104,7 +105,7 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
             'tickets/{id}/messages'  => [$messageController, 'getTicketMessages'],
         ],
         'PATCH' => [
-            'users/update/roles'       => [$userController, 'updateUserRoles'],
+            'users/{id}/roles'       => [$userController, 'updateUserRole'],
         ],
     ];
 
@@ -124,4 +125,4 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
 }
 
 // Run routing
-routeRequest($uri, $authController, $ticketController, $messageController);
+routeRequest($uri, $authController, $ticketController, $messageController, $userController);

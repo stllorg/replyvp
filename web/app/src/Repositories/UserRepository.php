@@ -63,17 +63,34 @@ class UserRepository {
         }
     }
 
-    public function updateUserRolesByUserId(int $userId, array $roles): void {
-        $stmt = $this->db->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)");
-        if (!$stmt) {
-            throw new Exception("Database prepare failed: " . $this->db->error);
-        }
+    /**
+     * Inserts a new user role assignment.
+     *
+     * @param int $userId
+     * @param int $roleId
+     * @return bool True on success, false on failure.
+     */
+    public function insertUserRole(int $userId, int $roleId): bool {
+        $query = "INSERT IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("ii", $userId, $roleId);
+        $success = $stmt->execute();
+        $stmt->close();
+        return $success;
+    }
 
-        $roleCode = "UserRole::fromRoleName($roleName)";
-
-        $stmt->bind_param("is", $userId, $roleCode);
-        $stmt->execute();
-        return;
+    /**
+     * Deletes all roles for a given user.
+     *
+     * @param int $userId
+     * @return bool True on success, false on failure.
+     */
+    public function deleteAllUserRoles(int $userId): bool {
+        $stmt = $this->db->prepare("DELETE FROM user_roles WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $success = $stmt->execute();
+        $stmt->close();
+        return $success;
     }
 
     public function findByEmail($email): ?User {

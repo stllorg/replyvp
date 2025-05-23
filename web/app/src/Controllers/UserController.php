@@ -67,7 +67,7 @@ class UserController {
                 return;
             }
 
-            // 1 - Delete current Roles
+            // Delete current Roles
             if(!$this->userService->removeAllUserRoles($targetId)){
                 http_response_code(412);
                 echo json_encode(["error" => "Failed to delete existing roles resource."]);
@@ -78,9 +78,10 @@ class UserController {
             $updatedRoles = $data['roles'];
 
             $mapRoles = [
-                'admin' => 1,
+                'admin'   => 1,
                 'manager' => 2,
                 'support' => 3,
+                'user'    => 4,
             ];
 
 
@@ -97,9 +98,8 @@ class UserController {
             }
 
             $newRole = 4; // The number 4 is the default role
-            $minCode = null; // Initialize with null or a default value
             if (!empty($rolesCodes)) {
-                $minCode = min($rolesCodes);
+                $newRole = min($rolesCodes);
             }
 
             $result = $this->userService->assignRoleToUser($targetId, $newRole);

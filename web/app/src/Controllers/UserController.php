@@ -66,7 +66,6 @@ class UserController {
                 sendResponse(404, ['error' => 'User not found']);
                 return;
             }
-
             // Delete current Roles
             if(!$this->userService->removeAllUserRoles($targetId)){
                 http_response_code(412);
@@ -152,9 +151,5 @@ class UserController {
             echo json_encode([
                 'roles' => $roles,
             ]);
-        } catch (\Exception $e) {
-            http_response_code(400);
-            echo json_encode(['error' => $e->getMessage()]);
-        }
     }
 } 

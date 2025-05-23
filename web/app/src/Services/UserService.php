@@ -16,8 +16,12 @@ class UserService {
         return $this->userRepository->create($user);
     }
 
-    public function updateUserRoles(int $userId, array $roles) {
-        return $this->userRepository->updateUserRolesByUserId($userId, $roles);
+    public function assignRoleToUser(int $userId, int $roleId): bool {
+        return $this->userRepository->insertUserRole($userId, $roleId);
+    }
+
+    public function removeAllUserRoles(int $userId): bool {
+        return $this->userRepository->deleteAllUserRoles($userId);
     }
 
     public function getUserById($userId): ?User {

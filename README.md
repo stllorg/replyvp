@@ -77,77 +77,7 @@ This will:
 ### Step 5: Access the Application
 Once the containers are up and running, you can access the application:
 
-### Endpoints:
-
-### GET  
-> http://localhost:8080/users/tickets - Retrieve user tickets.
-```curl
-curl --location 'http://localhost:8080/users/tickets' \
---header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
-```   
-> http://localhost:8080/tickets/{id} - Retrieve a ticket by id.
-```curl
-curl --location 'http://localhost:8080/tickets/8' \
---header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
-```
-
-> http://localhost:8080/tickets/open - Retrieve pending tickets or not answered.
-```curl
-curl --location 'http://localhost:8080/tickets/open' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
-```
-
-
-
-
-> http://localhost:8080/tickets/{id}/messages - Retrieve ticket messages.
-```curl
-curl --location 'http://localhost:8080/tickets/{id}/messages' \
---header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'   
-```
-
-
-
-### POST  
-> http://localhost:8080/users/tickets - Create a new ticket.
-```curl
-curl --location 'http://localhost:8080/users/tickets' \
---header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g' \
---header 'Content-Type: application/json' \
---data '{
-    "subject":"Sample text"
-}
-```   
-> http://localhost:8080/auth/login - Sign in with user credentials.
-```curl
-curl --location 'http://localhost:8080/auth/login' \
---header 'Content-Type: text/plain' \
---data-raw '{
-    "username": "admin",
-    "password": "test@test.com"
-}'
-```
-
-> http://localhost:8080/auth/register - Register a new user.
-> http://localhost:8080/auth/authenticate - Verify if JWT Token is invalid, if not sends user id and user role.
-
-
-> http://localhost:8080/tickets/{id}/messages - Create a new message on ticket {id}. 
-```curl
-curl --location 'http://localhost:8080/tickets/{id}/messages' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g' \
---data '{
-    "ticketId": "{id}",
-    "content": "A sample message."
-  }'
-```
-
-
-Create a new ticket
-
-
+#### Launch Vue
 For the Vue client (development mode):
 
 ```bash
@@ -163,6 +93,190 @@ To stop the containers, use:
 
 ```bash
 docker-compose down
+```
+
+------
+
+### Endpoints:
+
+### GET  
+> Retrieve user tickets.
+### http://localhost:8080/users/tickets
+
+Request model:
+```curl
+curl --location 'http://localhost:8080/users/tickets' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
+```
+
+Sample response:
+
+
+### http://localhost:8080/tickets/{id}
+> Retrieve a ticket by id.
+
+Request model:
+```curl
+curl --location 'http://localhost:8080/tickets/8' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
+```
+
+Sample response:
+
+### http://localhost:8080/tickets/open
+> Retrieve pending tickets or not answered.
+
+Request model:
+
+```curl
+curl --location 'http://localhost:8080/tickets/open' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
+```
+
+Sample response:
+
+
+
+### http://localhost:8080/tickets/{id}/messages
+> Retrieve ticket messages.
+
+Resquest model:
+
+```curl
+curl --location 'http://localhost:8080/tickets/{id}/messages' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'   
+```
+Sample response:
+
+```json
+[
+    {
+        "id": 65,
+        "ticketId": "14",
+        "userId": "1",
+        "content": "Sample message content on ticket 14",
+        "createdAt": "2025-05-23T12:57:19+00:00",
+        "roles": [
+            "admin"
+        ]
+    }
+]
+```
+
+## POST  
+
+### http://localhost:8080/users/tickets 
+> Create a new ticket.
+
+Request model: 
+```curl
+curl --location 'http://localhost:8080/users/tickets' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g' \
+--header 'Content-Type: application/json' \
+--data '{
+    "subject":"Sample text"
+}
+```
+Sample response:
+
+STATUS CODE 201
+```json
+{
+    "id": 123,
+    "subject": "Sample text",
+    "userId": 1
+}
+```
+
+### http://localhost:8080/auth/login
+
+Request model:
+>  Description: Sign in with user credentials.
+```curl
+curl --location 'http://localhost:8080/auth/login' \
+--header 'Content-Type: text/plain' \
+--data-raw '{
+    "username": "admin",
+    "password": "test@test.com"
+}'
+```
+
+Sample response: 
+
+```json
+{
+    "success": true,
+    "message": "Login successful.",
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g",
+}
+```
+
+### http://localhost:8080/auth/register
+> Description : Register a new user.
+Request model:
+```curl
+curl --location 'http://localhost:8080/auth/login' \
+--header 'Content-Type: text/plain' \
+--data-raw '{
+    "username": "admin",
+    "email": "admin@test.com"
+    "password": "test@test.com"
+}'
+```
+
+
+Status Code 201 (Created)
+
+```json
+{
+    "message": "User registered successfully"
+}
+```
+
+### http://localhost:8080/auth/authenticate
+> Verify if JWT Token is invalid, if not sends user id and user role.
+
+Request model: 
+```curl
+curl --location 'http://localhost:8080/auth/authenticate' \
+--header 'Authorization: Bearer yJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g' \
+--header 'Content-Type: text/plain'
+```
+
+Sample response:
+```json
+{
+    "userId": 1,
+    "roles": [
+        "admin"
+    ]
+}
+```
+
+
+### http://localhost:8080/tickets/{id}/messages 
+> Create a new message on ticket {id}. 
+
+
+Request model:
+```curl
+curl --location 'http://localhost:8080/tickets/{id}/messages' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g' \
+--data '{
+    "content": "A sample message."
+  }'
+```
+
+Sample response:
+```json
+{
+    "messageId": 65,
+    "ticketId": "14",
+    "userId": "1",
+    "content": "A sample message."
+}
 ```
 
 ---

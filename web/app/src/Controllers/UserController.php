@@ -148,8 +148,12 @@ class UserController {
             $roles = $this->userService->getUserRolesByUserId($targetId);
             
             http_response_code(201); // Created object
-            echo json_encode([
-                'roles' => $roles,
-            ]);
+            echo json_encode(['roles' => $roles,]);
+            return;
+        } catch (\Exception $e) {
+            http_response_code(403);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
+        }
     }
 } 

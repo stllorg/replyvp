@@ -58,10 +58,10 @@ class MessageController {
 
             if ($userId != $ticketCreatorId) { // Check if is not the ticket creator
 
-                $guestRoles = $this->userService->getUserRoles($userId);
+                $guestRoles = $this->userService->getUserRolesByUserId($userId);
                 $isGuestStaff = in_array("admin", $guestRoles);
 
-                if (!isGuestStaff) { // Check if is not staff
+                if (!$isGuestStaff) { // Check if is not staff
                     http_response_code(403);
                     echo json_encode(["error" => "You do not have permission to access this ticket."]);
                     return;
@@ -92,10 +92,10 @@ class MessageController {
 
             if ($userId != $ticketCreatorId) { // Check if is not the ticket creator
 
-                $guestRoles = $this->userService->getUserRoles($userId);
+                $guestRoles = $this->userService->getUserRolesByUserId($userId);
                 $isGuestStaff = in_array("admin", $guestRoles);
 
-                if (!isGuestStaff) { // Check if is not staff
+                if (!$isGuestStaff) { // Check if is not staff
                     http_response_code(403);
                     echo json_encode(["error" => "You do not have permission to access this ticket."]);
                     return;
@@ -115,7 +115,7 @@ class MessageController {
                     'userId' => $message->getUserId(),
                     'content' => $message->getContent(),
                     'createdAt' => $message->getCreatedAt()->format(\DateTime::ATOM),
-                    'roles' => $this->userService->getUserRoles($message->getUserId()),
+                    'roles' => $this->userService->getUserRolesByUserId($message->getUserId()),
                 ];
             };
 

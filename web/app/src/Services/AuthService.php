@@ -73,7 +73,7 @@ class AuthService {
     private function generateToken(User $user): string {
         $userId = $user->getId();
         $userUsername = $user->getUsername(); 
-        $roles = $this->userService->getUserRoles($userId);
+        $roles = $this->userService->getUserRolesByUserId($userId);
         $payload = [
             "iat" => time(),
             'exp' => time() + (60 * 60 * 24),

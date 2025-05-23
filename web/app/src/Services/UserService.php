@@ -36,7 +36,7 @@ class UserService {
         return $this->userRepository->findByEmail($email);
     }
 
-    public function getUserRoles($userId): array {
+    public function getUserRolesByUserId($userId): array {
         return $this->userRepository->findRolesByUserId($userId);
     }
 } 

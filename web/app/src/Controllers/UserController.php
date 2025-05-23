@@ -50,7 +50,7 @@ class UserController {
 
         try {
             $userId = $user['userId'];
-            $userRoles = $this->userService->getUserRoles($userId);
+            $userRoles = $this->userService->getUserRolesByUserId($userId);
             $isUserAdmin = in_array("admin", $userRoles);
 
             if (!$isUserAdmin) { // Check if user is not admin
@@ -112,6 +112,46 @@ class UserController {
 
             http_response_code(204);
             return;
+        } catch (\Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchUserRoles($targetId): void {
+        $user = $this->authenticate();
+        if (!$user) return;
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        try {
+            $userId = $user['userId'];
+
+            if ($userId != $targetId) { // Check if User is not the target
+
+                $guestRoles = $this->userService->getUserRolesByUserId($userId);
+                $isGuestStaff = in_array("admin", $guestRoles);
+
+                if (!$isGuestStaff) { // Check if user is not staff
+                    http_response_code(403);
+                    echo json_encode(["error" => "You do not have permission to access this ticket."]);
+                    return;
+                }
+            }
+
+            $targetUser = $this->userService->getUserById($targetId);
+
+            if (!$targetUser) {
+                sendResponse(404, ['error' => 'User not found']);
+                return;
+            }
+
+            $roles = $this->userService->getUserRolesByUserId($targetId);
+            
+            http_response_code(201); // Created object
+            echo json_encode([
+                'roles' => $roles,
+            ]);
         } catch (\Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);

@@ -59,7 +59,7 @@ onMounted(async () => {
       toast.error("Falha na autenticação!", { timeout: 3000 });
       // Redirect user
     }
-    filteredTickets.value = await ticketService.getTickets(user.id);
+    filteredTickets.value = await ticketService.getTickets();
     console.log("Tickets", filteredTickets.value);
     loadData(filteredTickets.value);
   } catch (err) {

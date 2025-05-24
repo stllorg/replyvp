@@ -2,9 +2,9 @@ import axios from "axios";
 import { API_ENDPOINTS } from "./api";
 
 const ticketService = {
-  async getTickets() {
+  async getTickets() { // Get tickets from the logged user
     try {
-      const response = await axios.get(`${API_ENDPOINTS.TICKETS.BY_ID(targetUserId)}`, {
+      const response = await axios.get(`${API_ENDPOINTS.TICKETS}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

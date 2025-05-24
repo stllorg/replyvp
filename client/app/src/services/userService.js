@@ -30,7 +30,11 @@ const userService = {
     };
     try {
       const response = await axios.put(
-       `${USERS_API_URL}/update.php`,
+        API_ENDPOINTS.USERS.BY_ID(userId), {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
         updatedData
       );
       if (response.status === 200) {
@@ -42,9 +46,18 @@ const userService = {
     }
   },
   terminateAccount(userId) {
-    return axios.delete(`${USERS_API_URL}/delete.php`, {
-      data: { id: userId },
-  });
+    try {
+      return axios.delete(
+        API_ENDPOINTS.USERS.BY_ID(userId), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Erro ao encerrar conta de usuário", error);
+      throw error;
+    }
   },
 };
 

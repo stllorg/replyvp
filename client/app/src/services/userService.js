@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "./api";
+import authService from "@/services/authService";
 
 const userService = {
   
@@ -19,6 +20,12 @@ const userService = {
     }
   },
   async updateUser(userId, password, email, newEmail, newPassword ) {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+
     const updatedData = {
       id: userId,
       old_email: email,
@@ -44,6 +51,12 @@ const userService = {
     }
   },
   terminateAccount(userId) {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+    
     try {
       return axios.delete(
         API_ENDPOINTS.USERS.BY_ID(userId), {

@@ -7,7 +7,8 @@ export function getUserToken() {
   return authStore.user?.token || null;
 }
 
-export async function validateToken(token) {
+export async function validateToken() {
+  const token = getUserToken();
 
   if (!token) {
     return false;

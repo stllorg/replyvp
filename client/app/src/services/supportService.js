@@ -1,11 +1,18 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "./api";
+import authService from "@/services/authService";
 
 const supportService = {
   
-  async assistTicket(token) {
+  async assistTicket() {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+    
     try {
-      newTicketStatus = 'in_progress';
+      let newTicketStatus = 'in_progress';
       const response = await axios.get(
         API_ENDPOINTS.TICKETS.BY_STATUS(newTicketStatus),
         {

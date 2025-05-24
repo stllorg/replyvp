@@ -1,8 +1,15 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "./api";
+import authService from "@/services/authService";
+
 
 const ticketService = {
   async getTickets() { // Get tickets from the logged user
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
     try {
       const response = await axios.get(`${API_ENDPOINTS.TICKETS}`, {
         headers: {
@@ -15,8 +22,14 @@ const ticketService = {
       throw error;
     }
   },
-  async getPendingTickets(token) {
-    ticketStatus = 'open'
+  async getPendingTickets() {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+
+    const ticketStatus = 'open'
     try {
       const response = await axios.get(`${API_ENDPOINTS.TICKETS.BY_STATUS(ticketStatus)}`, {
         headers: {
@@ -33,6 +46,12 @@ const ticketService = {
     }
   },
   async createTicket(subject, message) {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+
     try {
       const response = await axios.post(`${API_ENDPOINTS.TICKETS}`, {
         headers: {
@@ -53,6 +72,12 @@ const ticketService = {
     }
   },
   async addNewMessage(ticketId, messageContent){
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+
       try {
         const response = await axios.post(
           `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {
@@ -81,6 +106,12 @@ const ticketService = {
       }
   },
   async getTicketMessages(ticketId) {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+    
     try {
       const response = await axios.get(
       `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {

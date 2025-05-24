@@ -1,14 +1,13 @@
 import axios from "axios";
-
-const SUPPORT_API_URL = "http://localhost:8080/api/tickets";
+import api, { API_ENDPOINTS } from "./api";
 
 const supportService = {
   
-  async assistTicket(ticketId, token) {
+  async assistTicket(token) {
     try {
-
+      newTicketStatus = 'in_progress';
       const response = await axios.get(
-        `${SUPPORT_API_URL}/treat_ticket.php`,
+        API_ENDPOINTS.TICKETS.BY_STATUS(newTicketStatus),
         {
           headers: {
             Authorization: `Bearer ${token}`,

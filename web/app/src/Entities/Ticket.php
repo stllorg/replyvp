@@ -38,7 +38,7 @@ class Ticket {
     }
 
 
-    public function getStatus(): bool {
+    public function getStatus(): string {
         return $this->status;
     }
 

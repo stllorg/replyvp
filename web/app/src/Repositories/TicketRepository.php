@@ -42,12 +42,17 @@ class TicketRepository {
 
     // Find a ticket by ID, if sucess returns the ticket, else returns null
     public function findById($id): ?Ticket {
-        $stmt = $this->db->prepare("SELECT id, subject, user_id FROM tickets WHERE id = ?");
+        $stmt = $this->db->prepare("SELECT id, subject, status, is_repeat, created_at, user_id FROM tickets WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
-            return new Ticket($row['id'], $row['subject'], $row['user_id']);
+            return new Ticket(
+                id: $row['id'],
+                subject: $row['subject'],
+                status: $row['status'],
+                createdAt: new \DateTime($row['created_at']),
+                userId: $row['user_id']);
         }
         return null;
     }

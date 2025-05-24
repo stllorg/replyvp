@@ -12,10 +12,16 @@ class LoginTest extends TestCase
             'http_errors' => false,
         ]);
 
+        $admin =[
+            'username' => 'admin',
+            'email' => 'test@testmail.com',
+            'password' => 'test@test.com'
+        ];
+
         $response = $client->post('/auth/login', [
             'json' => [
-                'email' => 'adm@testmail.com',
-                'password' => 'test@test.com'
+                'username' => $admin['username'],
+                'password' => $admin['password']
             ]
         ]);
 

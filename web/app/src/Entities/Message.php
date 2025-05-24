@@ -27,11 +27,11 @@ class Message {
         return $this->id;
     }
 
-    public function getTicketId(): string {
+    public function getTicketId(): int {
         return $this->ticketId;
     }
 
-    public function getUserId(): string {
+    public function getUserId(): int {
         return $this->userId;
     }
 

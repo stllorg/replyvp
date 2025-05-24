@@ -76,6 +76,10 @@ class AuthenticatedEndpointsTest extends TestCase
         $fetchedTicket = $this->getTicketById($ticketId);
         $this->assertArrayHasKey('id', $fetchedTicket, "Fetched ticket should have an 'id'.");
         $this->assertEquals($ticketId, $fetchedTicket['id'], "Fetched ticket ID should match the created ticket ID.");
+
+        // Test 5 
+        $messageContent = "This is a test message for ticket ID: $ticketId - " . uniqid();
+        $addedMessage = $this->postMessageByTicketId($ticketId, $messageContent);
        
     }
 
@@ -146,5 +150,42 @@ class AuthenticatedEndpointsTest extends TestCase
         $this->assertIsString($getBody['createdAt'], "Ticket 'createdAt' should be a string.");
 
         return $getBody;
+    }
+
+    private function postMessageByTicketId(int $ticketId, string $messageContent): array
+    {
+        $this->assertNotNull($this->authToken, "Authentication token must be set before adding a message.");
+        $this->assertNotEmpty($this->authToken, "Authentication token must not be empty.");
+
+        $postResponse = $this->client->post("/tickets/{$ticketId}/messages", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->authToken,
+                'Content-Type'  => 'application/json',
+            ],
+            'json' => [
+                'content' => $messageContent,
+            ]
+        ]);
+
+        $postStatusCode = $postResponse->getStatusCode();
+        $postBody = json_decode((string) $postResponse->getBody(), true);
+
+        $this->assertEquals(201, $postStatusCode, "Expected 201 Created for adding message to ticket $ticketId, got $postStatusCode. Body: " . json_encode($postBody));
+        $this->assertIsArray($postBody, "Added message response body should be an array.");
+
+        $this->assertArrayHasKey('messageId', $postBody, "Message response should have an 'id'.");
+        $this->assertIsInt($postBody['messageId'], "Message 'id' should be an integer.");
+
+        $this->assertArrayHasKey('ticketId', $postBody, "Message response should have a 'ticketId'.");
+        $this->assertEquals($ticketId, $postBody['ticketId'], "Message 'ticketId' should match the target ticket ID.");
+
+        $this->assertArrayHasKey('userId', $postBody, "Message response should have a 'userId'.");
+        $this->assertIsInt($postBody['userId'], "Message 'userId' should be an integer.");
+
+        $this->assertArrayHasKey('content', $postBody, "Message response should have 'content'.");
+        $this->assertEquals($messageContent, $postBody['content'], "Message 'content' should match the sent message.");
+        $this->assertIsString($postBody['content'], "Message 'content' should be a string.");
+
+        return $postBody;
     }
 }

@@ -94,7 +94,6 @@ const submitNewMessage = async () => {
   try {
     const response = await ticketService.addNewMessage(
       ticketId.value,
-      user.value.id,
       newMessage.value
     );
 

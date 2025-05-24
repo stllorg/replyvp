@@ -52,13 +52,12 @@ const ticketService = {
       throw error;
     }
   },
-  async addNewMessage(ticketId, userId, messageContent){
+  async addNewMessage(ticketId, messageContent){
       try {
         const response = await axios.post(
           `${API_ENDPOINTS.TICKETS.MESSAGES}`,
           {
             ticket_id: ticketId,
-            user_id: userId,
             message: messageContent,
           }
         );

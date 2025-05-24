@@ -102,7 +102,7 @@ const addMessage = (text) => {
 
 const addNewUserMessage = async (text) => {
   try {
-    const userMessage = await ticketService.addNewMessage(ticketId.value, user.id, text);
+    const userMessage = await ticketService.addNewMessage(ticketId.value, text);
 
     pushMessagesToLocalList([userMessage]);
     autoReply();

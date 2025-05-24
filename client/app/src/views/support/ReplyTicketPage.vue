@@ -61,7 +61,7 @@ const getChatHistory = async () => {
     // TODO: Redirect user
   }
   try {
-    const response = await ticketService.getTicketMessages(ticketId.value, user.value.id);
+    const response = await ticketService.getTicketMessages(ticketId.value);
     pushChatHistoryToLocalList(response);
   } catch (err) {
     toast.error("Ocorreu um erro ao carregar mensagens do ticket!", {

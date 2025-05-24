@@ -80,7 +80,7 @@ const ticketService = {
         });
       }
   },
-  async getTicketMessages(ticketId, userId) {
+  async getTicketMessages(ticketId) {
     try {
       const response = await axios.get(
       `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`,);

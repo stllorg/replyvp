@@ -58,7 +58,7 @@ const getMessages = async () => {
     // Redirect user
   }
   try {
-    const messages = await ticketService.getTicketMessages(ticketId, user.id);
+    const messages = await ticketService.getTicketMessages(ticketId);
     pushMessagesToLocalList(messages);
   } catch (error) {
     toast.error("Ocorreu um erro ao carregar mensagens do ticket!", {

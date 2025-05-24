@@ -1,12 +1,13 @@
 import axios from "axios";
-
-const TICKETS_API_URL = "http://localhost:8080/api/tickets";
+import { API_ENDPOINTS } from "./api";
 
 const ticketService = {
   async getTickets(userId) {
     try {
-      const response = await axios.get(`${TICKETS_API_URL}/list.php`, {
-        params: { id: userId },
+      const response = await axios.get(`${API_ENDPOINTS.TICKETS.BY_ID(targetUserId)}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.data.tickets;
     } catch (error) {

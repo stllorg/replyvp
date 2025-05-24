@@ -32,7 +32,7 @@ const ticketService = {
       throw error;
     }
   },
-  async createTicket(userId, subject, message) {
+  async createTicket(subject, message) {
     try {
       const response = await axios.post(`${API_ENDPOINTS.TICKETS}`, {
         headers: {
@@ -40,7 +40,6 @@ const ticketService = {
         },
       },
       {
-        user_id: userId,
         subject: subject,
         message: message,
       });

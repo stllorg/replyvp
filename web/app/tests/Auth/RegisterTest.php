@@ -12,11 +12,19 @@ class RegisterTest extends TestCase
             'http_errors' => false,
         ]);
 
+        $uniqueId = uniqid();
+
+        $userInfo = [
+            'username' => 'test_user_' . $uniqueId,
+            'email' => 'test_email_' . $uniqueId . '@testmail.com',
+            'password' => 'test@test.com'
+        ];
+
         $response = $client->post('/auth/register', [
             'json' => [
-                'username' => 'newuser3636',
-                'email' => 'tester3636@testmail.com',
-                'password' => 'testerz1Bz2R',
+                'username' => $userInfo['username'],
+                'email' => $userInfo['email'],
+                'password' => $userInfo['password'],
             ],
         ]);
 

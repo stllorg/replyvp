@@ -58,13 +58,15 @@ const adminService = {
       );
 
       if (response.data.success) {
-        this.users = this.users.filter((user) => user.id !== userId);
         alert("Usuário removido com sucesso.");
+        return response;
       } else {
         alert("Erro ao remover o usuário.");
+        return response;
       }
     } catch (error) {
       console.log(error);
+      throw error;
     }
   }
     

@@ -105,7 +105,7 @@ onMounted(async () => {
     }
 
     if (user.roles.includes("user")) {
-      filteredTickets.value = await ticketService.getTickets(user.id);
+      filteredTickets.value = await ticketService.getTickets();
       loadUserData(filteredTickets.value);
     } else {
       console.log("Load pending tickets");

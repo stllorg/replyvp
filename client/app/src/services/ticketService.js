@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_ENDPOINTS } from "./api";
 
 const ticketService = {
-  async getTickets(userId) {
+  async getTickets() {
     try {
       const response = await axios.get(`${API_ENDPOINTS.TICKETS.BY_ID(targetUserId)}`, {
         headers: {

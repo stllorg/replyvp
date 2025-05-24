@@ -7,7 +7,7 @@ const userService = {
   
   async registerUser(username, email, password) {
     try{
-    const response = await axios.post(API_ENDPOINTS.REGISTER, {
+    const response = await axios.post(API_ENDPOINTS.AUTH.REGISTER, {
         username: username,
         email: email,
         password: password,

@@ -18,8 +18,9 @@ const ticketService = {
   async getPendingTickets(supportId, token) {
     // TODO: Compare supportId with token id
     console.log(supportId);
+    ticketStatus = 'open'
     try {
-      const response = await axios.get(`${TICKETS_API_URL}/open_tickets.php`, {
+      const response = await axios.get(`${API_ENDPOINTS.TICKETS.BY_STATUS(ticketStatus)}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

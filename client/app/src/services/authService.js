@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/authStore";
-import api, { API_ENDPOINTS } from "./api";
+import { API_ENDPOINTS } from "./api";
 
 export function getUserToken() {
   const authStore = useAuthStore();

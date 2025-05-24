@@ -1,5 +1,5 @@
 import axios from "axios";
-import api, { API_ENDPOINTS } from "./api";
+import { API_ENDPOINTS } from "./api";
 
 const userService = {
   

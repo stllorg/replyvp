@@ -1,7 +1,5 @@
 import axios from "axios";
-import api, { API_ENDPOINTS } from "./api";
-
-const ADMIN_API_URL = "http://localhost:8080/api/users";
+import { API_ENDPOINTS } from "./api";
 
 const adminService = {
   
@@ -26,7 +24,6 @@ const adminService = {
     console.log(error);
   }
   },
-
   async updateUserRoles(userId, newRoles, token) {
     try {
       const response = await axios.put(
@@ -68,8 +65,7 @@ const adminService = {
       console.log(error);
       throw error;
     }
-  }
-    
+  },
 };
 
 export default adminService;

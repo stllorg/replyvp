@@ -1,5 +1,5 @@
 import axios from "axios";
-import api, { API_ENDPOINTS } from "./api";
+import { API_ENDPOINTS } from "./api";
 
 const supportService = {
   
@@ -15,14 +15,14 @@ const supportService = {
         }
       );
 
-    if (response.status === 200) {
-      return response;
-    } else {
-      return response;
-    } 
-  } catch (error) {
+      if (response.status === 200) {
+        return response;
+      } else {
+        return response;
+      } 
+    } catch (error) {
     console.log(error);
-  }
+    }
   },
     
 };

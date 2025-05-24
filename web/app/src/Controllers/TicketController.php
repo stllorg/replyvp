@@ -102,7 +102,9 @@ class TicketController {
             $foundTicket = [
                 'id' => $ticket->getId(),
                 'subject' => $ticket->getSubject(),
-                'userId' => $ticket->getUserId()
+                'userId' => $ticket->getUserId(),
+                'status' => $ticket->getStatus(),
+                'createdAt' => $ticket->getCreatedAt()->format(\DateTime::ATOM),
             ];
             http_response_code(200);
             echo json_encode($foundTicket);

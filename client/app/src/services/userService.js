@@ -1,14 +1,12 @@
 import axios from "axios";
-
-const USERS_API_URL = "http://localhost:8080/api/users";
-const AUTH_URL = "http://localhost:8080/auth";
-const registerUrl = `${AUTH_URL}/register`;
+import { API_ENDPOINTS } from "./api";
+import authService from "@/services/authService";
 
 const userService = {
   
   async registerUser(username, email, password) {
     try{
-    const response = await axios.post(registerUrl, {
+    const response = await axios.post(API_ENDPOINTS.AUTH.REGISTER, {
         username: username,
         email: email,
         password: password,
@@ -22,6 +20,12 @@ const userService = {
     }
   },
   async updateUser(userId, password, email, newEmail, newPassword ) {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+
     const updatedData = {
       id: userId,
       old_email: email,
@@ -31,7 +35,11 @@ const userService = {
     };
     try {
       const response = await axios.put(
-       `${USERS_API_URL}/update.php`,
+        API_ENDPOINTS.USERS.BY_ID(userId), {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
         updatedData
       );
       if (response.status === 200) {
@@ -43,9 +51,24 @@ const userService = {
     }
   },
   terminateAccount(userId) {
-    return axios.delete(`${USERS_API_URL}/delete.php`, {
-      data: { id: userId },
-  });
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+    
+    try {
+      return axios.delete(
+        API_ENDPOINTS.USERS.BY_ID(userId), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Erro ao encerrar conta de usuário", error);
+      throw error;
+    }
   },
 };
 

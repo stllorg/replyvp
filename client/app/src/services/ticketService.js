@@ -1,12 +1,20 @@
 import axios from "axios";
+import { API_ENDPOINTS } from "./api";
+import authService from "@/services/authService";
 
-const TICKETS_API_URL = "http://localhost:8080/api/tickets";
 
 const ticketService = {
-  async getTickets(userId) {
+  async getTickets() { // Get tickets from the logged user
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
     try {
-      const response = await axios.get(`${TICKETS_API_URL}/list.php`, {
-        params: { id: userId },
+      const response = await axios.get(`${API_ENDPOINTS.TICKETS}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.data.tickets;
     } catch (error) {
@@ -14,11 +22,16 @@ const ticketService = {
       throw error;
     }
   },
-  async getPendingTickets(supportId, token) {
-    // TODO: Compare supportId with token id
-    console.log(supportId);
+  async getPendingTickets() {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+
+    const ticketStatus = 'open'
     try {
-      const response = await axios.get(`${TICKETS_API_URL}/open_tickets.php`, {
+      const response = await axios.get(`${API_ENDPOINTS.TICKETS.BY_STATUS(ticketStatus)}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -32,10 +45,20 @@ const ticketService = {
       throw error;
     }
   },
-  async createTicket(userId, subject, message) {
+  async createTicket(subject, message) {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+
     try {
-      const response = await axios.post(`${TICKETS_API_URL}/create.php`, {
-        user_id: userId,
+      const response = await axios.post(`${API_ENDPOINTS.TICKETS}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      {
         subject: subject,
         message: message,
       });
@@ -48,13 +71,22 @@ const ticketService = {
       throw error;
     }
   },
-  async addNewMessage(ticketId, userId, messageContent){
+  async addNewMessage(ticketId, messageContent){
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+
       try {
         const response = await axios.post(
-          `${TICKETS_API_URL}/new_message.php`,
+          `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
           {
             ticket_id: ticketId,
-            user_id: userId,
             message: messageContent,
           }
         );
@@ -73,42 +105,21 @@ const ticketService = {
         });
       }
   },
-  async addNewSupportReply(ticketId, supportId, messageContent){
-      try {
-        const response = await axios.post(
-          `${TICKETS_API_URL}/new_message.php`,
-          {
-            ticket_id: ticketId,
-            supportId: supportId,
-            message: messageContent,
-          }
-        );
-        if (response.status === 201) {
-          const lastUserMessage = {
-            message_id: response.data.added.message_id,
-            text: response.data.added.text,
-            sender: "support",
-            timestamp: response.data.added.compact,
-          };
-          return lastUserMessage;
-        }
-      } catch (error) {
-        this.toast.error("Ocorreu um erro ao conectar com o servidor!", {
-          timeout: 3000,
-        });
-      }
-  },
-  async getTicketMessages(ticketId, userId) {
+  async getTicketMessages(ticketId) {
+    const token = authService.getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+    
     try {
       const response = await axios.get(
-        `${TICKETS_API_URL}/retrieve_messages.php`,
-        {
-          params: {
-            ticket_id: ticketId,
-            user_id: userId,
-          },
-        }
-      );
+      `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
       if (response.status === 200) {
         return response.data.messages;

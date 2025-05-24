@@ -52,11 +52,7 @@
 import { useToast } from "vue-toastification";
 import adminService from "@/services/adminService";
 import { onMounted, ref } from "vue";
-import { useAuthStore } from "@/stores/authStore";
 
-const authStore = useAuthStore();
-
-const user = authStore.user;
 const users = ref([
   {
     id: 0,
@@ -75,11 +71,8 @@ const toast = useToast();
 
 onMounted(async () => {
   try {
-    //TODO: Verifiy token existence
-    const token = user.token;
-
     // Fetching usuários
-    const response = await adminService.getAllUsers(token);
+    const response = await adminService.getAllUsers();
     const retrievedUsers = response;
 
     retrievedUsers.forEach((item) => {
@@ -110,9 +103,7 @@ onMounted(async () => {
 
 const updateUserRoles = async (userId, newRoles) => {
   try {
-    const token = user.value.token;
-
-    const response = await adminService.updateUserRoles(userId, newRoles, token);
+    const response = await adminService.updateUserRoles(userId, newRoles);
     if (response.data.success) {
       console.log("User updated");
       toast.success("User updated.", {
@@ -130,13 +121,8 @@ const updateUserRoles = async (userId, newRoles) => {
 const deleteUser = async (userId) => {
   if (confirm("Tem certeza que deseja remover este usuário?")) {
     try {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser && storedUser.token) {
-        console.log("Teste");
-      }
-      const adminToken = storedUser.token;
 
-      const response = await adminService.deleteUserAsAdmin(userId, adminToken);
+      const response = await adminService.deleteUserAsAdmin(userId);
       if (response.code === 204) {
         toast.warning("Usuário excluído.", {
           timeout: 5000,

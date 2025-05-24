@@ -55,13 +55,12 @@ onMounted(async () => {
 });
 
 const getChatHistory = async () => {
-  // TODO: Use Auth Bearer with token to send user id
   if (!user.value || !user.value.token) {
     toast.error("Falha na autenticação!", { timeout: 3000 });
     // TODO: Redirect user
   }
   try {
-    const response = await ticketService.getTicketMessages(ticketId.value, user.value.id);
+    const response = await ticketService.getTicketMessages(ticketId.value);
     pushChatHistoryToLocalList(response);
   } catch (err) {
     toast.error("Ocorreu um erro ao carregar mensagens do ticket!", {
@@ -94,7 +93,6 @@ const submitNewMessage = async () => {
   try {
     const response = await ticketService.addNewMessage(
       ticketId.value,
-      user.value.id,
       newMessage.value
     );
 

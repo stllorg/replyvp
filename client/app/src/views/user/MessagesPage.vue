@@ -51,14 +51,13 @@ const isTicketOpen = ref(false);
 onMounted(checkTicket());
 // Get remote messages
 const getMessages = async () => {
-  // TODO: Use Auth Bearer with token to send user id
 
   if (!user || !user.token) {
     toast.error("Falha na autenticação!", { timeout: 3000 });
     // Redirect user
   }
   try {
-    const messages = await ticketService.getTicketMessages(ticketId, user.id);
+    const messages = await ticketService.getTicketMessages(ticketId);
     pushMessagesToLocalList(messages);
   } catch (error) {
     toast.error("Ocorreu um erro ao carregar mensagens do ticket!", {
@@ -93,7 +92,6 @@ const addMessage = (text) => {
   if (isTicketOpen.value) {
     addNewUserMessage(text);
   } else {
-    // TODO: Redirect to New Ticket Page
     createNewTicket(text);
   }
 
@@ -102,7 +100,7 @@ const addMessage = (text) => {
 
 const addNewUserMessage = async (text) => {
   try {
-    const userMessage = await ticketService.addNewMessage(ticketId.value, user.id, text);
+    const userMessage = await ticketService.addNewMessage(ticketId.value, text);
 
     pushMessagesToLocalList([userMessage]);
     autoReply();
@@ -126,7 +124,6 @@ const autoReply = () => {
 const createNewTicket = async (text) => {
   try {
     const createdTicketId = await ticketService.createTicket(
-      user.value.id,
       subject.value,
       text
     );
@@ -156,7 +153,6 @@ const checkTicket = () => {
     isTicketOpen.value = true;
     getMessages();
   } else {
-    // TODO: Redirect to New Ticket Page
     toast.info(`Envie sua mensagem para abrir um novo ticket`, {
       timeout: 4000,
     });

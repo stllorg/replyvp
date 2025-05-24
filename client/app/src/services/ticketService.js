@@ -55,7 +55,11 @@ const ticketService = {
   async addNewMessage(ticketId, messageContent){
       try {
         const response = await axios.post(
-          `${API_ENDPOINTS.TICKETS.MESSAGES}`,
+          `${API_ENDPOINTS.TICKETS.MESSAGES}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
           {
             ticket_id: ticketId,
             message: messageContent,

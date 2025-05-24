@@ -1,9 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/authStore";
-
-const AUTH_URL = "http://localhost:8080/auth";
-const validationUrl = `${AUTH_URL}/authenticate`;
-const loginUrl = `${AUTH_URL}/login`;
+import api, { API_ENDPOINTS } from "./api";
 
 export function getUserToken() {
   const authStore = useAuthStore();
@@ -17,7 +14,7 @@ export async function validateToken(token) {
   }
 
   try {
-    const response = await axios.get(validationUrl, {
+    const response = await axios.get(API_ENDPOINTS.AUTH.AUTHENTICATE, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -33,7 +30,7 @@ export async function validateToken(token) {
 
 export async function loginUser(username, password) {
   try {
-    const response = await axios.post(loginUrl, { username, password });
+    const response = await axios.post(API_ENDPOINTS.AUTH.LOGIN, { username, password });
 
     if (response.status === 200) {
       const user = response.data.user;

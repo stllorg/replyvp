@@ -55,7 +55,7 @@ const ticketService = {
   async addNewMessage(ticketId, userId, messageContent){
       try {
         const response = await axios.post(
-          `${TICKETS_API_URL}/new_message.php`,
+          `${API_ENDPOINTS.TICKETS.MESSAGES}`,
           {
             ticket_id: ticketId,
             user_id: userId,

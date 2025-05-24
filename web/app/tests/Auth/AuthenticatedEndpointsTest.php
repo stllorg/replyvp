@@ -66,5 +66,38 @@ class AuthenticatedEndpointsTest extends TestCase
         $this->authToken = $loginBody['token'];
         $this->assertIsString($this->authToken, "The token should be a string.");
         $this->assertNotEmpty($this->authToken, "The token should not be empty.");
+
+        // Test 3 - CreateTicket
+        $this->createTicketWithAuthenticatedUser($this->testUsername);
+    }
+
+    private function createTicketWithAuthenticatedUser(): void
+    {
+        // Ensure a token exists before trying to create a ticket
+        $this->assertNotNull($this->authToken, "Authentication token must be set before creating a ticket.");
+        $this->assertNotEmpty($this->authToken, "Authentication token must not be empty.");
+
+        $ticketSubject = 'New ticket created from user: ' . $this->testUsername . ' - ' . uniqid();
+
+        $createTicketResponse = $this->client->post('/users/tickets', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->authToken, // Use the class property here
+                'Content-Type'  => 'application/json',
+            ],
+            'json' => [
+                'subject' => $ticketSubject,
+            ]
+        ]);
+
+        $createTicketStatusCode = $createTicketResponse->getStatusCode();
+        $createTicketBody = json_decode((string) $createTicketResponse->getBody(), true);
+
+        $this->assertEquals(201, $createTicketStatusCode, "Expected 201 Created for ticket creation, got $createTicketStatusCode. Body: " . json_encode($createTicketBody));
+        $this->assertArrayHasKey('id', $createTicketBody, "Ticket creation response should contain an 'id'.");
+        $this->assertArrayHasKey('subject', $createTicketBody, "Ticket creation response should contain the 'subject'.");
+        $this->assertArrayHasKey('userId', $createTicketBody, "Ticket creation response should contain the 'userId'.");
+        $this->assertEquals($ticketSubject, $createTicketBody['subject'], "The returned ticket subject should match the sent subject.");
+        $this->assertIsInt($createTicketBody['id'], "The ticket ID should be an integer.");
+        $this->assertIsInt($createTicketBody['userId'], "The userId should be an integer.");
     }
 }

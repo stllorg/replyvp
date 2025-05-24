@@ -73,31 +73,6 @@ const ticketService = {
         });
       }
   },
-  async addNewSupportReply(ticketId, supportId, messageContent){
-      try {
-        const response = await axios.post(
-          `${TICKETS_API_URL}/new_message.php`,
-          {
-            ticket_id: ticketId,
-            supportId: supportId,
-            message: messageContent,
-          }
-        );
-        if (response.status === 201) {
-          const lastUserMessage = {
-            message_id: response.data.added.message_id,
-            text: response.data.added.text,
-            sender: "support",
-            timestamp: response.data.added.compact,
-          };
-          return lastUserMessage;
-        }
-      } catch (error) {
-        this.toast.error("Ocorreu um erro ao conectar com o servidor!", {
-          timeout: 3000,
-        });
-      }
-  },
   async getTicketMessages(ticketId, userId) {
     try {
       const response = await axios.get(

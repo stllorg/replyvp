@@ -1,4 +1,5 @@
 import axios from "axios";
+import api, { API_ENDPOINTS } from "./api";
 
 const ADMIN_API_URL = "http://localhost:8080/api/users";
 
@@ -29,12 +30,13 @@ const adminService = {
   async updateUserRoles(userId, newRoles, token) {
     try {
       const response = await axios.put(
-        `${ADMIN_API_URL}/update_roles.php`,
-        { userId, roles: newRoles },
-        {
+        API_ENDPOINTS.USERS.ROLES(userId), {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+        },
+        { 
+          roles: newRoles 
         }
       );
       if (!response.data.success) {
@@ -44,7 +46,7 @@ const adminService = {
       console.log(error);
     }
   },
-  async deleteUserAsAdmin(userId, token) {
+  async deleteUserAsAdmin(token) {
     try {
       const response = await axios.delete(
        `${ADMIN_API_URL}/delete_user.php?userId=${userId}`,

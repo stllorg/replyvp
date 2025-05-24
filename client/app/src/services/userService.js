@@ -1,8 +1,6 @@
 import axios from "axios";
 import api, { API_ENDPOINTS } from "./api";
 
-const USERS_API_URL = "http://localhost:8080/api/users";
-
 const userService = {
   
   async registerUser(username, email, password) {

@@ -47,8 +47,8 @@ class AuthenticatedEndpointsTest extends TestCase
         // Test 2 - Login the new user
         $loginResponse = $this->client->post('/auth/login', [
             'json' => [
-                'username'    => $username,
-                'password' => $password
+                'username'    => $this->testUsername,
+                'password' => $this->testPassword
             ]
         ]);
 

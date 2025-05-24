@@ -34,7 +34,12 @@ const ticketService = {
   },
   async createTicket(userId, subject, message) {
     try {
-      const response = await axios.post(`${TICKETS_API_URL}/create.php`, {
+      const response = await axios.post(`${API_ENDPOINTS.TICKETS}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      {
         user_id: userId,
         subject: subject,
         message: message,

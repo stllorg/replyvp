@@ -68,10 +68,18 @@ class AuthenticatedEndpointsTest extends TestCase
         $this->assertNotEmpty($this->authToken, "The token should not be empty.");
 
         // Test 3 - CreateTicket
-        $this->createTicketWithAuthenticatedUser($this->testUsername);
+        $createdTicketData = $this->createTicketWithAuthenticatedUser($this->testUsername);
+        $this->assertArrayHasKey('id', $createdTicketData, "Created ticket must have an ID.");
+        $ticketId = $createdTicketData['id'];
+
+        // Test 4 - Get created ticket by id
+        $fetchedTicket = $this->getTicketById($ticketId);
+        $this->assertArrayHasKey('id', $fetchedTicket, "Fetched ticket should have an 'id'.");
+        $this->assertEquals($ticketId, $fetchedTicket['id'], "Fetched ticket ID should match the created ticket ID.");
+       
     }
 
-    private function createTicketWithAuthenticatedUser(): void
+    private function createTicketWithAuthenticatedUser(): array
     {
         // Ensure a token exists before trying to create a ticket
         $this->assertNotNull($this->authToken, "Authentication token must be set before creating a ticket.");
@@ -79,7 +87,7 @@ class AuthenticatedEndpointsTest extends TestCase
 
         $ticketSubject = 'New ticket created from user: ' . $this->testUsername . ' - ' . uniqid();
 
-        $createTicketResponse = $this->client->post('/users/tickets', [
+        $response = $this->client->post('/users/tickets', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->authToken, // Use the class property here
                 'Content-Type'  => 'application/json',
@@ -89,8 +97,8 @@ class AuthenticatedEndpointsTest extends TestCase
             ]
         ]);
 
-        $createTicketStatusCode = $createTicketResponse->getStatusCode();
-        $createTicketBody = json_decode((string) $createTicketResponse->getBody(), true);
+        $createTicketStatusCode = $response->getStatusCode();
+        $createTicketBody = json_decode((string) $response->getBody(), true);
 
         $this->assertEquals(201, $createTicketStatusCode, "Expected 201 Created for ticket creation, got $createTicketStatusCode. Body: " . json_encode($createTicketBody));
         $this->assertArrayHasKey('id', $createTicketBody, "Ticket creation response should contain an 'id'.");
@@ -99,5 +107,44 @@ class AuthenticatedEndpointsTest extends TestCase
         $this->assertEquals($ticketSubject, $createTicketBody['subject'], "The returned ticket subject should match the sent subject.");
         $this->assertIsInt($createTicketBody['id'], "The ticket ID should be an integer.");
         $this->assertIsInt($createTicketBody['userId'], "The userId should be an integer.");
+
+        return $createTicketBody;
+    }
+
+    private function getTicketById(int $ticketId): array
+    {
+        $this->assertNotNull($this->authToken, "Authentication token must be set before fetching a ticket.");
+        $this->assertNotEmpty($this->authToken, "Authentication token must not be empty.");
+
+        $getResponse = $this->client->get("/tickets/{$ticketId}", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->authToken,
+                'Content-Type'  => 'application/json',
+            ],
+        ]);
+
+        $getStatusCode = $getResponse->getStatusCode();
+        $getBody = json_decode((string) $getResponse->getBody(), true);
+
+        $this->assertEquals(200, $getStatusCode, "Expected 200 OK for fetching ticket ID $ticketId, got $getStatusCode. Body: " . json_encode($getBody));
+        $this->assertIsArray($getBody, "Fetched ticket response body should be an array.");
+
+        $this->assertArrayHasKey('id', $getBody, "Fetched ticket should have an 'id' key.");
+        $this->assertIsInt($getBody['id'], "Ticket 'id' should be an integer.");
+        $this->assertEquals($ticketId, $getBody['id'], "Fetched ticket 'id' should match the requested ID."); // Add this to confirm the correct ticket is fetched
+
+        $this->assertArrayHasKey('subject', $getBody, "Fetched ticket should have a 'subject' key.");
+        $this->assertIsString($getBody['subject'], "Ticket 'subject' should be a string.");
+
+        $this->assertArrayHasKey('userId', $getBody, "Fetched ticket should have a 'userId' key.");
+        $this->assertIsInt($getBody['userId'], "Ticket 'userId' should be an integer.");
+
+        $this->assertArrayHasKey('status', $getBody, "Fetched ticket should have a 'status' key.");
+        $this->assertIsString($getBody['status'], "Ticket 'status' should be a string.");
+
+        $this->assertArrayHasKey('createdAt', $getBody, "Fetched ticket should have a 'createdAt' key.");
+        $this->assertIsString($getBody['createdAt'], "Ticket 'createdAt' should be a string.");
+
+        return $getBody;
     }
 }

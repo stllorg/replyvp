@@ -126,7 +126,6 @@ const autoReply = () => {
 const createNewTicket = async (text) => {
   try {
     const createdTicketId = await ticketService.createTicket(
-      user.value.id,
       subject.value,
       text
     );

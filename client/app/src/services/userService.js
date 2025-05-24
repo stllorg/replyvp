@@ -1,14 +1,13 @@
 import axios from "axios";
+import api, { API_ENDPOINTS } from "./api";
 
 const USERS_API_URL = "http://localhost:8080/api/users";
-const AUTH_URL = "http://localhost:8080/auth";
-const registerUrl = `${AUTH_URL}/register`;
 
 const userService = {
   
   async registerUser(username, email, password) {
     try{
-    const response = await axios.post(registerUrl, {
+    const response = await axios.post(API_ENDPOINTS.REGISTER, {
         username: username,
         email: email,
         password: password,

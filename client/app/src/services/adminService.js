@@ -49,7 +49,7 @@ const adminService = {
   async deleteUserAsAdmin(token) {
     try {
       const response = await axios.delete(
-       `${ADMIN_API_URL}/delete_user.php?userId=${userId}`,
+       API_ENDPOINTS.USERS.BY_ID(userId),
         {
           headers: {
             Authorization: `Bearer ${token}`,

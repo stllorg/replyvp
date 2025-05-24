@@ -15,9 +15,7 @@ const ticketService = {
       throw error;
     }
   },
-  async getPendingTickets(supportId, token) {
-    // TODO: Compare supportId with token id
-    console.log(supportId);
+  async getPendingTickets(token) {
     ticketStatus = 'open'
     try {
       const response = await axios.get(`${API_ENDPOINTS.TICKETS.BY_STATUS(ticketStatus)}`, {

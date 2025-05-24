@@ -83,14 +83,7 @@ const ticketService = {
   async getTicketMessages(ticketId, userId) {
     try {
       const response = await axios.get(
-        `${TICKETS_API_URL}/retrieve_messages.php`,
-        {
-          params: {
-            ticket_id: ticketId,
-            user_id: userId,
-          },
-        }
-      );
+      `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`,);
 
       if (response.status === 200) {
         return response.data.messages;

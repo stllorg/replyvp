@@ -85,13 +85,8 @@ class TicketController {
     }
 
     public function getTicketById($id): void {
-        $admin = $this->authenticate();
-        if (!$admin) return;
-        if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {
-            http_response_code(403);
-            echo json_encode(["error" => "The 'admin' role is required to access this resource."]);
-            return;
-        };
+        $user = $this->authenticate();
+        if (!$user) return;
 
         try {
             $ticket = $this->ticketService->getTicketById((int)$id);
@@ -99,6 +94,23 @@ class TicketController {
                 sendResponse(404, ['error' => 'Ticket not found']);
                 return;
             }
+
+            // Check if USER is NOT the Ticket Creator or Staff member 
+            $userId = $user['userId'];
+            $ticketCreatorId = $ticket->getUserId();
+
+            if ($userId != $ticketCreatorId) {
+
+                $guestRoles = $this->userService->getUserRolesByUserId($userId);
+                $isGuestStaff = in_array("admin", $guestRoles);
+                
+                if (!$isGuestStaff) { // Check if is not staff
+                    http_response_code(403);
+                    echo json_encode(["error" => "You do not have permission to access this ticket."]);
+                    return;
+                }
+            }
+        
             $foundTicket = [
                 'id' => $ticket->getId(),
                 'subject' => $ticket->getSubject(),

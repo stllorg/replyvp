@@ -9,7 +9,7 @@ const adminService = {
     try {
 
       const response = await axios.get(
-        `${ADMIN_API_URL}/all_users.php`,
+        API_ENDPOINTS.TICKETS.USERS,
         {
           headers: {
             Authorization: `Bearer ${token}`,

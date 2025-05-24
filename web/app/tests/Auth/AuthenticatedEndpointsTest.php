@@ -78,9 +78,20 @@ class AuthenticatedEndpointsTest extends TestCase
         $this->assertEquals($ticketId, $fetchedTicket['id'], "Fetched ticket ID should match the created ticket ID.");
 
         // Test 5 
-        $messageContent = "This is a test message for ticket ID: $ticketId - " . uniqid();
-        $addedMessage = $this->postMessageByTicketId($ticketId, $messageContent);
-       
+        $message1Content = "This is the first test message for ticket ID: $ticketId - " . uniqid();
+        $addedMessage1 = $this->postMessageByTicketId($ticketId, $message1Content);
+
+        $message2Content = "This is the second test message for ticket ID: $ticketId - " . uniqid();
+        $addedMessage2 = $this->postMessageByTicketId($ticketId, $message2Content);
+
+        // Test 6
+        $ticketMessages = $this->getTicketMessagesByTicketId($ticketId);
+        $this->assertIsArray($ticketMessages, "Response for getting messages should be an array.");
+        $this->assertNotEmpty($ticketMessages, "The messages array should not be empty.");
+        $this->assertCount(2, $ticketMessages, "Expected 2 messages for the ticket.");
+        
+
+
     }
 
     private function createTicketWithAuthenticatedUser(): array
@@ -187,5 +198,26 @@ class AuthenticatedEndpointsTest extends TestCase
         $this->assertIsString($postBody['content'], "Message 'content' should be a string.");
 
         return $postBody;
+    }
+
+    private function getTicketMessagesByTicketId(int $ticketId): array
+    {
+        $this->assertNotNull($this->authToken, "Authentication token must be set before fetching a ticket.");
+        $this->assertNotEmpty($this->authToken, "Authentication token must not be empty.");
+
+        $getResponse = $this->client->get("/tickets/{$ticketId}/messages", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->authToken,
+                'Content-Type'  => 'application/json',
+            ],
+        ]);
+
+        $getStatusCode = $getResponse->getStatusCode();
+        $getBody = json_decode((string) $getResponse->getBody(), true);
+
+        $this->assertEquals(200, $getStatusCode, "Expected 200 OK for fetching ticket ID $ticketId, got $getStatusCode. Body: " . json_encode($getBody));
+        $this->assertIsArray($getBody, "Fetched ticket response body should be an array.");
+
+        return $getBody;
     }
 }

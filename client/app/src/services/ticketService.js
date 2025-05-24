@@ -83,7 +83,12 @@ const ticketService = {
   async getTicketMessages(ticketId) {
     try {
       const response = await axios.get(
-      `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`,);
+      `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
       if (response.status === 200) {
         return response.data.messages;

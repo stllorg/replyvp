@@ -78,7 +78,7 @@ onMounted(async () => {
       toast.error("Falha na autenticação!", { timeout: 3000 });
       redirectToLogin();
     } else {
-      getTickets(supportUser.value.token);
+      getTickets();
     }
   } catch (error) {
     console.log(error);
@@ -100,8 +100,8 @@ const redirectToReplyTicket = (ticketId) => {
   });
 };
 
-const getTickets = async (token) => {
-  const response = await supportService.getPendingTickets(token);
+const getTickets = async () => {
+  const response = await supportService.getPendingTickets();
   if (response.status === 200) {
     loadPendingTicketsData(response);
   } else {
@@ -122,7 +122,6 @@ const assistTicket = async (ticketId) => {
 };
 const loadPendingTicketsData = (data = []) => {
   data.forEach((item) => {
-    // TODO: ticket_id
     const newItem = {
       ticket_id: 0,
       is_repeat: false,

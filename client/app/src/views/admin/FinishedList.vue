@@ -29,7 +29,6 @@
 
 <script setup>
 import { ref } from "vue";
-// TODO: Replace logic to get tickets
 const sample = ref([
   {
     username: "samuelmendespy",

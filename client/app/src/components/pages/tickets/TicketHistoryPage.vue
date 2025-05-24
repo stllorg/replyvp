@@ -54,7 +54,6 @@ const filteredTickets = ref([]);
 
 onMounted(async () => {
   try {
-    // TODO: Use Auth Bearer with token to send user id
     if (!user || !user.token) {
       toast.error("Falha na autenticação!", { timeout: 3000 });
       // Redirect user

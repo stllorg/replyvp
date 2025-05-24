@@ -34,8 +34,7 @@ export const useAuthStore = defineStore("auth", {
       localStorage.removeItem("user");
     },
     async validateToken() {
-      const token = this.user?.token;
-      return await validateToken(token);
+      return await validateToken();
     }
   },
 });

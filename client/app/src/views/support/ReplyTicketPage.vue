@@ -55,7 +55,6 @@ onMounted(async () => {
 });
 
 const getChatHistory = async () => {
-  // TODO: Use Auth Bearer with token to send user id
   if (!user.value || !user.value.token) {
     toast.error("Falha na autenticação!", { timeout: 3000 });
     // TODO: Redirect user

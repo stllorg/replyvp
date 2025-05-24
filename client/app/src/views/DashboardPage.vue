@@ -1,4 +1,3 @@
-// TODO: Add Button to Edit User
 <template>
   <div class="container mt-4">
     <div class="card shadow mb-4 border-0" style="background-color: #f8f9fa">
@@ -98,7 +97,6 @@ const userTicketsList = ref([
 
 onMounted(async () => {
   try {
-    // TODO: Use Auth Bearer with token to send user id
     if (!user || !user.token) {
       toast.error("Falha na autenticação!", { timeout: 3000 });
       // Redirect user

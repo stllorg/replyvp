@@ -4,14 +4,15 @@
       <div class="col-md-4 py-4 main-concept">
         <div class="card shadow">
           <div class="card-body p-4">
-            <h2 class="card-title text-center mb-4"></h2>
-            <div class="connection-switch d-flex">
-              <span>Criar conta</span>
-              <div class="form-check form-switch ms-2">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-                <label class="form-check-label ms-1" for="flexSwitchCheckChecked">Fazer login</label>
-              </div>
-            </div>
+            <h2 class="card-title text-center mb-4">Login</h2>
+            <ul class="nav nav-tabs mb-4 justify-content-center">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Login</a>
+              </li>
+              <li class="nav-item">
+                <router-link to="/register" class="nav-link">Registro</router-link>
+              </li>
+            </ul>
             <form @submit.prevent="handleUserSignIn">
               <div class="form-floating mb-3">
                 <input
@@ -42,16 +43,10 @@
                 <button type="submit" class="btn btn-primary">Fazer login</button>
               </div>
               <div class="mt-2" style="display: flex; flex-direction: column; align-items: center;">
-                <i class="bi bi-key"></i>
-                <i class="bi bi-arrow-clockwise"></i>
                 <p>Não consegue entrar em sua conta?
                   <a href="#">Recuperar acesso</a>
                 </p>
               </div>
-              <p class="text-center">
-                Ainda não tem cadastro?
-                <router-link to="/register">Cadastre-se</router-link>
-              </p>
             </form>
           </div>
         </div>

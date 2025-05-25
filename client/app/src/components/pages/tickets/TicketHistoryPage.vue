@@ -68,7 +68,7 @@ onMounted(async () => {
 });
 
 const redirectToNewTicket = () => {
-  router.push("/tickets/new");
+  router.push("/user/tickets/new");
 };
 
 const loadData = (data = []) => {

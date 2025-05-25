@@ -1,16 +1,22 @@
 <template>
   <div class="chat-container">
     <div class="chat-box">
-      <ChatMessage v-for="(msg, index) in localMessageList" :key="index" :msg="msg" />
+
+      <div v-for="(msg, index) in localMessageList" :key="index" :msg="msg"
+      class="message" :class="msg.sender === 'user' ? 'user-message' : 'support-message'">
+      <p>{{ msg.text }}</p>
+      <small>{{ formatMessageTime(msg.timestamp) }}</small>
+      </div>
+
+
     </div>
-    <ChatInput @sendMessage="addMessage" />
     <div class="chat-input">
       <input
-        v-model="newMessage"
-        @keyup.enter="submitNewMessage"
+        v-model="textInput"
+        @keyup.enter="submitMessage"
         placeholder="Digite sua mensagem..."
       />
-      <button @click="submitNewMessage">Enviar</button>
+      <button @click="submitMessage">Enviar</button>
     </div>
   </div>
 </template>
@@ -18,14 +24,16 @@
 <script setup>
 import ticketService from "@/services/ticketService";
 import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 import { useAuthStore } from "@/stores/authStore";
-import ChatMessage from "@/components/Chat/ChatMessage.vue";
+import { formatMessageTime } from "@/utils/dateUtils";
+
 
 const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
+const route = useRoute();
 
 const user = authStore.user;
 const localMessageList = ref([
@@ -43,22 +51,42 @@ const localMessageList = ref([
   },
 ]);
 
-const newMessage = ref(router.query.message || "");
-const subject = ref(router.query.subject || "Assunto indefinido");
-const ticketId = ref(router.query.ref || 0);
+const textInput = ref("-");
+const subject = ref("Assunto indefinido");
+const loadedTicketRef = ref(route.query.ticketId || 0);
 const isTicketOpen = ref(false);
 
-onMounted(checkTicket());
+onMounted(
+() => {
+  if (route.query && route.query.ticketId) {
+    checkTicket();
+  } else {
+  console.log(`Ref: ${loadedTicketRef.value}`);
+    checkTicket()}
+
+}
+);
 // Get remote messages
-const getMessages = async () => {
+const fetchMessages = async () => {
 
   if (!user || !user.token) {
     toast.error("Falha na autenticação!", { timeout: 3000 });
     // Redirect user
   }
   try {
-    const messages = await ticketService.getTicketMessages(ticketId);
-    pushMessagesToLocalList(messages);
+    const messages = await ticketService.getTicketMessages(route.query.ticketId);
+    // id: 123;
+    // userId: 0
+    // ticketId: 123123;
+    // content: "ABCabc"
+    // createdAt: "2025-05-25T17:20:13+00:00";
+    // roles: Array [ "admin" ];
+
+
+    if (messages && messages != null) {
+      console.log("Fetching messages");
+      pushMessagesToLocalList(messages);
+    }
   } catch (error) {
     toast.error("Ocorreu um erro ao carregar mensagens do ticket!", {
       timeout: 3000,
@@ -69,10 +97,11 @@ const getMessages = async () => {
 const pushMessagesToLocalList = (data = []) => {
   data.forEach((item) => {
     const newItem = {
-      message_id: item.message_id,
-      text: item.text,
-      sender: item.sender,
-      timestamp: item.created_at,
+      message_id: item.id,
+      text: item.content,
+      sender: item.userId,
+      timestamp: item.createdAt,
+      roles: item.roles,
     };
     localMessageList.value.push(newItem);
   });
@@ -81,26 +110,40 @@ const pushMessagesToLocalList = (data = []) => {
   });
 };
 
-const addMessage = (text) => {
-  if (text.trim() === "") {
+const submitMessage = () => {
+  if (textInput.value.trim() === "") {
     toast.error("Erro: mensagem em branco!", {
       timeout: 3000,
     });
+
     return;
   }
 
   if (isTicketOpen.value) {
-    addNewUserMessage(text);
+    addNewUserMessage(textInput.value);
+    textInput.value = "";
   } else {
-    createNewTicket(text);
+    createNewTicket(textInput.value);
+    textInput.value = "";
   }
 
-  autoReply();
+  // autoReply();
 };
 
 const addNewUserMessage = async (text) => {
   try {
-    const userMessage = await ticketService.addNewMessage(ticketId.value, text);
+    const userMessage = await ticketService.addNewMessage(route.query.ticketId, text);
+
+    const lastUserMessage = {
+          message_id: userMessage.messageId,
+          text: userMessage.content,
+          sender: "user",
+          timestamp: new Date(),
+          roles: ["user", "admin"],
+        };
+    console.log("Object = Last User Message");
+    console.log(lastUserMessage);
+
 
     pushMessagesToLocalList([userMessage]);
     autoReply();
@@ -118,15 +161,19 @@ const autoReply = () => {
     text: "Estamos verificando sua solicitação.",
     sender: "none",
     timestamp: new Date(),
+    roles: [],
   });
 };
 
 const createNewTicket = async (text) => {
   try {
-    const createdTicketId = await ticketService.createTicket(
+    let createdTicketId = 0;
+    const createdTicket = await ticketService.createTicket(
       subject.value,
       text
     );
+    createdTicketId = createdTicket.data.id;
+    console.log("New ticketed creaded with ID:", createdTicketId);
     redirectToCreatedTicket(createdTicketId);
   } catch (err) {
     console.log(err);
@@ -148,10 +195,10 @@ const redirectToCreatedTicket = (newTicketId) => {
 };
 
 const checkTicket = () => {
-  if (ticketId.value != 0) {
-    toast.info(`Ticket REF#${ticketId.value}`, { timeout: 3000 });
+  if (route.query.ticketId != 0) {
+    toast.info(`Ticket REF# ${route.query.ticketId}`, { timeout: 3000 });
     isTicketOpen.value = true;
-    getMessages();
+    fetchMessages();
   } else {
     toast.info(`Envie sua mensagem para abrir um novo ticket`, {
       timeout: 4000,

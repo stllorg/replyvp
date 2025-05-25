@@ -44,7 +44,7 @@ const ticketService = {
       throw error;
     }
   },
-  async createTicket(subject, content) {
+  async createTicket(subject, content) { // create ticket and post first ticket message. returns array [ticket, message]
     const token = getUserToken();
 
     if (!token) return;
@@ -89,7 +89,6 @@ const ticketService = {
         }
       }
 
-      // response as [ticketId, messageId]
       return response[0];
 
       
@@ -107,24 +106,18 @@ const ticketService = {
 
     try {
       const response = await api.post(
-        `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {
+        `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`,
+        {
+          content: messageContent,
+        },
+        {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
-        {
-          ticket_id: ticketId,
-          message: messageContent,
-        }
+      }
       );
       if (response.status === 201) {
-        const lastUserMessage = {
-          message_id: response.data.added.message_id,
-          text: response.data.added.text,
-          sender: "user",
-          timestamp: response.data.added.compact,
-        };
-        return lastUserMessage;
+        return response.data;
       }
     } catch (error) {
       this.toast.error("Ocorreu um erro ao conectar com o servidor!", {
@@ -141,15 +134,16 @@ const ticketService = {
 
     try {
       const response = await api.get(
-        `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+        `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.status === 200) {
-        return response.data.messages;
+        return response.data;
       } else {
         return response;
       }

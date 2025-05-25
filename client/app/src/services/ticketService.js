@@ -1,29 +1,28 @@
-import axios from "axios";
-import { API_ENDPOINTS } from "./api";
-import authService from "@/services/authService";
+import api, { API_ENDPOINTS } from "./api";
+import { getUserToken } from "@/services/authService";
 
 
 const ticketService = {
   async getTickets() { // Get tickets from the logged user
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
     }
     try {
-      const response = await axios.get(`${API_ENDPOINTS.TICKETS}`, {
+      const response = await api.get(API_ENDPOINTS.USERS.TICKETS, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data.tickets;
+      return response.data;
     } catch (error) {
       console.error("Erro ao buscar tickets:", error);
       throw error;
     }
   },
   async getPendingTickets() {
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
@@ -31,7 +30,7 @@ const ticketService = {
 
     const ticketStatus = 'open'
     try {
-      const response = await axios.get(`${API_ENDPOINTS.TICKETS.BY_STATUS(ticketStatus)}`, {
+      const response = await api.get(`${API_ENDPOINTS.TICKETS.BY_STATUS(ticketStatus)}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -46,14 +45,14 @@ const ticketService = {
     }
   },
   async createTicket(subject, message) {
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
     }
 
     try {
-      const response = await axios.post(`${API_ENDPOINTS.TICKETS}`, {
+      const response = await api.post(`${API_ENDPOINTS.TICKETS}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -72,14 +71,14 @@ const ticketService = {
     }
   },
   async addNewMessage(ticketId, messageContent){
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
     }
 
       try {
-        const response = await axios.post(
+        const response = await api.post(
           `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -106,14 +105,14 @@ const ticketService = {
       }
   },
   async getTicketMessages(ticketId) {
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
     }
     
     try {
-      const response = await axios.get(
+      const response = await api.get(
       `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`, {
             headers: {
               Authorization: `Bearer ${token}`,

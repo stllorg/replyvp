@@ -44,14 +44,13 @@ const ticketService = {
       throw error;
     }
   },
-  async createTicket(subject, content) { // create ticket and post first ticket message. returns array [ticket, message]
+  async createTicket(subject) { // create ticket and post first ticket message. returns array [ticket, message]
     const token = getUserToken();
 
     if (!token) return;
 
     try {
-      const response = [];
-      const ticketResponse = await api.post(
+      const response = await api.post(
         `${API_ENDPOINTS.USERS.TICKETS}`,
         {
           subject: subject
@@ -62,36 +61,12 @@ const ticketService = {
           },
         }
       );
-
-      let ticketId = 0;
       
-      if (ticketResponse.status === 201) {
-        ticketId = ticketResponse.data.id;
-        response.push(ticketResponse);
+      if (response.status === 201) {
+        return response;
       }
 
-      // Insert the first ticket message
-      if (ticketId != 0) {
-        const messageResponse = await api.post(
-          `${API_ENDPOINTS.TICKETS.MESSAGES(ticketId)}`,
-          {
-            content: content,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        if (messageResponse.status === 201) {
-          response.push(messageResponse);
-        }
-      }
-
-      return response[0];
-
-      
+      return response;
     } catch (error) {
       console.error("Erro ao criar ticket:", error);
       throw error;

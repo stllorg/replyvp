@@ -58,13 +58,15 @@ const generateTicket = async () => {
   let ticketId = 0;
   let isRedirectActive = false;
 
-
-  // get ticket
-  const response = await ticketService.createTicket(subject.value, messageContent.value);
+  // create ticket
+  const response = await ticketService.createTicket(subject.value);
 
   if (response.status == 201) {
     ticketId = response.data.id;
     isRedirectActive = true;
+
+    // post first ticket message
+    await ticketService.addNewMessage(ticketId, messageContent.value);
   }
   
   if (isRedirectActive) {

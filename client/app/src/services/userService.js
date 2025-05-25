@@ -1,12 +1,11 @@
-import axios from "axios";
-import { API_ENDPOINTS } from "./api";
-import authService from "@/services/authService";
+import api, { API_ENDPOINTS } from "./api";
+import { getUserToken } from "@/services/authService";
 
 const userService = {
   
   async registerUser(username, email, password) {
     try{
-    const response = await axios.post(API_ENDPOINTS.AUTH.REGISTER, {
+    const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, {
         username: username,
         email: email,
         password: password,
@@ -20,7 +19,7 @@ const userService = {
     }
   },
   async updateUser(userId, password, email, newEmail, newPassword ) {
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
@@ -34,7 +33,7 @@ const userService = {
       new_password: newPassword || undefined,
     };
     try {
-      const response = await axios.put(
+      const response = await api.put(
         API_ENDPOINTS.USERS.BY_ID(userId), {
            headers: {
             Authorization: `Bearer ${token}`,
@@ -51,14 +50,14 @@ const userService = {
     }
   },
   terminateAccount(userId) {
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
     }
     
     try {
-      return axios.delete(
+      return api.delete(
         API_ENDPOINTS.USERS.BY_ID(userId), {
           headers: {
             Authorization: `Bearer ${token}`,

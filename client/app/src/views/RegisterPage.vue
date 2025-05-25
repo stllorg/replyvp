@@ -4,14 +4,15 @@
       <div class="col-md-4 py-4 main-concept">
         <div class="card shadow">
           <div class="card-body p-4">
-            <h2 class="card-title text-center mb-4"></h2>
-            <div class="connection-switch d-flex">
-              <span>Criar conta</span>
-              <div class="form-check form-switch ms-2">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                <label class="form-check-label ms-1" for="flexSwitchCheckDefault">Fazer login</label>
-              </div>
-            </div>
+            <h2 class="card-title text-center mb-4">Registro</h2>
+            <ul class="nav nav-tabs mb-4 justify-content-center">
+              <li class="nav-item">
+                <router-link to="/login" class="nav-link">Login</router-link>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Registro</a>
+              </li>
+            </ul>
             <form @submit.prevent="register">
               <div class="form-floating mb-3">
                 <input

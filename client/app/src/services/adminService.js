@@ -1,11 +1,10 @@
-import axios from "axios";
-import { API_ENDPOINTS } from "./api";
-import authService from "@/services/authService";
+import api, { API_ENDPOINTS } from "./api";
+import { getUserToken } from "@/services/authService";
 
 const adminService = {
   
   async getAllUsers() {
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
@@ -13,7 +12,7 @@ const adminService = {
 
     try {
 
-      const response = await axios.get(
+      const response = await api.get(
         API_ENDPOINTS.TICKETS.USERS,
         {
           headers: {
@@ -32,14 +31,14 @@ const adminService = {
   }
   },
   async updateUserRoles(userId, newRoles) {
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
     }
 
     try {
-      const response = await axios.put(
+      const response = await api.put(
         API_ENDPOINTS.USERS.ROLES(userId), {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -57,14 +56,14 @@ const adminService = {
     }
   },
   async deleteUserAsAdmin(userId) {
-    const token = authService.getUserToken();
+    const token = getUserToken();
     
     if (!token) {
       return false;
     }
     
     try {
-      const response = await axios.delete(
+      const response = await api.delete(
        API_ENDPOINTS.USERS.BY_ID(userId),
         {
           headers: {

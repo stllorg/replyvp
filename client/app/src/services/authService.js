@@ -1,6 +1,5 @@
-import axios from "axios";
 import { useAuthStore } from "@/stores/authStore";
-import { API_ENDPOINTS } from "./api";
+import api, { API_ENDPOINTS } from "./api";
 
 export function getUserToken() {
   const authStore = useAuthStore();
@@ -15,7 +14,7 @@ export async function validateToken() {
   }
 
   try {
-    const response = await axios.get(API_ENDPOINTS.AUTH.AUTHENTICATE, {
+    const response = await api.get(API_ENDPOINTS.AUTH.AUTHENTICATE, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -31,7 +30,7 @@ export async function validateToken() {
 
 export async function loginUser(username, password) {
   try {
-    const response = await axios.post(API_ENDPOINTS.AUTH.LOGIN, { username, password });
+    const response = await api.post(API_ENDPOINTS.AUTH.LOGIN, { username, password });
 
     if (response.status === 200) {
       const user = response.data.user;

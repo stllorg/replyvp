@@ -27,3 +27,18 @@ services:
       - "8080:80"
     depends_on:
       - db
+    
+  frontend:
+    build:
+      context: ./client/app
+      dockerfile: Dockerfile.env
+    container_name: vue-container
+    environment:
+      BASE_API_URL: http://localhost:8080
+    restart: unless-stopped 
+    volumes:
+      - ./client/app:/app:Z
+      - /app/node_modules
+    ports: "5174:5174"
+    depends_on:
+      - web

@@ -87,14 +87,14 @@ const fetchMessages = async () => {
   }
 };
 
-const pushMessagesToLocalList = (data = []) => { 
+const pushMessagesToLocalList = (data = []) => {
   if (!data) return;
 
   data.forEach((item) => {
     const newItem = {
-      id: item.id,
+      id: item.id ?? localMessageList.value.length + 1,
       content: item.content,
-      sender: item.userId,
+      sender: item.userId ?? "support",
       createdAt: item.createdAt ?? new Date().toISOString(),
       roles: item.roles,
     };

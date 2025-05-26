@@ -37,24 +37,21 @@
             style="background-color: #f8f9fa; border: none"
           >
             <div>
-              <small class="text-muted">{{ formatDateTime(ticket.timestamp) }}</small>
+              <small class="text-muted">{{ formatFullDateTime(ticket.createdAt) }}</small>
             </div>
             <div
               class="text-truncate text-secondary text-decoration-underline"
               style="max-width: 70%"
             >
-              <router-link
+              <router-link v-if="ticket.id != 0"
                 :to="{
-                  name: user.roles.includes('user') ? 'MessagesPage' : 'ReplyTicketPage',
+                  name: 'MessagesPage',
                   query: {
-                    ref: ticket.id,
+                    ticketId: ticket.id,
                   },
                 }"
-                class="text-truncate text-secondary"
-                style="max-width: 70%; cursor: pointer; text-decoration: none"
-              >
-                {{ truncateText(ticket.subject) }}
-              </router-link>
+              class="text-truncate text-secondary subject-link">{{ truncateText(ticket.subject) }}</router-link>
+              <a  v-if="ticket.id == 0" href="#" class="text-truncate text-secondary subject-link">{{ truncateText(ticket.subject) }}</a>
             </div>
             <div class="d-flex">
               <button
@@ -78,6 +75,8 @@ import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/authStore";
+import { formatFullDateTime } from "@/utils/dateUtils";
+
 
 const router = useRouter();
 const toast = useToast();
@@ -85,15 +84,7 @@ const authStore = useAuthStore();
 
 const user = authStore.user;
 const filteredTickets = ref([]);
-const userTicketsList = ref([
-  {
-    id: 0,
-    timestamp: "2025-01-12T14:30:00",
-    subject:
-      "Suspendisse vehicula sapien felis, quis fermentum justo ultrices at. Ut ornare erat nec malesuada aliquet. Sed scelerisque, lorem eget maximus gravida, sem odio ultricies lectus, sit amet tincidunt tortor magna nec ex.",
-    status: "Aberta",
-  },
-]);
+const userTicketsList = ref([]);
 
 onMounted(async () => {
   try {
@@ -103,8 +94,26 @@ onMounted(async () => {
     }
 
     if (user.roles.includes("user")) {
-      filteredTickets.value = await ticketService.getTickets();
-      loadUserData(filteredTickets.value);
+      try {
+        filteredTickets.value = await ticketService.getTickets();
+        loadUserData(filteredTickets.value);
+      } catch (err) {
+        console.log("Falha ao obter lista de tickets...");
+        console.log(err);
+        
+        let sampleArray = ref([[
+          {
+            id: 0,
+            createdAt: new Date().toISOString(),
+            subject:
+            "Suspendisse vehicula sapien felis, quis fermentum justo ultrices at. Ut ornare erat nec malesuada aliquet. Sed scelerisque, lorem eget maximus gravida, sem odio ultricies lectus, sit amet tincidunt tortor magna nec ex.",
+            status: "Aberta",
+          },
+        ]]);
+        loadUserData(sampleArray);
+
+
+      }
     } else {
       console.log("Load pending tickets");
     }
@@ -118,8 +127,13 @@ const redirectToUpdateUserPage = () => {
   router.push("/user/update");
 };
 
-const goToMessages = (ticketId) => {
-  console.log(ticketId);
+const goToMessages = (id) => {
+  router.push({
+    name: 'MessagesPage', 
+    query: {
+      ticketId: id,
+    },
+  });
 };
 
 const loadUserData = (data = []) => {
@@ -134,19 +148,11 @@ const loadUserData = (data = []) => {
       id: item.id,
       subject: item.subject,
       status: statusMap[item.status] || "Desconhecido",
-      timestamp: item.created_at,
+      createdAt: item.createdAt,
     };
 
     userTicketsList.value.push(retrievedUserTicket);
   });
-};
-
-const formatDateTime = (dateTime) => {
-  const date = new Date(dateTime);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })}`;
 };
 
 const truncateText = (text) => {
@@ -166,5 +172,10 @@ const truncateText = (text) => {
 }
 .list-group-item:last-child {
   border-bottom: none;
+}
+.subject-link {
+  max-width: 70%;
+  cursor: pointer;
+  text-decoration: none;
 }
 </style>

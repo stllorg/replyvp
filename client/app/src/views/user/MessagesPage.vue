@@ -129,13 +129,8 @@ const submitMessage = async () => {
 };
 
 const autoReply = () => {
-  localMessageList.value.push({
-    id: localMessageList.value.length + 1,
-    content: "Estamos verificando sua solicitação.",
-    sender: "none",
-    createdAt: new Date(),
-    roles: [],
-  });
+  let replyText = "Estamos verificando sua solicitação."; 
+  localMessageList.value.push({ content: replyText });
 };
 
 </script>

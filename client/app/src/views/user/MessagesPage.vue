@@ -96,7 +96,7 @@ const pushMessagesToLocalList = (data = []) => {
       id: item.id,
       content: item.content,
       sender: item.userId,
-      createdAt: item.createdAt,
+      createdAt: item.createdAt ?? new Date().toISOString(),
       roles: item.roles,
     };
     localMessageList.value.push(newItem);

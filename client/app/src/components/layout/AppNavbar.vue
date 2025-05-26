@@ -18,12 +18,6 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/">Home</router-link>
           </li>
-          <li v-if="authStore.isUserLogged" class="nav-item">
-            <router-link class="nav-link" to="/messages">Abrir Conversa</router-link>
-          </li>
-          <li v-if="authStore.isUserLogged" class="nav-item">
-            <router-link class="nav-link" to="/tickets/history">Meus Tickets</router-link>
-          </li>
         </ul>
         <div
           v-if="authStore.isUserLogged"

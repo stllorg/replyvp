@@ -52,21 +52,20 @@ const textInput = ref("-");
 const isTicketOpen = ref(false);
 
 onMounted(
-() => {
-  if (route.query && route.query.ticketId != 0) {
-    toast.info(`Ticket REF# ${route.query.ticketId}`, { timeout: 3000 });
-    isTicketOpen.value = true;
-    fetchMessages();
-  } 
-
-}
+  () => {
+    if (!user || !user.token) {
+      toast.error("Faça login para continuar!", { timeout: 200 });
+      router.push("/login");
+    }
+    if (route.query && route.query.ticketId != 0) {
+      toast.info(`Ticket REF# ${route.query.ticketId}`, { timeout: 3000 });
+      isTicketOpen.value = true;
+      fetchMessages();
+    }
+  }
 );
 
 const fetchMessages = async () => {
-  if (!user || !user.token) {
-    toast.error("Falha na autenticação!", { timeout: 3000 });
-    // Redirect user
-  }
   try {
     const messages = await ticketService.getTicketMessages(route.query.ticketId);
     // id: 123;
@@ -88,14 +87,14 @@ const fetchMessages = async () => {
   }
 };
 
-const pushMessagesToLocalList = (data = []) => { 
+const pushMessagesToLocalList = (data = []) => {
   if (!data) return;
 
   data.forEach((item) => {
     const newItem = {
-      id: item.id,
+      id: item.id ?? localMessageList.value.length + 1,
       content: item.content,
-      sender: item.userId,
+      sender: item.userId ?? "support",
       createdAt: item.createdAt ?? new Date().toISOString(),
       roles: item.roles,
     };
@@ -130,13 +129,8 @@ const submitMessage = async () => {
 };
 
 const autoReply = () => {
-  localMessageList.value.push({
-    id: localMessageList.value.length + 1,
-    content: "Estamos verificando sua solicitação.",
-    sender: "none",
-    createdAt: new Date(),
-    roles: [],
-  });
+  let replyText = "Estamos verificando sua solicitação."; 
+  localMessageList.value.push({ content: replyText });
 };
 
 </script>

@@ -11,11 +11,6 @@ router.beforeEach((to, from, next) => {
   const requiresSupport = to.matched.some((record) => record.meta.requiresSupport);
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
-  if (user && user.roles && user.roles.includes('admin')) {
-    toast.info('Você possui diretos de administradores!', { timeout: 3000 });
-
-  }
-
   if (requiresAuth) {
     if(!user || !user.token){
       toast.warning('Necessário fazer login!', { timeout: 3000 });

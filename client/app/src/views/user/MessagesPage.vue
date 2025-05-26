@@ -52,21 +52,20 @@ const textInput = ref("-");
 const isTicketOpen = ref(false);
 
 onMounted(
-() => {
-  if (route.query && route.query.ticketId != 0) {
-    toast.info(`Ticket REF# ${route.query.ticketId}`, { timeout: 3000 });
-    isTicketOpen.value = true;
-    fetchMessages();
-  } 
-
-}
+  () => {
+    if (!user || !user.token) {
+      toast.error("Faça login para continuar!", { timeout: 200 });
+      router.push("/login");
+    }
+    if (route.query && route.query.ticketId != 0) {
+      toast.info(`Ticket REF# ${route.query.ticketId}`, { timeout: 3000 });
+      isTicketOpen.value = true;
+      fetchMessages();
+    }
+  }
 );
 
 const fetchMessages = async () => {
-  if (!user || !user.token) {
-    toast.error("Falha na autenticação!", { timeout: 3000 });
-    // Redirect user
-  }
   try {
     const messages = await ticketService.getTicketMessages(route.query.ticketId);
     // id: 123;

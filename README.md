@@ -106,7 +106,7 @@ This will launch the client on [http://localhost:5174/](http://localhost:5174/).
 ## Sample data, default credentials and passwords
 When database image is being built, a SQL script is loaded from db/init/script.sql to insert initial sample data such as tickets, messages and users.
 
-> Info: All default users have the password: `test@testmail.com`
+> Info: All default users have the password: `test@test.com`
 
 Default users 
 - Admin   
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
 ```
 
 ### script.sql Line 45 - Populate users table with sample users
-> The samples users inserted will have the same default password to login, the passowrd in plain text withouth encryption is: `test@testmail.com`  
+> The samples users inserted will have the same default password to login, the passowrd in plain text withouth encryption is: `test@test.com`  
 
 ```sql
 INSERT INTO users (username, email, password) VALUES

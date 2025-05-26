@@ -23,13 +23,20 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
 
 - **Language**: PHP 8.4.3
 - **Web Server**: Apache 2.4.62 (serving the PHP application)
-- **API Endpoints**:
-  - **Authentication**: `localhost:8080/auth` (For user login and registration)
-  - **API**: `localhost:8080/api` (For interactions with the application, protected by JWT)
+- **API Endpoints**: routes defined on [/web/app/index.php](/web/app/index.php)
+  - **Authentication**: `localhost:8080/auth/authenticate` (For token for validation)    
+  - **Registration/Sign up**: `localhost:8080/auth/register` (For user registration)    
+  - **Login/Sign up**: `localhost:8080/auth/login` (For login)    
+  - **Users tickets**: `localhost:8080/users/tickets` (For users create or fetch their tickets)
 - **Database Driver**: MySQLi (for communication with the MySQL database)
+- **PHP Dependency Manager**: Composer ( installed from [/web/Dockerfile](/web/Dockerfile) )
 - **Authentication**: Using Firebase `php-jwt` v6.11 for authentication and JWT token generation.
 - **Containers**: Docker with Compose in compatibility with Podman Compose.
-
+- **PHP Testing**: PHPUnit ( installed from [/web/app/composer.json](/web/app/composer.json) ). Tests cases executed from [/web/app/tests/Auth](/web/app/tests/Auth).  
+  - Currently, tests are executed manually from terminal:
+    ```bash
+    docker exec -it php-container vendor/bin/phpunit
+    ```
 ### Database
 - **Database**: MySQL
 
@@ -74,6 +81,12 @@ This will:
 - Expose the services on port `8080` (PHP) and `3306` (MySQL).
 - Automatically load MySQL data from the provided SQL script for initialization.
 
+> To stop the containers, use:
+
+```bash
+docker-compose down
+```
+
 ### Step 5: Access the Application
 Once the containers are up and running, you can access the application:
 
@@ -88,13 +101,106 @@ npm run serve
 
 This will launch the client on [http://localhost:5174/](http://localhost:5174/).
 
-### Step 4: Stopping Containers
-To stop the containers, use:
+------
 
-```bash
-docker-compose down
+## Sample data, default credentials and passwords
+When database image is being built, a SQL script is loaded from db/init/script.sql to insert initial sample data such as tickets, messages and users.
+
+> Info: All default users have the password: `test@testmail.com`
+
+Default users 
+- Admin   
+  id: 1
+  username: admin   
+  email: adm@testmail.com   
+  password: test@testmail.com   
+  roles: admin  
+
+- Manager   
+  id: 2   
+  username: manager   
+  email : manager@email.com   
+  password: test@testmail.com   
+  roles: manager  (no rights)
+
+- Support
+  id: 3
+  username: support
+  email : support@email.com
+  password: test@testmail.com
+  roles: support (no rights)
+
+### script.sql Line 4 - Create users table
+> The users table stores information to users login and be correctly identified to the system provide services.   
+
+```sql
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
+### script.sql Line 12 - Create roles table
+> The roles table stores roles to possibility rules to improve user experience providing only needed resources and services applicable to a specific role.
+```sql
+CREATE TABLE IF NOT EXISTS roles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+```
+
+### script.sql Line 17 - Create user_roles
+> The user_roles table stores user_id and role_id to provide the atrribution of roles to users. Currently, each user may have n roles.
+```sql
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id INT NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+```
+
+### script.sql Line 45 - Populate users table with sample users
+> The samples users inserted will have the same default password to login, the passowrd in plain text withouth encryption is: `test@testmail.com`  
+
+```sql
+INSERT INTO users (username, email, password) VALUES
+('admin', 'adm@testmail.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('manager', 'manager@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('support', 'support@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('usera1', 'usuario4@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('usera2', 'usuario5@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('usera3', 'usuario6@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
+('usera4', 'usuario7@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO');
+```
+### script.sql Line 54 - Create table roles
+> Insert admin, manager, support and user roles. Currently, manager and support have no access.
+
+```sql
+INSERT INTO roles (name) VALUES
+('admin'),
+('manager'),
+('support'),
+('user');
+```
+
+### script.sql Line 60 - Populate user_roles
+> Insert entries in user_roles with (user_id, role_id) to assign roles to users. Currently, role_id 2 (manager) and role_id(3) will grant no acess.
+
+```sql
+INSERT INTO user_roles (user_id, role_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 4),
+(6, 4),
+(7, 4);
+```
 ------
 
 ### Endpoints:

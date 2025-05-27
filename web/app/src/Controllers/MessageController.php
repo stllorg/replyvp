@@ -134,7 +134,7 @@ class MessageController {
 
         try {
             $userId = $user['userId'];
-            $ticketIdsWithUserMessages = $this->messageService->getTicketMessages($userId);
+            $ticketIdsWithUserMessages = $this->messageService->getTicketIdsWithUserMessages($userId);
             
             if (!$ticketIdsWithUserMessages) {
                 sendResponse(404, ['error' => 'Messages or tickets not found']);

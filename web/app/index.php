@@ -102,7 +102,7 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
             'users/tickets'          => [$ticketController, 'getUserTickets'],
             'users/{id}/roles'       => [$userController, 'fetchUserRoles'],
             'tickets/open'           => [$ticketController, 'getAllPendingTickets'],
-            'tickets/interactions'   => [$messageController, "getTicketIdsWithUserMessages"],
+            'tickets/interactions'   => [$messageController, "getTicketsWithUserMessages"],
             'tickets/{id}'           => [$ticketController, 'getTicketById'],
             'tickets/{id}/messages'  => [$messageController, 'getTicketMessages'],
         ],

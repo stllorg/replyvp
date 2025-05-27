@@ -100,11 +100,11 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
         ],
         'GET' => [
             'users/tickets'          => [$ticketController, 'getUserTickets'],
-            'tickets/{id}'           => [$ticketController, 'getTicketById'],
-            'tickets/open'           => [$ticketController, 'getAllPendingTickets'],
-            'tickets/{id}/messages'  => [$messageController, 'getTicketMessages'],
-            'tickets/interactions'   => [$messageController, "getTicketIdsWithUserMessages"],
             'users/{id}/roles'       => [$userController, 'fetchUserRoles'],
+            'tickets/open'           => [$ticketController, 'getAllPendingTickets'],
+            'tickets/interactions'   => [$messageController, "getTicketIdsWithUserMessages"],
+            'tickets/{id}'           => [$ticketController, 'getTicketById'],
+            'tickets/{id}/messages'  => [$messageController, 'getTicketMessages'],
         ],
         'PATCH' => [
             'users/{id}/roles'       => [$userController, 'updateUserRole'],

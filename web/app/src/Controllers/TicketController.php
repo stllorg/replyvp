@@ -215,7 +215,7 @@ class TicketController {
                 id: $id,
                 subject: $editedSubject,
                 status: $editedStatus,
-                createdAt: null;
+                createdAt: null);
 
             $this->ticketService->updateTicket($editedTicket);
         

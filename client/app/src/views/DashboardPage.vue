@@ -28,9 +28,11 @@
     >
       <div class="card-body">
         <h5 class="card-title text-secondary fw-bold">Interações em tickets</h5>
-        <ul class="list-group list-group-flush">
-          <li
-            v-for="ticket in interactionsList"
+        <ul v-if="interactionsList.length === 0" class="list-group list-group-flush">
+              <p class="text-center text-truncate text-secondary">Sem registros de interações</p>
+        </ul>
+        <ul v-if="interactionsList.length != 0" class="list-group list-group-flush">
+          <li v-for="ticket in interactionsList"
             :key="ticket.id"
             class="list-group-item d-flex justify-content-between align-items-center"
             style="background-color: #f8f9fa; border: none"
@@ -127,7 +129,6 @@ const authStore = useAuthStore();
 const user = authStore.user;
 const filteredTickets = ref([]);
 const userTicketsList = ref([]);
-const filteredInteractions = ref([]);
 const interactionsList = ref([]);
 
 onMounted(async () => {
@@ -155,15 +156,11 @@ onMounted(async () => {
           },
         ]]);
         loadUserData(sampleArray);
-
-
       }
     } else if (user.roles.includes("support") || user.roles.includes("manager") || user.roles.includes("admin") ) {
-      console.log("Loading user interactions");
-
       try {
-        filteredInteractions.value = await ticketService.getTicketsWithUserMessages();
-        loadInteractionsData(filteredInteractions.value);
+        const response = await ticketService.getTicketsWithUserMessages();
+        loadInteractionsData(response.data);
       } catch (err) {
          console.log("Falha ao obter lista de interações...");
          console.log(err);
@@ -216,7 +213,7 @@ const loadInteractionsData = (data = []) => {
     };
 
     const retrievedUserTicket = {
-      id: item.id,
+      id: item,
       subject: item.subject ?? "-",
       status: statusMap[item.status] || "Desconhecido",
       createdAt: item.createdAt ?? new Date().toISOString(),

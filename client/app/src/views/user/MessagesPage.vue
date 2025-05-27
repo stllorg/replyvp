@@ -33,20 +33,7 @@ const router = useRouter();
 const route = useRoute();
 
 const user = authStore.user;
-const localMessageList = ref([
-  {
-    id: 0,
-    content: "Oi! Preciso de suporte.",
-    sender: "user",
-    createdAt: new Date(),
-  },
-  {
-    id: 1,
-    content: "Olá! Como posso ajudar?",
-    sender: "support",
-    createdAt: new Date(),
-  },
-]);
+const localMessageList = ref([]);
 
 const textInput = ref("-");
 const isTicketOpen = ref(false);
@@ -76,8 +63,9 @@ const fetchMessages = async () => {
 
 
     if (messages && messages != null) {
-      console.log("Fetching messages");
       pushMessagesToLocalList(messages);
+    } else {
+      loadDefaultMessages();
     }
   } catch (error) {
     toast.error("Ocorreu um erro ao carregar mensagens do ticket!", {
@@ -85,6 +73,25 @@ const fetchMessages = async () => {
     });
   }
 };
+
+const loadDefaultMessages = () => {
+  const defaultMessages = [
+    {
+      id: 0,
+      content: "Oi! Preciso de suporte.",
+      sender: "user",
+      createdAt: new Date(),
+    },
+    {
+      id: 1,
+      content: "Olá! Como posso ajudar?",
+      sender: "support",
+      createdAt: new Date(),
+    },
+  ];
+
+  localMessageList.value.push(...defaultMessages);
+}
 
 const pushMessagesToLocalList = (data = []) => {
   if (!data) return;
@@ -103,14 +110,13 @@ const pushMessagesToLocalList = (data = []) => {
   };
 
     const newItem = {
-      id: item.id ?? localMessageList.value.length + 1,
+      id: item.messageId ?? localMessageList.value.length + 1,
       content: item.content,
-      sender: senderRole(), // Define ticket message color. If "user" green, else white.
-      createdAt: item.createdAt ?? new Date().toISOString(),
+      sender: senderRole(),
+      createdAt: item.createdAt === null || item.createdAt === "null" ? new Date().toISOString() : item.createdAt,
       roles: item.roles,
     };
 
-    console.log(newItem);
     localMessageList.value.push(newItem);
   });
   toast.info("Carregando mensagens", {
@@ -131,8 +137,11 @@ const submitMessage = async () => {
     const userMessage = await ticketService.addNewMessage(route.query.ticketId, textInput.value);
     textInput.value = "";
     pushMessagesToLocalList([userMessage]);
-    // TODO: Check if user is not staff
-    autoReply();
+    if (userMessage.roles) {
+      if (!userMessage.roles.includes('user')) {
+        autoReply();
+      }
+    }
   } catch (err) {
     console.log(err);
     toast.error("Ocorreu um erro ao enviar mensagem para o servidor!", {
@@ -142,7 +151,7 @@ const submitMessage = async () => {
 };
 
 const autoReply = () => {
-  let replyText = "Estamos verificando sua solicitação."; 
+  let replyText = "Estamos verificando sua solicitação.";
   localMessageList.value.push({ content: replyText });
 };
 

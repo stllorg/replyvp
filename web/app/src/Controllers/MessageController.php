@@ -55,10 +55,10 @@ class MessageController {
         try {
             $userId = $user['userId'];
             $ticketCreatorId = $this->ticketService->getTicketCreator($ticketId);
+            $guestRoles = $this->userService->getUserRolesByUserId($userId);
 
             if ($userId != $ticketCreatorId) { // Check if is not the ticket creator
 
-                $guestRoles = $this->userService->getUserRolesByUserId($userId);
                 $isGuestStaff = in_array("admin", $guestRoles);
 
                 if (!$isGuestStaff) { // Check if is not staff
@@ -72,9 +72,10 @@ class MessageController {
             http_response_code(201); // Created object
             echo json_encode([
                 'messageId' => $message->getId(),
-                'ticketId' => $message->getTicketId(),
-                'userId' => $message->getUserId(),
-                'content' => $message->getContent()
+                'ticketId'  => $message->getTicketId(),
+                'userId'    => $message->getUserId(),
+                'content'   => $message->getContent(),
+                'roles'     => $guestRoles
             ]);
         } catch (\Exception $e) {
             http_response_code(400);
@@ -134,7 +135,7 @@ class MessageController {
 
         try {
             $userId = $user['userId'];
-            $ticketIdsWithUserMessages = $this->messageService->getTicketMessages($userId);
+            $ticketIdsWithUserMessages = $this->messageService->getTicketIdsWithUserMessages($userId);
             
             if (!$ticketIdsWithUserMessages) {
                 sendResponse(404, ['error' => 'Messages or tickets not found']);

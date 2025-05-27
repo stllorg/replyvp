@@ -39,7 +39,7 @@ class TicketRepository {
             $stmt->execute();   
 
             return $stmt->affected_rows > 0;
-        } else if ($updatedSubject == null && $updatedStatus != null && ) {
+        } else if ($updatedSubject == null && $updatedStatus != null) {
             $stmt = $this->db->prepare("UPDATE tickets SET status = ? WHERE id = ?");
             $stmt->bind_param("si", $updatedStatus, $ticketId);
             $stmt->execute();   

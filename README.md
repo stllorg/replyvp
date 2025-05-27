@@ -226,11 +226,11 @@ INSERT INTO user_roles (user_id, role_id) VALUES
 ```
 ------
 
-### Endpoints:
+## Endpoints:
 
-### GET  
+### GET Requests  
 > Retrieve user tickets.
-### http://localhost:8080/users/tickets
+### `GET http://localhost:8080/users/ticket`
 
 Request model:
 ```curl
@@ -241,7 +241,7 @@ curl --location 'http://localhost:8080/users/tickets' \
 Sample response:
 
 
-### http://localhost:8080/tickets/{id}
+### `GET http://localhost:8080/tickets/{id}`
 > Retrieve a ticket by id.
 
 Request model:
@@ -252,8 +252,21 @@ curl --location 'http://localhost:8080/tickets/8' \
 
 Sample response:
 
-### http://localhost:8080/tickets/open
+### `GET http://localhost:8080/tickets/open`
 > Retrieve pending tickets or not answered.
+
+Request model:
+
+```curl
+curl --location 'http://localhost:8080/tickets/open' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
+```
+
+Sample response:
+
+### `GET http://localhost:8080/tickets/interactions`
+> Retrieve unique tickets with at least one message sent by the requesting user.
 
 Request model:
 
@@ -267,7 +280,7 @@ Sample response:
 
 
 
-### http://localhost:8080/tickets/{id}/messages
+### `GET http://localhost:8080/tickets/{id}/messages`
 > Retrieve ticket messages.
 
 Resquest model:
@@ -293,9 +306,9 @@ Sample response:
 ]
 ```
 
-## Endpoints  
+### POST Requests  
 
-### http://localhost:8080/users/tickets 
+### `POST http://localhost:8080/users/tickets`
 > Create a new ticket.
 
 Request model: 
@@ -318,7 +331,7 @@ STATUS CODE 201
 }
 ```
 
-### http://localhost:8080/auth/login
+### `POST http://localhost:8080/auth/login`
 
 Request model:
 >  Description: Sign in with user credentials.
@@ -341,7 +354,7 @@ Sample response:
 }
 ```
 
-### http://localhost:8080/auth/register
+### `POST http://localhost:8080/auth/register`
 > Description : Register a new user.
 Request model:
 ```curl
@@ -363,7 +376,7 @@ Status Code 201 (Created)
 }
 ```
 
-### http://localhost:8080/auth/authenticate
+### `POST http://localhost:8080/auth/authenticate`
 > Verify if JWT Token is invalid, if not sends user id and user role.
 
 Request model: 
@@ -384,7 +397,7 @@ Sample response:
 ```
 
 
-### http://localhost:8080/tickets/{id}/messages 
+### `POST http://localhost:8080/tickets/{id}/messages` 
 > Create a new message on ticket {id}. 
 
 

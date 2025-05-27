@@ -96,6 +96,26 @@ const ticketService = {
       throw error;
     }
   },
+  async getTicketById(ticketId) {
+    const token = getUserToken();
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const response = await api.get(API_ENDPOINTS.TICKETS.BY_ID(ticketId), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar tickets:", error);
+      throw error;
+    }
+  },
   async addNewMessage(ticketId, messageContent) {
     const token = getUserToken();
 

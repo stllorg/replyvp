@@ -33,20 +33,7 @@ const router = useRouter();
 const route = useRoute();
 
 const user = authStore.user;
-const localMessageList = ref([
-  {
-    id: 0,
-    content: "Oi! Preciso de suporte.",
-    sender: "user",
-    createdAt: new Date(),
-  },
-  {
-    id: 1,
-    content: "Olá! Como posso ajudar?",
-    sender: "support",
-    createdAt: new Date(),
-  },
-]);
+const localMessageList = ref([]);
 
 const textInput = ref("-");
 const isTicketOpen = ref(false);
@@ -76,8 +63,9 @@ const fetchMessages = async () => {
 
 
     if (messages && messages != null) {
-      console.log("Fetching messages");
       pushMessagesToLocalList(messages);
+    } else {
+      loadDefaultMessages();
     }
   } catch (error) {
     toast.error("Ocorreu um erro ao carregar mensagens do ticket!", {
@@ -85,6 +73,25 @@ const fetchMessages = async () => {
     });
   }
 };
+
+const loadDefaultMessages = () => {
+  const defaultMessages = [
+    {
+      id: 0,
+      content: "Oi! Preciso de suporte.",
+      sender: "user",
+      createdAt: new Date(),
+    },
+    {
+      id: 1,
+      content: "Olá! Como posso ajudar?",
+      sender: "support",
+      createdAt: new Date(),
+    },
+  ];
+
+  localMessageList.value.push(...defaultMessages);
+}
 
 const pushMessagesToLocalList = (data = []) => {
   if (!data) return;

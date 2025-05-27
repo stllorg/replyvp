@@ -60,7 +60,7 @@ const ticketService = {
       });
 
       if (response.status === 200) {
-        return response.data.tickets;
+        return response;
       }
     } catch (error) {
       console.error("Erro ao buscar tickets:", error);

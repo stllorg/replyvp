@@ -39,4 +39,8 @@ class MessageService {
         $messages = $this->messageRepository->findByTicketId($ticketId);
         return $messages;
     }
+
+    public function getTicketIdsWithUserMessages(int $userId): array {
+        return $this->messageRepository->findTicketIdsByUserId($userId);
+    }
 } 

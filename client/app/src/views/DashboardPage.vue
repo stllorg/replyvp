@@ -21,7 +21,49 @@
         <p class="card-text text-muted">{{ user.roles.join(" | ") }}</p>
       </div>
     </div>
-
+    <div
+      v-if="user.roles.includes('admin') || user.roles.includes('manager') || user.roles.includes('support')"
+      class="card shadow border-0"
+      style="background-color: #f8f9fa"
+    >
+      <div class="card-body">
+        <h5 class="card-title text-secondary fw-bold">Interações em tickets</h5>
+        <ul class="list-group list-group-flush">
+          <li
+            v-for="ticket in interactionsList"
+            :key="ticket.id"
+            class="list-group-item d-flex justify-content-between align-items-center"
+            style="background-color: #f8f9fa; border: none"
+          >
+            <div>
+              <small class="text-muted">ticket.createdAt</small>
+            </div>
+            <div
+              class="text-truncate text-secondary text-decoration-underline"
+              style="max-width: 70%"
+            >
+              <router-link v-if="ticket.id != 0"
+                :to="{
+                  name: 'MessagesPage',
+                  query: {
+                    ticketId: ticket.id,
+                  },
+                }"
+              class="text-truncate text-secondary subject-link">ticket.subject</router-link>
+            </div>
+            <div class="d-flex">
+              <button
+                class="btn btn-outline-primary btn-sm me-2"
+                @click="goToMessages(ticket.id)"
+                title="Ver Mensagens"
+              >
+                <i class="bi bi-chat-dots"></i>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
     <div
       v-if="user.roles.includes('user')"
       class="card shadow border-0"
@@ -85,6 +127,8 @@ const authStore = useAuthStore();
 const user = authStore.user;
 const filteredTickets = ref([]);
 const userTicketsList = ref([]);
+const filteredInteractions = ref([]);
+const interactionsList = ref([]);
 
 onMounted(async () => {
   try {
@@ -114,8 +158,16 @@ onMounted(async () => {
 
 
       }
-    } else {
-      console.log("Load pending tickets");
+    } else if (user.roles.includes("support") || user.roles.includes("manager") || user.roles.includes("admin") ) {
+      console.log("Loading user interactions");
+
+      try {
+        filteredInteractions.value = await ticketService.getTicketsWithUserMessages();
+        loadInteractionsData(filteredInteractions.value);
+      } catch (err) {
+         console.log("Falha ao obter lista de interações...");
+         console.log(err);
+        }
     }
   } catch (err) {
     console.log(err);
@@ -152,6 +204,25 @@ const loadUserData = (data = []) => {
     };
 
     userTicketsList.value.push(retrievedUserTicket);
+  });
+};
+
+const loadInteractionsData = (data = []) => {
+  data.forEach((item) => {
+    const statusMap = {
+      open: "Aberta",
+      closed: "Fechada",
+      in_progress: "Em andamento",
+    };
+
+    const retrievedUserTicket = {
+      id: item.id,
+      subject: item.subject ?? "-",
+      status: statusMap[item.status] || "Desconhecido",
+      createdAt: item.createdAt ?? new Date().toISOString(),
+    };
+
+    interactionsList.value.push(retrievedUserTicket);
   });
 };
 

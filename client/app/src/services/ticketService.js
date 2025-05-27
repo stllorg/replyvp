@@ -44,6 +44,30 @@ const ticketService = {
       throw error;
     }
   },
+  
+  async getTicketsWithUserMessages() {
+    const token = getUserToken();
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const response = await api.get(`${API_ENDPOINTS.TICKETS.INTERACTIONS()}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data.tickets;
+      }
+    } catch (error) {
+      console.error("Erro ao buscar tickets:", error);
+      throw error;
+    }
+  },
+
   async createTicket(subject) { // create ticket and post first ticket message. returns array [ticket, message]
     const token = getUserToken();
 

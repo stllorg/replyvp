@@ -48,4 +48,24 @@ class MessageRepository {
 
         return $messages;
     }
+
+    /**
+     * Find unique ticket IDs of all tickets where a specific User interacted by message at least once.
+     *
+     * @param int $userId The ID of the user whose ticket activity is being queried.
+     * @return array An array of unique ticket IDs where the user has interacted by message.
+     */
+    public function findTicketIdsByUserId(int $userId): array {
+        $stmt = $this->db->prepare("SELECT DISTINCT ticket_id FROM ticket_messages WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $ticketIds = [];
+        
+        while ($row = $result->fetch_assoc()) {
+            $ticketIds[] = $row['ticket_id'];
+        }
+
+        return $ticketIds;
+    }
 } 

@@ -127,7 +127,6 @@ const authStore = useAuthStore();
 const user = authStore.user;
 const filteredTickets = ref([]);
 const userTicketsList = ref([]);
-const filteredInteractions = ref([]);
 const interactionsList = ref([]);
 
 onMounted(async () => {
@@ -162,8 +161,8 @@ onMounted(async () => {
       console.log("Loading user interactions");
 
       try {
-        filteredInteractions.value = await ticketService.getTicketsWithUserMessages();
-        loadInteractionsData(filteredInteractions.value);
+        const response = await ticketService.getTicketsWithUserMessages();
+        loadInteractionsData(response.data);
       } catch (err) {
          console.log("Falha ao obter lista de interações...");
          console.log(err);

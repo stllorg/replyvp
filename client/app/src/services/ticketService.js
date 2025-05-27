@@ -53,7 +53,7 @@ const ticketService = {
     }
 
     try {
-      const response = await api.get(`${API_ENDPOINTS.TICKETS.INTERACTIONS()}`, {
+      const response = await api.get(`${API_ENDPOINTS.TICKETS.INTERACTIONS}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

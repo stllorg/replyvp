@@ -127,4 +127,26 @@ class MessageController {
             return;
         }
     }
+
+    public function getTicketIdsWithUserMessages(): void {
+        $user = $this->authenticate();
+        if (!$user) return;
+
+        try {
+            $userId = $user['userId'];
+            $ticketIdsWithUserMessages = $this->messageService->getTicketMessages($userId);
+            
+            if (!$ticketIdsWithUserMessages) {
+                sendResponse(404, ['error' => 'Messages or tickets not found']);
+                return;
+            }
+
+            echo json_encode($ticketIdsWithUserMessages);
+            return;
+        } catch (\Exception $e) {
+            http_response_code(403);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
+        }
+    }
 } 

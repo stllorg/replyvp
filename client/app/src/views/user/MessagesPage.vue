@@ -2,7 +2,7 @@
   <div class="chat-container">
     <div class="chat-box">
       <div v-for="(msg, index) in localMessageList" :key="index" :msg="msg"
-      class="message" :class="msg.sender === 'user' ? 'user-message' : 'support-message'">
+      class="message" :class="`${msg.sender}-message`">
       <p>{{ msg.content }}</p>
       <small>{{ formatMessageTime(msg.createdAt) }}</small>
       </div>
@@ -58,7 +58,6 @@ onMounted(
       router.push("/login");
     }
     if (route.query && route.query.ticketId != 0) {
-      toast.info(`Ticket REF# ${route.query.ticketId}`, { timeout: 3000 });
       isTicketOpen.value = true;
       fetchMessages();
     }
@@ -91,13 +90,27 @@ const pushMessagesToLocalList = (data = []) => {
   if (!data) return;
 
   data.forEach((item) => {
+    let senderRole = () => {
+     if (item.roles.includes('user')) {
+      return "user"; 
+    } else if (item.roles.includes('admin')) {
+      return "admin";
+    } else if (item.roles.includes('manager')) {
+      return "manager";
+    } else if (item.roles.includes('support')) {
+      return "support";
+    }
+  };
+
     const newItem = {
       id: item.id ?? localMessageList.value.length + 1,
       content: item.content,
-      sender: item.userId ?? "support",
+      sender: senderRole(), // Define ticket message color. If "user" green, else white.
       createdAt: item.createdAt ?? new Date().toISOString(),
       roles: item.roles,
     };
+
+    console.log(newItem);
     localMessageList.value.push(newItem);
   });
   toast.info("Carregando mensagens", {
@@ -172,7 +185,21 @@ const autoReply = () => {
 }
 
 .support-message {
-  background: #fff;
+  background: #d6f4ff;
+  align-self: flex-start;
+  text-align: left;
+  margin-right: auto;
+}
+
+.manager-message {
+  background: #89d5f1;
+  align-self: flex-start;
+  text-align: left;
+  margin-right: auto;
+}
+
+.admin-message {
+  background: #34c8ff;
   align-self: flex-start;
   text-align: left;
   margin-right: auto;

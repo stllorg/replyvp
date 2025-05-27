@@ -9,11 +9,14 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
 
 - [Requirements](#requirements)
 - [Setup Instructions](#setup-instructions)
+- [Database and passwords](#database-and-passwords)
+- [Endpoints](#endpoints)
 - [Features](#features)
 - [Vue Client Setup](#vue-client-setup)
 - [Database Configuration](#mysql-database-access)
 - [Contributing](#contributing)
 - [License](#license)
+- [Details](#details)
 
 ---
 
@@ -43,10 +46,22 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
 ### Frontend
 - **Framework**: Vue.js (Client-side)
 - **Build Tool**: npm for dependency management and script automation
+- **Vue App URL**: `http://localhost:5174`. (For development app build)
+- **Development Environment**: The Vue App is served by `vue-cli-service` and is instaled from [/client/app/Dockerfile.dev](/client/app/Dockerfile.dev)
+- **Key Development Features**: This setup provides **hot module replacement (HMR)**, allowing for instant updates in the browser as you make code changes without losing application state.
 
 ---
 
 ## Setup Instructions
+
+### Prerequisites
+The only prerequirement is to have Docker Desktop or Podman Desktop:
+- Docker Desktop: For Windows, Mac and Linux.   
+    1 - Installation Guide: [https://docs.docker.com/desktop/](https://docs.docker.com/desktop/)     
+
+- Podman Desktop - For Windows, Mac and Linux. Is optimized for RPM-based Linux distributions.    
+    1 - Installation Guide: [https://podman-desktop.io/docs/installation](https://podman-desktop.io/docs/installation)   
+    2 - Setting up Compose: https://podman-desktop.io/docs/compose/setting-up-compose
 
 ### Step 1: Clone the Repository
 Clone the repository to your local machine:
@@ -58,7 +73,7 @@ cd <project-directory>
 ### Step 2: Edit Passwords and Environment Variables
 Edit the environment variable values in the following files:
 
-- `/.env`
+- `/.env.example`
 - `/web/app/.env.example`
 
 ### Step 3: Rename `.env.example` Files to `.env`
@@ -73,18 +88,26 @@ mv web/app/.env.example web/app/.env
 To start the project with Docker, run the following in your terminal:
 
 ```bash
-docker-compose up --build
+docker-compose up --build -d
+```
+OR
+```bash
+podman-compose up -d
 ```
 
 This will:
 - Build the images for PHP, MySQL, and other services.
-- Expose the services on port `8080` (PHP) and `3306` (MySQL).
+- Expose the services on port `8080` (PHP), `5174` (VUE ) `3306` (MySQL).
 - Automatically load MySQL data from the provided SQL script for initialization.
 
-> To stop the containers, use:
+> To stop all containers for this project, use:
 
 ```bash
 docker-compose down
+```
+OR
+```bash
+podman-compose down
 ```
 
 ### Step 5: Access the Application
@@ -103,8 +126,8 @@ This will launch the client on [http://localhost:5174/](http://localhost:5174/).
 
 ------
 
-## Sample data, default credentials and passwords
-When database image is being built, a SQL script is loaded from db/init/script.sql to insert initial sample data such as tickets, messages and users.
+## Database and passwords
+The MySQL database configuration is automatically handled by `docker-compose.yml`. The SQL initialization script ( [/db/init/script.sql](/db/init/script.sql) ) creates necessary database tables and inserts initial sample data such as tickets, messages and users.
 
 > Info: All default users have the password: `test@test.com`
 
@@ -203,11 +226,11 @@ INSERT INTO user_roles (user_id, role_id) VALUES
 ```
 ------
 
-### Endpoints:
+## Endpoints:
 
-### GET  
+### GET Requests  
 > Retrieve user tickets.
-### http://localhost:8080/users/tickets
+### `GET http://localhost:8080/users/ticket`
 
 Request model:
 ```curl
@@ -218,7 +241,7 @@ curl --location 'http://localhost:8080/users/tickets' \
 Sample response:
 
 
-### http://localhost:8080/tickets/{id}
+### `GET http://localhost:8080/tickets/{id}`
 > Retrieve a ticket by id.
 
 Request model:
@@ -229,8 +252,21 @@ curl --location 'http://localhost:8080/tickets/8' \
 
 Sample response:
 
-### http://localhost:8080/tickets/open
+### `GET http://localhost:8080/tickets/open`
 > Retrieve pending tickets or not answered.
+
+Request model:
+
+```curl
+curl --location 'http://localhost:8080/tickets/open' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDc3ODQyMDksImV4cCI6MTc0Nzg3MDYwOSwiZGF0YSI6eyJpZCI6MSwicm9sZXMiOlsiYWRtaW4iXX19.L8mN1B4sXae7M7kOjyXabEjZWLngAKO34Ee7gvI2U2g'
+```
+
+Sample response:
+
+### `GET http://localhost:8080/tickets/interactions`
+> Retrieve unique tickets with at least one message sent by the requesting user.
 
 Request model:
 
@@ -244,7 +280,7 @@ Sample response:
 
 
 
-### http://localhost:8080/tickets/{id}/messages
+### `GET http://localhost:8080/tickets/{id}/messages`
 > Retrieve ticket messages.
 
 Resquest model:
@@ -270,9 +306,9 @@ Sample response:
 ]
 ```
 
-## POST  
+### POST Requests  
 
-### http://localhost:8080/users/tickets 
+### `POST http://localhost:8080/users/tickets`
 > Create a new ticket.
 
 Request model: 
@@ -295,7 +331,7 @@ STATUS CODE 201
 }
 ```
 
-### http://localhost:8080/auth/login
+### `POST http://localhost:8080/auth/login`
 
 Request model:
 >  Description: Sign in with user credentials.
@@ -318,7 +354,7 @@ Sample response:
 }
 ```
 
-### http://localhost:8080/auth/register
+### `POST http://localhost:8080/auth/register`
 > Description : Register a new user.
 Request model:
 ```curl
@@ -340,7 +376,7 @@ Status Code 201 (Created)
 }
 ```
 
-### http://localhost:8080/auth/authenticate
+### `POST http://localhost:8080/auth/authenticate`
 > Verify if JWT Token is invalid, if not sends user id and user role.
 
 Request model: 
@@ -361,7 +397,7 @@ Sample response:
 ```
 
 
-### http://localhost:8080/tickets/{id}/messages 
+### `POST http://localhost:8080/tickets/{id}/messages` 
 > Create a new message on ticket {id}. 
 
 
@@ -387,7 +423,7 @@ Sample response:
 
 ---
 
-## Feature
+## Features
 
 This application is designed with the following key features:
 
@@ -408,33 +444,6 @@ This application is designed with the following key features:
 - CORS headers to enable safe cross-origin requests.
 - Vue.js route guards to protect sensitive pages based on roles.
 
----
-
-## Vue Client Setup
-
-### Steps to Run the Client:
-1. Navigate to the client directory:
-   ```bash
-   cd client/app
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run serve
-   ```
-
-Your Vue client should now be running at [http://localhost:5174/](http://localhost:5174/).
-
----
-
-## MySQL Database Access
-
-The MySQL database configuration is automatically handled by `docker-compose.yml`. The SQL initialization script (`script.sql`) is included to help you get started with the necessary database tables and data.
 
 ---
 

@@ -3,7 +3,7 @@ import { getUserToken } from "@/services/authService";
 
 const supportService = {
   
-  async assistTicket() {
+  async assistTicket(ticketId) {
     const token = getUserToken();
     
     if (!token) {
@@ -11,9 +11,14 @@ const supportService = {
     }
     
     try {
+      // Change ticket status to in_progress
       let newTicketStatus = 'in_progress';
-      const response = await api.get(
-        API_ENDPOINTS.TICKETS.BY_STATUS(newTicketStatus),
+
+      const response = await api.post(
+        API_ENDPOINTS.TICKETS.BY_ID(ticketId),
+        {
+          newStatus: newTicketStatus
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,

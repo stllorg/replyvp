@@ -22,6 +22,32 @@ class TicketRepository {
         return $ticket;
     }
 
+    public function update(Ticket $editedTicket): bool {
+        $ticketId = $editedTicket->getId();
+        $updatedSubject = $editedTicket->getSubject();
+        $updatedStatus = $editedTicket->getStatus();
+
+        if ($updatedStatus != null && $updatedStatus != null) {
+            $stmt = $this->db->prepare("UPDATE tickets SET subject = ?, status = ? WHERE id = ?");
+            $stmt->bind_param("ssi", $updatedSubject, $updatedStatus, $ticketId);
+            $stmt->execute();
+
+            return $stmt->affected_rows > 0;
+        } else if ($updatedSubject != null && $updatedStatus == null) {
+            $stmt = $this->db->prepare("UPDATE tickets SET subject = ? WHERE id = ?");
+            $stmt->bind_param("si", $updatedSubject, $ticketId);
+            $stmt->execute();   
+
+            return $stmt->affected_rows > 0;
+        } else if ($updatedSubject == null && $updatedStatus != null && ) {
+            $stmt = $this->db->prepare("UPDATE tickets SET status = ? WHERE id = ?");
+            $stmt->bind_param("si", $updatedStatus, $ticketId);
+            $stmt->execute();   
+
+            return $stmt->affected_rows > 0;
+        }
+    }
+
     public function findByUserId($userId): array {
         $stmt = $this->db->prepare("SELECT id, subject, status, created_at FROM tickets WHERE user_id = ?");
         $stmt->bind_param("i", $userId);

@@ -1,12 +1,10 @@
 
 // Public
-import AppHome from '../views/HomePage.vue';
+import HomePage from '../views/HomePage.vue';
 import ContactUs from '@/views/ContactUs.vue';
 import TermsPage from '@/views/TermsPage.vue';
 import PrivacyPolicyPage from '@/views/PrivacyPolicyPage.vue';
 import NotFoundPage from '@/views/NotFoundPage.vue';
-import RegisterPage from '@/views/RegisterPage.vue';
-import LoginPage from '@/views/LoginPage.vue';
 
 // Logged users
 import DashboardPage from '@/views/DashboardPage.vue';
@@ -30,11 +28,11 @@ import FinishedList from '@/views/admin/FinishedList.vue';
 import AdminRolesPage from '@/views/admin/AdminRolesPage.vue';
 
 export const routes = [
-  { path: '/', name: 'AppHome', component: AppHome },
+  { path: '/', name: 'HomePage', component: HomePage },
   { path: '/:catchAll(.*)', name: 'NotFoundPage', component: NotFoundPage},
   { path: '/contact', name: 'ContactUs', component: ContactUs},
-  { path: '/login', name: 'LoginPage', component: LoginPage},
-  { path: '/register', name: 'RegisterPage', component: RegisterPage},
+  { path: '/login', redirect: '/'},
+  { path: '/register', redirect: '/'},
   { path: '/policy', name: 'PrivacyPolicyPage', component: PrivacyPolicyPage},
   { path: '/terms', name: 'TermsPage', component: TermsPage},
   { path: '/dashboard', name: 'DashboardPage', component: DashboardPage, meta: { requiresAuth: true }},

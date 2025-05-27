@@ -102,7 +102,7 @@
 
         <div class="text-center mt-4">
           <p>
-            &copy; {{ new Date().getFullYear() }} IA.ContactCenter. Todos os direitos
+            &copy; {{ new Date().getFullYear() }} REPLYVP. Todos os direitos
             reservados.
           </p>
         </div>

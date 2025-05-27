@@ -38,7 +38,7 @@
             style="background-color: #f8f9fa; border: none"
           >
             <div>
-              <small class="text-muted">ticket.createdAt</small>
+              <small class="text-muted">{{ formatFullDateTime(ticket.createdAt) }}</small>
             </div>
             <div
               class="text-truncate text-secondary text-decoration-underline"
@@ -51,7 +51,7 @@
                     ticketId: ticket.id,
                   },
                 }"
-              class="text-truncate text-secondary subject-link">ticket.subject</router-link>
+              class="text-truncate text-secondary subject-link">{{ truncateText(ticket.subject) }}</router-link>
             </div>
             <div class="d-flex">
               <button
@@ -95,7 +95,6 @@
                   },
                 }"
               class="text-truncate text-secondary subject-link">{{ truncateText(ticket.subject) }}</router-link>
-              <a  v-if="ticket.id == 0" href="#" class="text-truncate text-secondary subject-link">{{ truncateText(ticket.subject) }}</a>
             </div>
             <div class="d-flex">
               <button
@@ -213,8 +212,8 @@ const loadInteractionsData = (data = []) => {
     };
 
     const retrievedUserTicket = {
-      id: item,
-      subject: item.subject ?? "-",
+      id: item.id,
+      subject: item.subject,
       status: statusMap[item.status] || "Desconhecido",
       createdAt: item.createdAt ?? new Date().toISOString(),
     };

@@ -149,4 +149,81 @@ class TicketController {
             return null;
         }
     }
+
+    public function updateTicket($id): void {
+        $user = $this->authenticate();
+        if (!$user) return;
+
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        if (!isset($data['status']) && !isset($data['subject'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing updated data']);
+            return;
+        }
+
+        // Check if status is invalid
+        if (isset($data['status'])) {
+            if ($data['status'] != 'open' && $data['status'] != 'in_progress' && $data['status'] != 'closed') {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid status data']);
+                return;
+            }
+        }
+
+
+
+        try {
+            $ticket = $this->ticketService->getTicketById((int)$id);
+            if (!$ticket) {
+                sendResponse(404, ['error' => 'Ticket not found']);
+                return;
+            }
+
+            // Check if USER is NOT the Ticket Creator or Staff member 
+            $userId = $user['userId'];
+            $ticketCreatorId = $ticket->getUserId();
+
+            if ($userId != $ticketCreatorId) {
+
+                $guestRoles = $this->userService->getUserRolesByUserId($userId);
+                $isGuestStaff = in_array("admin", $guestRoles);
+                
+                if (!$isGuestStaff) { // Check if is not staff
+                    http_response_code(403);
+                    echo json_encode(["error" => "You do not have permission to access this ticket."]);
+                    return;
+                }
+            }
+
+            $editedSubject = null;
+            $editedStatus = null;
+
+            if (isset($data['subject'])) {
+                if ($userId != $ticketCreatorId) { // Check if is the ticket creator
+                    http_response_code(403);
+                    echo json_encode(["error" => "Only ticket creator can update ticket subject."]);
+                    return;
+                }
+
+                $editedSubject = $data['subject'];
+            } else if (isset($data['status'])) {
+                $editedStatus = $data['status'];
+            }
+
+            $editedTicket = new Ticket(
+                id: $id,
+                subject: $editedSubject,
+                status: $editedStatus,
+                createdAt: null;
+
+            $this->ticketService->updateTicket($editedTicket);
+        
+            http_response_code(204);
+            return;
+        } catch (\Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
 } 

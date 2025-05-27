@@ -37,4 +37,8 @@ class TicketService {
         $creatorUserId = $this->ticketRepository->findCreatorIdByTicketId($ticketId);
         return $creatorUserId;
     }
+
+    public function updateTicket(Ticket $updatedTicket): ?Ticket {
+        return $this->ticketRepository->update($updatedTicket);
+    }
 } 

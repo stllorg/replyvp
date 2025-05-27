@@ -108,6 +108,7 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
         ],
         'PATCH' => [
             'users/{id}/roles'       => [$userController, 'updateUserRole'],
+            'tickets/{id}'           => [$ticketController, 'updateTicket']
         ],
     ];
 

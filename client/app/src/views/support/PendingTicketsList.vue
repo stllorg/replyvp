@@ -111,7 +111,7 @@ const getTickets = async () => {
 const assistTicket = async (ticketId) => {
   try {
     const token = supportUser.value.token;
-    const response = await supportService.assistTicket(ticketId, token);
+    const response = await supportService.assistTicket(ticketId);
     if (response.status === 200) {
       console.log("Autorização recebida para tratar o ticket escolhido");
       redirectToReplyTicket(ticketId);

@@ -1,20 +1,10 @@
 <template>
   <div class="container mt-4">
-    <div class="card shadow mb-4 border-0" style="background-color: #f8f9fa">
-      <div class="card-body text-center">
-        <img src="https://placehold.co/50x50.png" alt="Foto do usuário" class="rounded-circle mb-3 shadow"
-          style="width: 120px; height: 120px; border: 4px solid #dee2e6" />
-        <h5 class="card-title text-secondary fw-bold">
-          {{ user.username }}
-          <i class="bi bi-pencil-square btn btn-secondary p-2" @click="redirectToUpdateUserPage" role="button"
-            title="Atualizar Cadastro">
-          </i>
-        </h5>
-        <p class="card-text text-muted">{{ user.roles.join(" | ") }}</p>
-      </div>
-    </div>
-    <InteractionsBoard v-if="showInteractions" :interactions="interactionsList" @view-messages="goToMessages" @archive-ticket="archiveTicket" />
-    <TicketsBoard v-if="showTicketsBoard" :interactions="userTicketsList" @view-messages="goToMessages" @archive-ticket="archiveTicket" />
+    <StaffPanel v-if="showStaffContent" />
+    <UserProfileCard v-if="showUserContent" :user="user" />
+    <TicketsBoard v-if="showStaffContent" :tickets="pendingTicketsList" @view-messages="goToMessages" @archive-ticket="archiveTicket" />
+    <InteractionsBoard v-if="showStaffContent" :interactions="interactionsList" @view-messages="goToMessages" @archive-ticket="archiveTicket" />
+    <TicketsBoard v-if="showUserContent" :tickets="userTicketsList" @view-messages="goToMessages" @archive-ticket="archiveTicket" />
   </div>
 </template>
 
@@ -27,6 +17,8 @@ import { useAuthStore } from "@/stores/authStore";
 import { computed } from 'vue';
 import InteractionsBoard from '@/components/InteractionsBoard.vue';
 import TicketsBoard from "@/components/TicketsBoard.vue";
+import UserProfileCard from "@/components/UserProfileCard.vue";
+import StaffPanel from "@/components/StaffPanel.vue";
 
 const router = useRouter();
 const toast = useToast();
@@ -36,6 +28,7 @@ const user = authStore.user;
 const filteredTickets = ref([]);
 const userTicketsList = ref([]);
 const interactionsList = ref([]);
+const pendingTicketsList = ref([]);
 
 onMounted(async () => {
   try {
@@ -56,6 +49,10 @@ onMounted(async () => {
       try {
         const response = await ticketService.getTicketsWithUserMessages();
         loadInteractionsData(response.data);
+
+        const pendingTickets = await ticketService.getPendingTickets();
+        loadPendingTickets(pendingTickets);
+
       } catch (err) {
         console.log(err);
       }
@@ -65,10 +62,6 @@ onMounted(async () => {
     toast.error("Ocorreu um erro ao conectar com o servidor!", { timeout: 3000 });
   }
 });
-
-const redirectToUpdateUserPage = () => {
-  router.push("/user/update");
-};
 
 const goToMessages = (id) => {
   router.push({
@@ -83,13 +76,14 @@ const archiveTicket = (id) => {
   console.log("No logic to archive ticket:", id);
 };
 
-const showInteractions = computed(() =>
+const showStaffContent = computed(() =>
   ['admin', 'manager', 'support'].some(role => user.roles.includes(role))
 )
 
-const showTicketsBoard = computed(() =>
+const showUserContent = computed(() =>
   ['user'].some(role => user.roles.includes(role))
 )
+
 
 const loadUserData = (data = []) => {
   data.forEach((item) => {
@@ -107,6 +101,25 @@ const loadUserData = (data = []) => {
     };
 
     userTicketsList.value.push(retrievedUserTicket);
+  });
+};
+
+const loadPendingTickets = (data = []) => {
+  data.forEach((item) => {
+    const statusMap = {
+      open: "Aberta",
+      closed: "Fechada",
+      in_progress: "Em andamento",
+    };
+
+    const retrievedUserTicket = {
+      id: item.id,
+      subject: item.subject,
+      status: statusMap[item.status] || "Desconhecido",
+      createdAt: item.createdAt,
+    };
+
+    pendingTicketsList.value.push(retrievedUserTicket);
   });
 };
 

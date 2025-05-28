@@ -3,12 +3,12 @@
     <div class="card-body">
       <h5 class="card-title text-secondary fw-bold">Atendimentos do Usuário</h5>
 
-      <ul v-if="userTicketsList.length === 0" class="list-group list-group-flush">
+      <ul v-if="tickets?.length === 0" class="list-group list-group-flush">
         <p class="text-center text-truncate text-secondary">Sem histórico de tickets.</p>
       </ul>
 
       <ul v-else class="list-group list-group-flush">
-        <li v-for="ticket in userTicketsList" :key="ticket.id"
+        <li v-for="ticket in tickets" :key="ticket.id"
           class="list-group-item d-flex justify-content-between align-items-center"
           style="background-color: #f8f9fa; border: none">
           <div>
@@ -40,11 +40,11 @@
 <script setup>
 import { formatFullDateTime } from "@/utils/dateUtils";
 
-const props = defineProps({
-  userTicketsList: Array,
+defineProps({
+  tickets: Array,
 })
 
-const emit = defineEmits(['view-messages', 'archive-ticket'])
+defineEmits(['view-messages', 'archive-ticket'])
 
 function truncate(text, maxLength = 40) {
   return text?.length > maxLength ? text.slice(0, maxLength) + '…' : text

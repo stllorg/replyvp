@@ -113,16 +113,8 @@ podman-compose down
 ### Step 5: Access the Application
 Once the containers are up and running, you can access the application:
 
-#### Launch Vue
-For the Vue client (development mode):
-
-```bash
-cd client/app
-npm install
-npm run serve
-```
-
-This will launch the client on [http://localhost:5174/](http://localhost:5174/).
+The Vue App (client) is available on [http://localhost:5174/](http://localhost:5174/).
+To consult the API go to [Endpoints](#endpoits)
 
 ------
 

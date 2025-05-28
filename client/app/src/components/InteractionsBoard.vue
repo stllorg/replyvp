@@ -3,12 +3,12 @@
     <div class="card-body">
       <h5 class="card-title text-secondary fw-bold">Interações em tickets</h5>
 
-      <ul v-if="interactionsList.length === 0" class="list-group list-group-flush">
+      <ul v-if="interactions?.length === 0" class="list-group list-group-flush">
         <p class="text-center text-truncate text-secondary">Sem registros de interações</p>
       </ul>
 
       <ul v-else class="list-group list-group-flush">
-        <li v-for="ticket in interactionsList" :key="ticket.id"
+        <li v-for="ticket in interactions" :key="ticket.id"
           class="list-group-item d-flex justify-content-between align-items-center"
           style="background-color: #f8f9fa; border: none">
           <div>
@@ -39,11 +39,11 @@
 </template>
 
 <script setup>
-const props = defineProps({
-  interactionsList: Array,
+defineProps({
+  interactions: Array,
 })
 
-const emit = defineEmits(['view-messages', 'archive-ticket'])
+defineEmits(['view-messages', 'archive-ticket'])
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleString('pt-BR')

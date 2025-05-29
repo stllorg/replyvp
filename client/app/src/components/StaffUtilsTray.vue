@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex align-items-center justify-content-center">
     <div class="bg-white p-4 p-sm-5 rounded-3 shadow-lg w-100 tray-boundary">
-      <div class="row row-cols-1 row-cols-sm-2 g-3">
+      <div class="row row-cols-1 g-3">
         <div class="col">
           <button class="btn btn-primary d-flex align-items-center justify-content-center w-100 py-3 px-4 shadow-sm">
             <i class="bi bi-ticket-perforated-fill me-2 fs-4"></i>

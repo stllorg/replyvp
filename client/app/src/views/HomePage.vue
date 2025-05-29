@@ -161,12 +161,12 @@
 }
 
 .main-concept {
-  color: black; /* Or any color you prefer for the text */
+  color: black;
   padding: 20px;
   position: absolute;
   top: 25%;
   left: 5%;
-  border-radius: 10px; /* Optional: Add rounded corners */
+  border-radius: 10px;
   text-align: left;
   z-index: 20;
 }
@@ -189,15 +189,15 @@
 @keyframes slideUpAndFadeOut {
   0% {
     top: 25%;
-    opacity: 1; /* Start fully visible */
+    opacity: 1;
   }
-  40% { /* Adjust this percentage if you want the fade to start earlier/later */
+  40% {
     top: 2%;
-    opacity: 1; /* Still fully visible during the slide */
+    opacity: 1;
   }
   100% {
     top: 2%;
-    opacity: 0; /* Fully transparent at the end */
+    opacity: 0;
   }
 }
 </style>
@@ -212,17 +212,11 @@ import userService from "@/services/userService";
 const router = useRouter();
 const toast = useToast();
 const authStore = useAuthStore();
-
-// Constants to Fade animation
 const isVisible = ref(true);
 const isVisibleB = ref(false);
 const animateAndHide = ref(false);
-
-// Tab constants
 const isLoginTabActive = ref(true);
 const isRegisterTabActive = ref(false);
-
-// Form constants
 const username = ref("");
 const password = ref("");
 const email = ref("");
@@ -268,7 +262,7 @@ const handleUserSignIn = async () => {
   } catch (err) {
     error.value = "Erro ao tentar fazer login.";
   }
-  // Clear fields to force retype login info
+
   username.value = "";
   password.value = "";
 };
@@ -292,7 +286,7 @@ const register = async () => {
   }
 };
 
-// Change tabs
+
 const setActiveTab = (tabName) => {
   if (tabName === 'login') {
     username.value = "";

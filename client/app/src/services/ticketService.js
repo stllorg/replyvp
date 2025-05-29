@@ -3,7 +3,7 @@ import { getUserToken } from "@/services/authService";
 
 
 const ticketService = {
-  async getTickets() { // Get tickets from the logged user
+  async getTickets() {
     const token = getUserToken();
 
     if (!token) {
@@ -37,7 +37,7 @@ const ticketService = {
       });
 
       if (response.status === 200) {
-        return response.data.tickets;
+        return response.data;
       }
     } catch (error) {
       console.error("Erro ao buscar tickets:", error);

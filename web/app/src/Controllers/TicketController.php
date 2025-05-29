@@ -4,6 +4,7 @@ namespace ReplyVP\Controllers;
 
 use ReplyVP\Services\TicketService;
 use ReplyVP\Services\AuthService;
+use ReplyVP\Entities\Ticket;
 
 class TicketController {
     private $ticketService;
@@ -128,25 +129,35 @@ class TicketController {
     }
 
     // Validates admin, if sucess returns all pending tickets from database.
-    public function getAllPendingTickets(): ?array {
+    public function getAllPendingTickets(): void {
         $admin = $this->authenticate();
-        if (!$admin) return null;
+        if (!$admin) return;
         if (!isset($admin['roles']) || !in_array("admin", $admin['roles'])) {
             http_response_code(403);
             echo json_encode(["error" => "The 'admin' role is required to access this resource."]);
-            return null;
+            return;
 
         };
 
         try {
-            $tickets[] = $this->ticketService->getAllOpenTickets();
+            $tickets = $this->ticketService->getAllOpenTickets();
+            $formattedOutputTickets = array_map(function($ticket) {
+
+                return [
+                    'id' => $ticket['id'],
+                    'subject' => $ticket['subject'],
+                    'status' => 'open',
+                    'createdAt' => new \DateTime($ticket['created_at']),
+                ];
+            }, $tickets);
+
             header('Content-Type: application/json');
-            echo json_encode($tickets);
-            return null;
+            echo json_encode($formattedOutputTickets);
+            return;
         } catch (\Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
-            return null;
+            return;
         }
     }
 

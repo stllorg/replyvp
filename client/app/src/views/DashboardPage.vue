@@ -1,10 +1,28 @@
 <template>
   <div class="container mt-4">
-    <StaffPanel v-if="showStaffContent" />
+    <StaffPanel v-if="showStaffContent" @display-area="handleDisplayArea" />
+    <TicketsBoard
+      v-if="displayArea === 'pending' && showStaffContent"
+      :boardTitle="boardsTitles.pendingTickets"
+      :tickets="pendingTicketsList"
+      @view-messages="goToMessages"
+      @archive-ticket="archiveTicket"
+    />
+    <InteractionsBoard
+      v-if="displayArea === 'search' && showStaffContent"
+      :boardTitle="boardsTitles.interactions"
+      :interactions="interactionsList"
+      @view-messages="goToMessages"
+      @archive-ticket="archiveTicket"
+    />
     <UserProfileCard v-if="showUserContent" :user="user" />
-    <TicketsBoard v-if="showStaffContent" :tickets="pendingTicketsList" @view-messages="goToMessages" @archive-ticket="archiveTicket" />
-    <InteractionsBoard v-if="showStaffContent" :interactions="interactionsList" @view-messages="goToMessages" @archive-ticket="archiveTicket" />
-    <TicketsBoard v-if="showUserContent" :tickets="userTicketsList" @view-messages="goToMessages" @archive-ticket="archiveTicket" />
+    <TicketsBoard
+      v-if="showUserContent"
+      :boardTitle="boardsTitles.userTickets"
+      :tickets="userTicketsList"
+      @view-messages="goToMessages"
+      @archive-ticket="archiveTicket"
+    />
   </div>
 </template>
 
@@ -14,21 +32,31 @@ import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/authStore";
-import { computed } from 'vue';
-import InteractionsBoard from '@/components/InteractionsBoard.vue';
+import { computed } from "vue";
+import InteractionsBoard from "@/components/InteractionsBoard.vue";
 import TicketsBoard from "@/components/TicketsBoard.vue";
 import UserProfileCard from "@/components/UserProfileCard.vue";
 import StaffPanel from "@/components/StaffPanel.vue";
 
 const router = useRouter();
-const toast = useToast();
 const authStore = useAuthStore();
+const toast = useToast();
 
 const user = authStore.user;
 const filteredTickets = ref([]);
 const userTicketsList = ref([]);
 const interactionsList = ref([]);
 const pendingTicketsList = ref([]);
+
+const displayArea = ref(null);
+const handleDisplayArea = (areaName) => {
+  displayArea.value = areaName;
+};
+const boardsTitles = {
+  userTickets: "Meus tickets",
+  pendingTickets: "Tickets de casos abertos",
+  interactions: "Histórico de Interações",
+};
 
 onMounted(async () => {
   try {
@@ -45,27 +73,32 @@ onMounted(async () => {
         console.log("Falha ao obter lista de tickets...");
         console.log(err);
       }
-    } else if (user.roles.includes("support") || user.roles.includes("manager") || user.roles.includes("admin")) {
+    } else if (
+      user.roles.includes("support") ||
+      user.roles.includes("manager") ||
+      user.roles.includes("admin")
+    ) {
       try {
         const response = await ticketService.getTicketsWithUserMessages();
         loadInteractionsData(response.data);
 
         const pendingTickets = await ticketService.getPendingTickets();
         loadPendingTickets(pendingTickets);
-
       } catch (err) {
         console.log(err);
       }
     }
   } catch (err) {
     console.log(err);
-    toast.error("Ocorreu um erro ao conectar com o servidor!", { timeout: 3000 });
+    toast.error("Ocorreu um erro ao conectar com o servidor!", {
+      timeout: 3000,
+    });
   }
 });
 
 const goToMessages = (id) => {
   router.push({
-    name: 'MessagesPage',
+    name: "MessagesPage",
     query: {
       ticketId: id,
     },
@@ -77,13 +110,12 @@ const archiveTicket = (id) => {
 };
 
 const showStaffContent = computed(() =>
-  ['admin', 'manager', 'support'].some(role => user.roles.includes(role))
-)
+  ["admin", "manager", "support"].some((role) => user.roles.includes(role))
+);
 
 const showUserContent = computed(() =>
-  ['user'].some(role => user.roles.includes(role))
-)
-
+  ["user"].some((role) => user.roles.includes(role))
+);
 
 const loadUserData = (data = []) => {
   data.forEach((item) => {
@@ -106,16 +138,10 @@ const loadUserData = (data = []) => {
 
 const loadPendingTickets = (data = []) => {
   data.forEach((item) => {
-    const statusMap = {
-      open: "Aberta",
-      closed: "Fechada",
-      in_progress: "Em andamento",
-    };
-
     const retrievedUserTicket = {
       id: item.id,
       subject: item.subject,
-      status: statusMap[item.status] || "Desconhecido",
+      status: item.status,
       createdAt: item.createdAt,
     };
 
@@ -141,8 +167,6 @@ const loadInteractionsData = (data = []) => {
     interactionsList.value.push(retrievedUserTicket);
   });
 };
-
-
 </script>
 
 <style>

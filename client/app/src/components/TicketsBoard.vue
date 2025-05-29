@@ -1,7 +1,7 @@
 <template>
   <div class="card shadow border-0" style="background-color: #f8f9fa">
     <div class="card-body">
-      <h5 class="card-title text-secondary fw-bold">Atendimentos do Usuário</h5>
+      <h5 class="card-title text-secondary fw-bold">{{ boardTitle }}</h5>
 
       <ul v-if="tickets?.length === 0" class="list-group list-group-flush">
         <p class="text-center text-truncate text-secondary">Sem histórico de tickets.</p>
@@ -41,6 +41,7 @@
 import { formatFullDateTime } from "@/utils/dateUtils";
 
 defineProps({
+  boardTitle: String,
   tickets: Array,
 })
 

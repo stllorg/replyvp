@@ -1,7 +1,7 @@
 <template>
   <div class="card shadow border-0" style="background-color: #f8f9fa">
     <div class="card-body">
-      <h5 class="card-title text-secondary fw-bold">Interações em tickets</h5>
+      <h5 class="card-title text-secondary fw-bold">{{ boardTitle }}</h5>
 
       <ul v-if="interactions?.length === 0" class="list-group list-group-flush">
         <p class="text-center text-truncate text-secondary">Sem registros de interações</p>
@@ -40,6 +40,7 @@
 
 <script setup>
 defineProps({
+  boardTitle: String,
   interactions: Array,
 })
 

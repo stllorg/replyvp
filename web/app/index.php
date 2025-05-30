@@ -83,7 +83,7 @@ $messageService = new MessageService($messageRepository, $ticketService, $userSe
 $authController = new AuthController($authService);
 $ticketController = new TicketController($ticketService, $authService);
 $messageController = new MessageController($messageService, $authService, $userService, $ticketService);
-$userController = new UserController($userService, $authService);
+$userController = new UserController($userService, $authService, $messageService);
 
 // Parse request URI
 $uri = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'));

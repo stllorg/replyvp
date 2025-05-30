@@ -3,7 +3,7 @@ import { getUserToken } from "@/services/authService";
 
 export async function registerUser(username, email, password) {
   try{
-  const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, {
+  const response = await api.post(API_ENDPOINTS.USERS.ROOT, {
       username: username,
       email: email,
       password: password,

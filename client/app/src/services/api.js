@@ -18,7 +18,6 @@ export const API_ENDPOINTS = {
     },
     AUTH: {
       ROOT: '/auth',
-      REGISTER: '/users',
       LOGIN:'/auth/login',
       AUTHENTICATE:'/auth/authenticate',
     },

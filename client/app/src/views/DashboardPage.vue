@@ -105,11 +105,11 @@ const handleDisplayArea = async (areaName) => {
   if (areaName === "pending") {
     try {
       const response = await ticketService.getPendingTickets();
-      if (!response.ok) {
+      if (response.status != 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      loadPendingTickets(response);
+      loadPendingTickets(response.data);
       displayArea.value = "pending";
     } catch (err) {
       console.log("Failed to fetch data:", err);
@@ -120,7 +120,7 @@ const handleDisplayArea = async (areaName) => {
     try {
       const response = await getTicketsWithUserMessages();
 
-      if (!response.ok) {
+      if (response.status != 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       loadInteractionsData(response.data);

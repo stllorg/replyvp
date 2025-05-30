@@ -1,6 +1,7 @@
 <template>
   <div class="container mt-4">
     <StaffPanel v-if="showStaffContent" @display-area="handleDisplayArea" />
+    <LoadingComponent v-if="loading" />
     <TicketsBoard
       v-if="displayArea === 'pending' && showStaffContent"
       :boardTitle="boardsTitles.pendingTickets"
@@ -37,6 +38,7 @@ import InteractionsBoard from "@/components/InteractionsBoard.vue";
 import TicketsBoard from "@/components/TicketsBoard.vue";
 import UserProfileCard from "@/components/UserProfileCard.vue";
 import StaffPanel from "@/components/StaffPanel.vue";
+import LoadingComponent from "@/components/LoadingComponent.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -49,9 +51,18 @@ const interactionsList = ref([]);
 const pendingTicketsList = ref([]);
 
 const displayArea = ref(null);
+const loading = ref(false);
+
 const handleDisplayArea = (areaName) => {
-  displayArea.value = areaName;
+  loading.value = true;
+  displayArea.value = null;
+
+  setTimeout(() => {
+    displayArea.value = areaName;
+    loading.value = false;
+  }, 800); 
 };
+
 const boardsTitles = {
   userTickets: "Meus tickets",
   pendingTickets: "Tickets de casos abertos",

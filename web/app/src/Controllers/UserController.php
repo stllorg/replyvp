@@ -140,10 +140,11 @@ class UserController {
         }
     }
 
-    public function fetchUsers($page , $limit = 15 ): void {
+    public function fetchUsers(): void {
         $user = $this->authenticate();
         if (!$user) return;
-        $data = json_decode(file_get_contents('php://input'), true);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 15;
 
         try {
 
@@ -159,7 +160,7 @@ class UserController {
                 return;
             }
 
-            $users = $this->userService->getUsers($page, limit = 15);
+            $users = $this->userService->getUsers($page, $limit = 15);
 
             if (!$users) {
                 sendResponse(404, ['error' => 'Users not found']);

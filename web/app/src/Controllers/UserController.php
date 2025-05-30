@@ -5,16 +5,19 @@ namespace ReplyVP\Controllers;
 use ReplyVP\Services\UserService;
 use ReplyVP\Services\AuthService;
 use ReplyVP\Services\MessageService;
+use ReplyVP\Services\TicketService;
 
 class UserController {
     private $userService;
     private $authService;
     private $messageService;
+    private $ticketService;
 
-    public function __construct(UserService $userService, AuthService $authService, MessageService $messageService) {
+    public function __construct(UserService $userService, AuthService $authService, MessageService $messageService, TicketService $ticketService) {
         $this->userService = $userService;
         $this->authService = $authService;
         $this->messageService = $messageService;
+        $this->ticketService = $ticketService;
     }
 
     // Validate token, if valid returns an array with userId and userRoles

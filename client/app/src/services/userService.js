@@ -98,7 +98,7 @@ export async function getUserById(userId) {
   }
 }
 
-export async function getAllUsers(page, usersPerPage = 15) {
+export async function getAllUsers(page = 1, usersPerPage = 15) {
   const token = getUserToken();
     
   if (!token) {

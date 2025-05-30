@@ -14,7 +14,6 @@ export const API_ENDPOINTS = {
       ROOT: '/users',
       BY_ID: (id) => `/users/${id}`,
       ROLES: (id) => `/users/${id}/roles`,
-      TICKETS: `/tickets`,
       INTERACTIONS: (id) => `/users/${id}/interactions`,
     },
     AUTH: {

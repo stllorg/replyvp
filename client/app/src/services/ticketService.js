@@ -10,7 +10,7 @@ const ticketService = {
       return false;
     }
     try {
-      const response = await api.get(API_ENDPOINTS.USERS.TICKETS, {
+      const response = await api.get(API_ENDPOINTS.TICKETS.ROOT, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,7 +51,7 @@ const ticketService = {
 
     try {
       const response = await api.post(
-        `${API_ENDPOINTS.USERS.TICKETS}`,
+        `${API_ENDPOINTS.TICKETS.ROOT}`,
         {
           subject: subject
         },

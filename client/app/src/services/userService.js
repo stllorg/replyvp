@@ -67,7 +67,7 @@ export async function updateUserRoleById(userId) {
       return response;
     }
 
-  } catch (err) {
+  } catch (error) {
     console.error("Erro ao obter usuário:", error);
     throw error;
   }

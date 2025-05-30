@@ -10,18 +10,24 @@
                 <a class="nav-link active" href="#">Já tem uma conta?</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" :class="{ 'active': isRegisterTabActive }" href="#" @click.prevent="setActiveTab('register')">Criar conta</a>
+                <a
+                  class="nav-link"
+                  :class="{ active: isRegisterTabActive }"
+                  href="#"
+                  @click.prevent="setActiveTab('register')"
+                  >Criar conta</a
+                >
               </li>
             </ul>
             <form @submit.prevent="handleUserSignIn">
               <div class="form-floating mb-3">
                 <input
-                type="text"
-                id="username"
-                class="form-control"
-                v-model="username"
-                placeholder=""
-                required
+                  type="text"
+                  id="username"
+                  class="form-control"
+                  v-model="username"
+                  placeholder=""
+                  required
                 />
                 <label for="username" class="form-label">Nome de usuário</label>
               </div>
@@ -40,10 +46,20 @@
                 {{ error }}
               </div>
               <div class="d-grid gap-2 mb-3">
-                <button type="submit" class="btn btn-primary">Fazer login</button>
+                <button type="submit" class="btn btn-primary">
+                  Fazer login
+                </button>
               </div>
-              <div class="mt-2" style="display: flex; flex-direction: column; align-items: center;">
-                <p>Não consegue entrar em sua conta?
+              <div
+                class="mt-2"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                "
+              >
+                <p>
+                  Não consegue entrar em sua conta?
                   <a href="#">Recuperar acesso</a>
                 </p>
               </div>
@@ -53,7 +69,13 @@
             <h2 class="card-title text-center mb-4">Registro</h2>
             <ul class="nav nav-tabs mb-4 justify-content-center">
               <li class="nav-item">
-                <a class="nav-link" :class="{ 'active': isLoginTabActive }" href="#" @click.prevent="setActiveTab('login')">Já tem uma conta?</a>
+                <a
+                  class="nav-link"
+                  :class="{ active: isLoginTabActive }"
+                  href="#"
+                  @click.prevent="setActiveTab('login')"
+                  >Já tem uma conta?</a
+                >
               </li>
               <li class="nav-item">
                 <a class="nav-link active" href="#">Criar conta</a>
@@ -62,34 +84,34 @@
             <form @submit.prevent="register">
               <div class="form-floating mb-3">
                 <input
-                type="text"
-                id="username"
-                class="form-control"
-                v-model="username"
-                placeholder=""
-                required
+                  type="text"
+                  id="username"
+                  class="form-control"
+                  v-model="username"
+                  placeholder=""
+                  required
                 />
                 <label for="username" class="form-label">Nome de usuário</label>
               </div>
               <div class="form-floating mb-3">
                 <input
-                type="email"
-                id="email"
-                class="form-control"
-                v-model="email"
-                placeholder="Digite seu endereço de email"
-                required
+                  type="email"
+                  id="email"
+                  class="form-control"
+                  v-model="email"
+                  placeholder="Digite seu endereço de email"
+                  required
                 />
                 <label for="email" class="form-label">Endereço de email</label>
               </div>
               <div class="form-floating mb-3">
                 <input
-                type="password"
-                id="password"
-                class="form-control"
-                v-model="password"
-                placeholder="Digite sua senha"
-                required
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  v-model="password"
+                  placeholder="Digite sua senha"
+                  required
                 />
                 <label for="password" class="form-label">Senha</label>
               </div>
@@ -103,7 +125,9 @@
                 />
                 <label class="form-check-label" for="permission">
                   Concordo com os
-                  <a href="#" target="_blank" rel="noopener noreferrer">Termos de Uso</a>
+                  <a href="#" target="_blank" rel="noopener noreferrer"
+                    >Termos de Uso</a
+                  >
                   e a
                   <a href="#" target="_blank" rel="noopener noreferrer"
                     >Política de Privacidade</a
@@ -114,30 +138,40 @@
                 {{ error }}
               </div>
               <div class="d-grid gap-2 mb-3">
-                <button type="submit" class="btn btn-primary">Cadastrar-se</button>
+                <button type="submit" class="btn btn-primary">
+                  Cadastrar-se
+                </button>
               </div>
             </form>
           </div>
         </div>
-
       </div>
-      <div v-if="isVisible" class="card-body col-8 main-concept" :class="{ 'fade-out-up': animateAndHide}">
+      <div
+        v-if="isVisible"
+        class="card-body col-8 main-concept"
+        :class="{ 'fade-out-up': animateAndHide }"
+      >
         <h5 class="card-title">Precisa de ajuda?</h5>
         <p class="card-text">
           Estamos prontos para analisar seu caso e resolver seu problema.
         </p>
       </div>
-      <div v-if="isVisibleB" class="card-body col-8 main-concept" :class="{ 'fade-out-up': animateAndHide}">
+      <div
+        v-if="isVisibleB"
+        class="card-body col-8 main-concept"
+        :class="{ 'fade-out-up': animateAndHide }"
+      >
         <h5 class="card-title">Está com pressa?</h5>
         <p class="card-text">
-          Abra seu ticket e faça suas coisas enquanto quando resolvemos seu problema.
+          Abra seu ticket e faça suas coisas enquanto quando resolvemos seu
+          problema.
         </p>
       </div>
       <div class="col-4">
         <img
-        src="/images/freepik-customer-support-flat-design-illustration.png"
-        class="illustration"
-        alt="Illustration - Customer Support ( Flat design)"
+          src="/images/freepik-customer-support-flat-design-illustration.png"
+          class="illustration"
+          alt="Illustration - Customer Support ( Flat design)"
         />
       </div>
     </div>
@@ -161,12 +195,12 @@
 }
 
 .main-concept {
-  color: black; /* Or any color you prefer for the text */
+  color: black;
   padding: 20px;
   position: absolute;
   top: 25%;
   left: 5%;
-  border-radius: 10px; /* Optional: Add rounded corners */
+  border-radius: 10px;
   text-align: left;
   z-index: 20;
 }
@@ -189,22 +223,22 @@
 @keyframes slideUpAndFadeOut {
   0% {
     top: 25%;
-    opacity: 1; /* Start fully visible */
+    opacity: 1;
   }
-  40% { /* Adjust this percentage if you want the fade to start earlier/later */
+  40% {
     top: 2%;
-    opacity: 1; /* Still fully visible during the slide */
+    opacity: 1;
   }
   100% {
     top: 2%;
-    opacity: 0; /* Fully transparent at the end */
+    opacity: 0;
   }
 }
 </style>
 
 <script setup>
 import { useAuthStore } from "@/stores/authStore";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 import userService from "@/services/userService";
@@ -212,17 +246,11 @@ import userService from "@/services/userService";
 const router = useRouter();
 const toast = useToast();
 const authStore = useAuthStore();
-
-// Constants to Fade animation
 const isVisible = ref(true);
 const isVisibleB = ref(false);
 const animateAndHide = ref(false);
-
-// Tab constants
 const isLoginTabActive = ref(true);
 const isRegisterTabActive = ref(false);
-
-// Form constants
 const username = ref("");
 const password = ref("");
 const email = ref("");
@@ -230,7 +258,6 @@ const permission = ref(false);
 const error = ref(null);
 
 onMounted(() => {
-
   if (authStore.isUserLogged) {
     redirectToDashBoard();
   }
@@ -242,7 +269,7 @@ onMounted(() => {
   setTimeout(() => {
     isVisible.value = false;
   }, 5100);
-  
+
   setTimeout(() => {
     isVisibleB.value = true;
 
@@ -251,7 +278,6 @@ onMounted(() => {
       animateAndHide.value = false;
       isVisible.value = true;
     }, 5100);
-
   }, 5100);
 });
 
@@ -268,7 +294,7 @@ const handleUserSignIn = async () => {
   } catch (err) {
     error.value = "Erro ao tentar fazer login.";
   }
-  // Clear fields to force retype login info
+
   username.value = "";
   password.value = "";
 };
@@ -280,9 +306,15 @@ const register = async () => {
     return;
   }
 
-  const response = await userService.registerUser(username.value, email.value, password.value);
+  const response = await userService.registerUser(
+    username.value,
+    email.value,
+    password.value
+  );
   if (response.status === 201) {
-    toast.success(`Você se registrou com sucesso ${username.value}`, { timeout: 6000 });
+    toast.success(`Você se registrou com sucesso ${username.value}`, {
+      timeout: 6000,
+    });
     username.value = "";
     password.value = "";
     email.value = "";
@@ -292,16 +324,15 @@ const register = async () => {
   }
 };
 
-// Change tabs
 const setActiveTab = (tabName) => {
-  if (tabName === 'login') {
+  if (tabName === "login") {
     username.value = "";
     password.value = "";
     email.value = "";
     permission.value = false;
     isLoginTabActive.value = true;
     isRegisterTabActive.value = false;
-  } else if (tabName === 'register') {
+  } else if (tabName === "register") {
     username.value = "";
     password.value = "";
     isLoginTabActive.value = false;
@@ -311,9 +342,9 @@ const setActiveTab = (tabName) => {
 
 const redirectToDashBoard = () => {
   router.push("/dashboard");
-}
+};
 
 const redirectToLogin = () => {
-  setActiveTab('register');
-}
+  setActiveTab("register");
+};
 </script>

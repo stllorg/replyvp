@@ -99,6 +99,7 @@ function routeRequest($uri, $authController, $ticketController, $messageControll
             'tickets/{id}/messages'  => [$messageController, 'createMessage'],
         ],
         'GET' => [
+            'users'                  => [$userController, 'fetchUsers'],
             'users/tickets'          => [$ticketController, 'getUserTickets'],
             'users/{id}/roles'       => [$userController, 'fetchUserRoles'],
             'tickets/open'           => [$ticketController, 'getAllPendingTickets'],

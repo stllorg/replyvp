@@ -1,24 +1,23 @@
 import api, { API_ENDPOINTS } from "./api";
 import { getUserToken } from "@/services/authService";
 
-const userService = {
+export async function registerUser(username, email, password) {
+  try{
+  const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, {
+      username: username,
+      email: email,
+      password: password,
+    });
+  if (response.status === 201) {
+    return response;
+  }
+  } catch(error) {
+    console.error("Erro ao registrar usuário:", error);
+    throw error;
+  }
+}
   
-  async registerUser(username, email, password) {
-    try{
-    const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, {
-        username: username,
-        email: email,
-        password: password,
-      });
-    if (response.status === 201) {
-     return response;
-    }
-    } catch(error) {
-      console.error("Erro ao registrar usuário:", error);
-      throw error;
-    }
-  },
-  async updateUser(userId, password, email, newEmail, newPassword ) {
+export async function updateUser(userId, password, email, newEmail, newPassword ) {
     const token = getUserToken();
     
     if (!token) {
@@ -48,8 +47,91 @@ const userService = {
       console.error("Erro ao atualizar usuário", error);
       throw error;
     }
-  },
-  terminateAccount(userId) {
+}
+
+export async function updateUserRoleById(userId) {
+  const token = getUserToken();
+    
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const response = await api.patch(API_ENDPOINTS.USERS.ROLES(userId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 204) {
+      return response;
+    }
+
+  } catch (err) {
+    console.error("Erro ao obter usuário:", error);
+    throw error;
+  }
+
+}
+
+export async function getUserById(userId) {
+  const token = getUserToken();
+    
+  if (!token) {
+    return false;
+  }
+
+  try{
+    const response = await api.get(API_ENDPOINTS.USERS.BY_ID(userId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    if (response.status === 200) {
+      return response;
+    }
+
+  } catch(error) {
+    console.error("Erro ao obter usuário:", error);
+    throw error;
+  }
+}
+
+export async function getAllUsers(page, usersPerPage = 15) {
+  const token = getUserToken();
+    
+  if (!token) {
+    return false;
+  }
+
+  try{
+    const response = await api.get(API_ENDPOINTS.USERS.ROOT, {
+      params: {
+        page: page,
+        limit: usersPerPage,
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    if (response.status === 200) {
+      // const users = response.data.data;
+      // const totalUsersCount = response.data.pagination.totalUsers;
+      // const totalPages = response.data.pagination.totalPages;
+      return response;
+    }
+    
+    } catch(error) {
+      console.error("Erro ao obter usuários:", error);
+      throw error;
+    }
+}
+
+export async function terminateAccount(userId) {
     const token = getUserToken();
     
     if (!token) {
@@ -68,7 +150,4 @@ const userService = {
       console.error("Erro ao encerrar conta de usuário", error);
       throw error;
     }
-  },
-};
-
-export default userService;
+}

@@ -24,6 +24,9 @@ class UserService {
         return $this->userRepository->deleteAllUserRoles($userId);
     }
 
+    public function getUsers(int $page, int $limit) {
+        return $this->userRepository->findUsers($page, limit = 15);
+    }
     public function getUserById($userId): ?User {
         return $this->userRepository->findById($userId);
     }

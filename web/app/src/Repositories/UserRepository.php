@@ -93,6 +93,59 @@ class UserRepository {
         return $success;
     }
 
+    public function findUsers(int $page, int $limit = 15): array {
+
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $pageLimit = isset($_GET['limit']) ? (int)$_GET['limit'] : 15;
+        $defaultLimit = 15;
+        $pageLimit = $defaultLimit;
+
+        $offset = ($page - 1) * $pageLimit;
+
+        $countQuery = "SELECT COUNT(*) AS total FROM users";
+        $countResult = $conn->query($count_sql);
+        $totalUsers = 0;
+
+        if ($countResult) {
+            $row = $countResult->fetch_assoc();
+            $totalUsers = $row['total'];
+        }
+
+
+        $dataQuery = "SELECT id, username, email FROM users ORDER BY id ASC ? OFFSET ?";
+        $stmt = $this->db->prepare($dataQuery);
+        $stmt->bind_param("ii", $limit, $offset);
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $users = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $users[] = [
+                    "id" => $row['id'],
+                    "username" => $row['username'],
+                    "email" => $row['email']
+                ];
+            }
+        }
+
+        $totalPages = ceil($totalUsers / $defaultLimit);
+
+        $response = [
+            "data" => $users,
+            "pagination" => [
+                "currentPage" => $page,
+                "perPage" => $defaultLimit,
+                "totalUsers" => $totalUsers,
+                "totalPages" => $totalPages
+            ]
+        ];
+
+        return $response;
+    }
+
     public function findByEmail($email): ?User {
         $stmt = $this->db->prepare("SELECT id, username, email, password FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);

@@ -117,6 +117,44 @@ class UserController {
         }
     }
 
+    public function fetchUsers($page , $limit = 15 ): void {
+        $user = $this->authenticate();
+        if (!$user) return;
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        try {
+
+            $userId = $user['userId'];
+
+
+            $guestRoles = $this->userService->getUserRolesByUserId($userId);
+            $isGuestStaff = in_array("admin", $guestRoles);
+
+            if (!$isGuestStaff) { // Check if user is not staff
+                http_response_code(403);
+                echo json_encode(["error" => "You do not have permission to access this ticket."]);
+                return;
+            }
+
+            $users = $this->userService->getUsers($page, limit = 15);
+
+            if (!$users) {
+                sendResponse(404, ['error' => 'Users not found']);
+                return;
+            }
+
+            http_response_code(200);
+            echo json_encode($users);
+            return;
+
+        } catch (\Exception $e) {
+            http_response_code(403);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
+        }
+
+    }
+
     public function fetchUserRoles($targetId): void {
         $user = $this->authenticate();
         if (!$user) return;

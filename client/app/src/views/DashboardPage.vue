@@ -16,7 +16,8 @@
       @view-messages="goToMessages"
       @archive-ticket="archiveTicket"
     />
-    <UserProfileCard v-if="showUserContent" :user="user" />
+    <UserProfileCard v-if="displayArea === 'userArea' && showUserContent"
+    :user="user" />
     <TicketsBoard
       v-if="showUserContent"
       :boardTitle="boardsTitles.userTickets"
@@ -45,24 +46,12 @@ const authStore = useAuthStore();
 const toast = useToast();
 
 const user = authStore.user;
-const filteredTickets = ref([]);
 const userTicketsList = ref([]);
 const interactionsList = ref([]);
 const pendingTicketsList = ref([]);
 
 const displayArea = ref(null);
 const loading = ref(false);
-
-const handleDisplayArea = (areaName) => {
-  loading.value = true;
-  displayArea.value = null;
-
-  setTimeout(() => {
-    displayArea.value = areaName;
-    loading.value = false;
-  }, 800); 
-};
-
 const boardsTitles = {
   userTickets: "Meus tickets",
   pendingTickets: "Tickets de casos abertos",
@@ -77,27 +66,7 @@ onMounted(async () => {
     }
 
     if (user.roles.includes("user")) {
-      try {
-        filteredTickets.value = await ticketService.getTickets();
-        loadUserData(filteredTickets.value);
-      } catch (err) {
-        console.log("Falha ao obter lista de tickets...");
-        console.log(err);
-      }
-    } else if (
-      user.roles.includes("support") ||
-      user.roles.includes("manager") ||
-      user.roles.includes("admin")
-    ) {
-      try {
-        const response = await ticketService.getTicketsWithUserMessages();
-        loadInteractionsData(response.data);
-
-        const pendingTickets = await ticketService.getPendingTickets();
-        loadPendingTickets(pendingTickets);
-      } catch (err) {
-        console.log(err);
-      }
+      handleDisplayArea("userArea");
     }
   } catch (err) {
     console.log(err);
@@ -127,6 +96,61 @@ const showStaffContent = computed(() =>
 const showUserContent = computed(() =>
   ["user"].some((role) => user.roles.includes(role))
 );
+
+const handleDisplayArea = async (areaName) => {
+  loading.value = true;
+  displayArea.value = null;
+
+  if (areaName === "pending") {
+    try {
+      const response = await ticketService.getPendingTickets();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      loadPendingTickets(response);
+      displayArea.value = "pending";
+    } catch (err) {
+      console.log("Failed to fetch data:", err);
+    } finally {
+      loading.value = false;
+    }
+  } else if (areaName === "search") {
+    try {
+      const response = await ticketService.getTicketsWithUserMessages();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      loadInteractionsData(response.data);
+      displayArea.value = "search";
+    } catch (err) {
+      console.log("Failed to fetch data:", err);
+    } finally {
+      loading.value = false;
+    }
+  } else if (areaName === "userArea") {
+    try {
+      const response = await ticketService.getTickets();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      loadUserData(response);
+      displayArea.value = "userArea";
+    } catch (err) {
+      console.log("Failed to fetch data:", err);
+    } finally {
+      loading.value = false;
+    }
+  } else {
+    setTimeout(() => {
+      displayArea.value = areaName;
+      loading.value = false;
+    }, 800);
+  }
+};
 
 const loadUserData = (data = []) => {
   data.forEach((item) => {

@@ -9,6 +9,7 @@ use ReplyVP\Services\MessageService;
 class UserController {
     private $userService;
     private $authService;
+    private $messageService;
 
     public function __construct(UserService $userService, AuthService $authService, MessageService $messageService) {
         $this->userService = $userService;

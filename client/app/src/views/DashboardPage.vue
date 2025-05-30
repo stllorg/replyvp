@@ -133,12 +133,11 @@ const handleDisplayArea = async (areaName) => {
   } else if (areaName === "userArea") {
     try {
       const response = await ticketService.getTickets();
-
-      if (!response.ok) {
+      if (response.status != 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      loadUserData(response);
+      loadUserData(response.data);
       displayArea.value = "userArea";
     } catch (err) {
       console.log("Failed to fetch data:", err);

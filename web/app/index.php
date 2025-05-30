@@ -92,7 +92,7 @@ $uri = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'))
 function routeRequest($uri, $authController, $ticketController, $messageController, $userController) {
     $routes = [
         'POST' => [
-            'auth/register'          => [$authController, 'register'],
+            'users'                  => [$userController, 'register'],
             'auth/login'             => [$authController, 'login'],
             'auth/authenticate'      => [$authController, 'validate'],
             'users/tickets'          => [$ticketController, 'createTicket'],

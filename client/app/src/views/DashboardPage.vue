@@ -30,7 +30,7 @@
 
 <script setup>
 import ticketService from "@/services/ticketService";
-import getTicketsWithUserMessages from "@/services/userService";
+import { getTicketsWithUserMessages } from "@/services/userService";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";

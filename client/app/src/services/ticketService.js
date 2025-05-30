@@ -37,7 +37,7 @@ const ticketService = {
       });
 
       if (response.status === 200) {
-        return response.data;
+        return response;
       }
     } catch (error) {
       console.error("Erro ao buscar tickets:", error);

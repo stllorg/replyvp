@@ -147,7 +147,7 @@ class TicketController {
                     'id' => $ticket['id'],
                     'subject' => $ticket['subject'],
                     'status' => 'open',
-                    'createdAt' => new \DateTime($ticket['created_at']),
+                    'createdAt' => (new \DateTime($ticket['created_at']))->format(\DateTime::ATOM),
                 ];
             }, $tickets);
 

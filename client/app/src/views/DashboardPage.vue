@@ -30,6 +30,7 @@
 
 <script setup>
 import ticketService from "@/services/ticketService";
+import getTicketsWithUserMessages from "@/services/userService";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
@@ -117,7 +118,7 @@ const handleDisplayArea = async (areaName) => {
     }
   } else if (areaName === "search") {
     try {
-      const response = await ticketService.getTicketsWithUserMessages();
+      const response = await getTicketsWithUserMessages();
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

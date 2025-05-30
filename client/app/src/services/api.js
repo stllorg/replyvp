@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
       BY_ID: (id) => `/users/${id}`,
       ROLES: (id) => `/users/${id}/roles`,
       TICKETS: `/tickets`,
+      INTERACTIONS: (id) => `/users/${id}/interactions`,
     },
     AUTH: {
       ROOT: '/auth',
@@ -27,7 +28,6 @@ export const API_ENDPOINTS = {
       BY_ID: (id) => `/tickets/${id}`,
       BY_STATUS: (status) => `/tickets/${status}`,
       MESSAGES: (id) => `/tickets/${id}/messages`,
-      INTERACTIONS: `/tickets/interactions`,
       },
   };
 

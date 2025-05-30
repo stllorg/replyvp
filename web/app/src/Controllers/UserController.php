@@ -4,14 +4,16 @@ namespace ReplyVP\Controllers;
 
 use ReplyVP\Services\UserService;
 use ReplyVP\Services\AuthService;
+use ReplyVP\Services\MessageService;
 
 class UserController {
     private $userService;
     private $authService;
 
-    public function __construct(UserService $userService, AuthService $authService) {
+    public function __construct(UserService $userService, AuthService $authService, MessageService $messageService) {
         $this->userService = $userService;
         $this->authService = $authService;
+        $this->messageService = $messageService;
     }
 
     // Validate token, if valid returns an array with userId and userRoles
@@ -208,6 +210,42 @@ class UserController {
             
             http_response_code(201); // Created object
             echo json_encode(['roles' => $roles,]);
+            return;
+        } catch (\Exception $e) {
+            http_response_code(403);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
+        }
+    }
+
+    public function fetchUserInteractionsOnTickets(): void {
+        $user = $this->authenticate();
+        if (!$user) return;
+
+        try {
+            $userId = $user['userId'];
+            $ticketIds = $this->messageService->getTicketIdsWithUserMessages($userId);
+            if (!$ticketIds) {
+                sendResponse(404, ['error' => 'Messages or tickets not found']);
+                return;
+            }
+
+            $tickets = [];
+
+            foreach ($ticketIds as $id) {
+                $ticket = $this->ticketService->getTicketById($id);
+
+                if ($ticket !== null) {
+                    $tickets[] = [
+                        "id" => $ticket->getId(),
+                        "subject" => $ticket->getSubject(),
+                        "status" => $ticket->getStatus(),
+                        "createdAt" => $ticket->getCreatedAt()->format(\DateTime::ATOM),
+                    ];
+                }
+            }
+
+            echo json_encode($tickets);
             return;
         } catch (\Exception $e) {
             http_response_code(403);

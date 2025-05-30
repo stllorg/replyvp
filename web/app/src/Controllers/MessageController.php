@@ -128,40 +128,4 @@ class MessageController {
             return;
         }
     }
-
-    public function getTicketsWithUserMessages(): void {
-        $user = $this->authenticate();
-        if (!$user) return;
-
-        try {
-            $userId = $user['userId'];
-            $ticketIds = $this->messageService->getTicketIdsWithUserMessages($userId);
-            if (!$ticketIds) {
-                sendResponse(404, ['error' => 'Messages or tickets not found']);
-                return;
-            }
-
-            $tickets = [];
-
-            foreach ($ticketIds as $id) {
-                $ticket = $this->ticketService->getTicketById($id);
-
-                if ($ticket !== null) {
-                    $tickets[] = [
-                        "id" => $ticket->getId(),
-                        "subject" => $ticket->getSubject(),
-                        "status" => $ticket->getStatus(),
-                        "createdAt" => $ticket->getCreatedAt()->format(\DateTime::ATOM),
-                    ];
-                }
-            }
-
-            echo json_encode($tickets);
-            return;
-        } catch (\Exception $e) {
-            http_response_code(403);
-            echo json_encode(['error' => $e->getMessage()]);
-            return;
-        }
-    }
 } 

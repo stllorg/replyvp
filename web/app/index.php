@@ -92,24 +92,24 @@ $uri = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'))
 function routeRequest($uri, $authController, $ticketController, $messageController, $userController) {
     $routes = [
         'POST' => [
-            'auth/register'          => [$authController, 'register'],
-            'auth/login'             => [$authController, 'login'],
-            'auth/authenticate'      => [$authController, 'validate'],
-            'users/tickets'          => [$ticketController, 'createTicket'],
-            'tickets/{id}/messages'  => [$messageController, 'createMessage'],
+            'users'                                => [$userController, 'register'],
+            'auth/login'                           => [$authController, 'login'],
+            'auth/authenticate'                    => [$authController, 'validate'],
+            'tickets'                              => [$ticketController, 'createTicket'],
+            'tickets/{id}/messages'                => [$messageController, 'createMessage'],
         ],
         'GET' => [
-            'users'                  => [$userController, 'fetchUsers'],
-            'users/tickets'          => [$ticketController, 'getUserTickets'],
-            'users/{id}/roles'       => [$userController, 'fetchUserRoles'],
-            'tickets/open'           => [$ticketController, 'getAllPendingTickets'],
-            'tickets/interactions'   => [$messageController, "getTicketsWithUserMessages"],
-            'tickets/{id}'           => [$ticketController, 'getTicketById'],
-            'tickets/{id}/messages'  => [$messageController, 'getTicketMessages'],
+            'users'                                => [$userController, 'fetchUsers'],
+            'tickets'                              => [$ticketController, 'getUserTickets'],
+            'users/{id}/roles'                     => [$userController, 'fetchUserRoles'],
+            'users/{id}/interactions'   => [$userController, "fetchUserInteractionsOnTickets"],
+            'tickets/open'                         => [$ticketController, 'getAllPendingTickets'],
+            'tickets/{id}'                         => [$ticketController, 'getTicketById'],
+            'tickets/{id}/messages'                => [$messageController, 'getTicketMessages'],
         ],
         'PATCH' => [
-            'users/{id}/roles'       => [$userController, 'updateUserRole'],
-            'tickets/{id}'           => [$ticketController, 'updateTicket']
+            'users/{id}/roles'                     => [$userController, 'updateUserRole'],
+            'tickets/{id}'                         => [$ticketController, 'updateTicket']
         ],
     ];
 

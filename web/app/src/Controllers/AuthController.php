@@ -36,27 +36,6 @@ class AuthController {
         }
     }
 
-    public function register(): void {
-        $data = json_decode(file_get_contents('php://input'), true);
-        
-        if (!isset($data['username']) || !isset($data['email']) || !isset($data['password'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Missing required fields']);
-            exit;
-        }
-
-        try {
-            $user = $this->authService->register($data['username'], $data['email'], $data['password']);
-            http_response_code(201);
-            echo json_encode(['message' => 'User registered successfully']);
-            return;
-        } catch (\Exception $e) {
-            http_response_code(400);
-            echo json_encode(['error' => $e->getMessage()]);
-            exit;
-        }
-    }
-
     public function login(): void {
         $data = json_decode(file_get_contents('php://input'), true);
         

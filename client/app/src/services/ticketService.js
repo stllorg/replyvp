@@ -10,7 +10,7 @@ const ticketService = {
       return false;
     }
     try {
-      const response = await api.get(API_ENDPOINTS.USERS.TICKETS, {
+      const response = await api.get(API_ENDPOINTS.TICKETS.ROOT, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -44,30 +44,6 @@ const ticketService = {
       throw error;
     }
   },
-  
-  async getTicketsWithUserMessages() {
-    const token = getUserToken();
-
-    if (!token) {
-      return false;
-    }
-
-    try {
-      const response = await api.get(`${API_ENDPOINTS.TICKETS.INTERACTIONS}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        return response;
-      }
-    } catch (error) {
-      console.error("Erro ao buscar tickets:", error);
-      throw error;
-    }
-  },
-
   async createTicket(subject) { // create ticket and post first ticket message. returns array [ticket, message]
     const token = getUserToken();
 
@@ -75,7 +51,7 @@ const ticketService = {
 
     try {
       const response = await api.post(
-        `${API_ENDPOINTS.USERS.TICKETS}`,
+        `${API_ENDPOINTS.TICKETS.ROOT}`,
         {
           subject: subject
         },

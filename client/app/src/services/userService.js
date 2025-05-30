@@ -3,7 +3,7 @@ import { getUserToken } from "@/services/authService";
 
 export async function registerUser(username, email, password) {
   try{
-  const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, {
+  const response = await api.post(API_ENDPOINTS.USERS.ROOT, {
       username: username,
       email: email,
       password: password,
@@ -129,6 +129,30 @@ export async function getAllUsers(page, usersPerPage = 15) {
       console.error("Erro ao obter usuários:", error);
       throw error;
     }
+}
+
+export async function getTicketsWithUserMessages(id = 0) {
+  const token = getUserToken();
+
+  if (!token) {
+    return false;
+  }
+
+  try {
+    id = 0;
+    const response = await api.get(`${API_ENDPOINTS.USERS.INTERACTIONS(id)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    console.error("Erro ao buscar tickets:", error);
+    throw error;
+  }
 }
 
 export async function terminateAccount(userId) {

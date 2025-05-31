@@ -239,11 +239,10 @@
 <script setup>
 import { useAuthStore } from "@/stores/authStore";
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 import { registerUser } from "@/services/userService";
+import { redirectAfterLogin } from "@/services/authService";
 
-const router = useRouter();
 const toast = useToast();
 const authStore = useAuthStore();
 const isVisible = ref(true);
@@ -259,7 +258,8 @@ const error = ref(null);
 
 onMounted(() => {
   if (authStore.isUserLogged) {
-    redirectToDashBoard();
+    redirectAfterLogin();
+    return;
   }
 
   setTimeout(() => {
@@ -288,8 +288,7 @@ const handleUserSignIn = async () => {
     await authStore.login(username.value, password.value);
 
     if (authStore.isUserLogged) {
-      toast.success("Login realizado com sucesso");
-      redirectToDashBoard();
+      redirectAfterLogin();
     }
   } catch (err) {
     error.value = "Erro ao tentar fazer login.";
@@ -338,10 +337,6 @@ const setActiveTab = (tabName) => {
     isLoginTabActive.value = false;
     isRegisterTabActive.value = true;
   }
-};
-
-const redirectToDashBoard = () => {
-  router.push("/dashboard");
 };
 
 const redirectToLogin = () => {

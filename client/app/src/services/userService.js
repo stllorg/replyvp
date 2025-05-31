@@ -139,7 +139,6 @@ export async function getTicketsWithUserMessages(id = 0) {
   }
 
   try {
-    id = 0;
     const response = await api.get(`${API_ENDPOINTS.USERS.INTERACTIONS(id)}`, {
       headers: {
         Authorization: `Bearer ${token}`,

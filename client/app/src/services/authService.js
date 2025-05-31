@@ -67,3 +67,8 @@ export function redirectAfterLogin() {
     console.log("Failed to redirect logged user",err);
   }
 }
+
+export function handleLogout() {
+  authStore.logout();
+  router.push("/");
+}

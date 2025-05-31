@@ -18,6 +18,7 @@
     />
     <UserProfileCard v-if="displayArea === 'userArea' && showUserContent"
     :user="user" />
+    <GenereateTIcketComponent v-if="showUserContent" />
     <TicketsBoard
       v-if="showUserContent"
       :boardTitle="boardsTitles.userTickets"
@@ -41,6 +42,7 @@ import TicketsBoard from "@/components/TicketsBoard.vue";
 import UserProfileCard from "@/components/UserProfileCard.vue";
 import StaffPanel from "@/components/StaffPanel.vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
+import GenereateTIcketComponent from "@/components/GenereateTIcketComponent.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();

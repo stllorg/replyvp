@@ -1,5 +1,8 @@
 import { useAuthStore } from "@/stores/authStore";
 import api, { API_ENDPOINTS } from "./api";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 export function getUserToken() {
   const authStore = useAuthStore();
@@ -47,5 +50,20 @@ export async function loginUser(username, password) {
     }
   } catch (err) {
     return { success: false, error: "Erro na comunicação com o servidor." };
+  }
+}
+
+export function redirectAfterLogin() {
+  try {
+    if (authStore.isUserLogged) { // Check if USER is logged
+
+      if (authStore.isUserStaff) { // Check if USER is logged
+        router.push("/staff");
+      } else {
+        router.push("/dashboard");
+      }
+    }
+  } catch (err) {
+    console.log("Failed to redirect logged user",err);
   }
 }

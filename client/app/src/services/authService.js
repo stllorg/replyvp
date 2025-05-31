@@ -54,6 +54,8 @@ export async function loginUser(username, password) {
 }
 
 export function redirectAfterLogin() {
+  const authStore = useAuthStore();
+
   try {
     if (authStore.isUserLogged) { // Check if USER is logged
 
@@ -69,6 +71,8 @@ export function redirectAfterLogin() {
 }
 
 export function handleLogout() {
+  const authStore = useAuthStore();
+  
   authStore.logout();
   router.push("/");
 }

@@ -25,7 +25,7 @@ class UserService {
     }
 
     public function getUsers(int $page, int $limit) {
-        return $this->userRepository->findUsers($page, limit = 15);
+        return $this->userRepository->findUsers($page, $limit);
     }
     public function getUserById($userId): ?User {
         return $this->userRepository->findById($userId);

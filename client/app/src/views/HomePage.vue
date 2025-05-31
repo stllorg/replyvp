@@ -241,7 +241,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import userService from "@/services/userService";
+import { registerUser } from "@/services/userService";
 
 const router = useRouter();
 const toast = useToast();
@@ -306,7 +306,7 @@ const register = async () => {
     return;
   }
 
-  const response = await userService.registerUser(
+  const response = await registerUser(
     username.value,
     email.value,
     password.value

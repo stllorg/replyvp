@@ -15,7 +15,7 @@ const ticketService = {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+      return response;
     } catch (error) {
       console.error("Erro ao buscar tickets:", error);
       throw error;
@@ -37,7 +37,7 @@ const ticketService = {
       });
 
       if (response.status === 200) {
-        return response.data;
+        return response;
       }
     } catch (error) {
       console.error("Erro ao buscar tickets:", error);

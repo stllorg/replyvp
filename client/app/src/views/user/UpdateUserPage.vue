@@ -5,7 +5,7 @@
         <div class="card shadow">
           <div class="card-body p-4">
             <h2 class="card-title text-center mb-4">Página de Atualização Cadastral</h2>
-            <form @submit.prevent="updateUser">
+            <form @submit.prevent="handleUpdateUser">
               <div class="mb-3">
                 <label for="username" class="form-label">Nome de usuário</label>
                 <input
@@ -75,7 +75,7 @@
 </template>
 
 <script setup>
-import userService from "@/services/userService";
+import { updateUser } from "@/services/userService";
 import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -97,7 +97,7 @@ const oldPassword = ref("");
 const permission = ref(false);
 const error = ref(null);
 
-const updateUser = async () => {
+const handleUpdateUser = async () => {
   error.value = null;
 
   if (
@@ -112,7 +112,7 @@ const updateUser = async () => {
     return;
   }
 
-  const response = userService.updateUser(
+  const response = updateUser(
     user.value.id,
     oldPassword.value,
     oldEmail.value,

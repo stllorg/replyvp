@@ -18,6 +18,7 @@
     />
     <UserProfileCard v-if="displayArea === 'userArea' && showUserContent"
     :user="user" />
+    <GenereateTIcketComponent v-if="showUserContent" />
     <TicketsBoard
       v-if="showUserContent"
       :boardTitle="boardsTitles.userTickets"
@@ -30,7 +31,7 @@
 
 <script setup>
 import ticketService from "@/services/ticketService";
-import getTicketsWithUserMessages from "@/services/userService";
+import { getTicketsWithUserMessages } from "@/services/userService";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
@@ -41,6 +42,7 @@ import TicketsBoard from "@/components/TicketsBoard.vue";
 import UserProfileCard from "@/components/UserProfileCard.vue";
 import StaffPanel from "@/components/StaffPanel.vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
+import GenereateTIcketComponent from "@/components/GenereateTIcketComponent.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -105,11 +107,11 @@ const handleDisplayArea = async (areaName) => {
   if (areaName === "pending") {
     try {
       const response = await ticketService.getPendingTickets();
-      if (!response.ok) {
+      if (response.status != 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      loadPendingTickets(response);
+      loadPendingTickets(response.data);
       displayArea.value = "pending";
     } catch (err) {
       console.log("Failed to fetch data:", err);
@@ -120,7 +122,7 @@ const handleDisplayArea = async (areaName) => {
     try {
       const response = await getTicketsWithUserMessages();
 
-      if (!response.ok) {
+      if (response.status != 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       loadInteractionsData(response.data);
@@ -133,12 +135,11 @@ const handleDisplayArea = async (areaName) => {
   } else if (areaName === "userArea") {
     try {
       const response = await ticketService.getTickets();
-
-      if (!response.ok) {
+      if (response.status != 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      loadUserData(response);
+      loadUserData(response.data);
       displayArea.value = "userArea";
     } catch (err) {
       console.log("Failed to fetch data:", err);

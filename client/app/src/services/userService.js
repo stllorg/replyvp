@@ -67,7 +67,7 @@ export async function updateUserRoleById(userId) {
       return response;
     }
 
-  } catch (err) {
+  } catch (error) {
     console.error("Erro ao obter usuário:", error);
     throw error;
   }
@@ -98,7 +98,7 @@ export async function getUserById(userId) {
   }
 }
 
-export async function getAllUsers(page, usersPerPage = 15) {
+export async function getAllUsers(page = 1, usersPerPage = 15) {
   const token = getUserToken();
     
   if (!token) {
@@ -139,7 +139,6 @@ export async function getTicketsWithUserMessages(id = 0) {
   }
 
   try {
-    id = 0;
     const response = await api.get(`${API_ENDPOINTS.USERS.INTERACTIONS(id)}`, {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -5,15 +5,19 @@ namespace ReplyVP\Controllers;
 use ReplyVP\Services\UserService;
 use ReplyVP\Services\AuthService;
 use ReplyVP\Services\MessageService;
+use ReplyVP\Services\TicketService;
 
 class UserController {
     private $userService;
     private $authService;
+    private $messageService;
+    private $ticketService;
 
-    public function __construct(UserService $userService, AuthService $authService, MessageService $messageService) {
+    public function __construct(UserService $userService, AuthService $authService, MessageService $messageService, TicketService $ticketService) {
         $this->userService = $userService;
         $this->authService = $authService;
         $this->messageService = $messageService;
+        $this->ticketService = $ticketService;
     }
 
     // Validate token, if valid returns an array with userId and userRoles
@@ -140,10 +144,11 @@ class UserController {
         }
     }
 
-    public function fetchUsers($page , $limit = 15 ): void {
+    public function fetchUsers(): void {
         $user = $this->authenticate();
         if (!$user) return;
-        $data = json_decode(file_get_contents('php://input'), true);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 15;
 
         try {
 
@@ -159,7 +164,7 @@ class UserController {
                 return;
             }
 
-            $users = $this->userService->getUsers($page, limit = 15);
+            $users = $this->userService->getUsers($page, $limit = 15);
 
             if (!$users) {
                 sendResponse(404, ['error' => 'Users not found']);
@@ -208,7 +213,7 @@ class UserController {
 
             $roles = $this->userService->getUserRolesByUserId($targetId);
             
-            http_response_code(201); // Created object
+            http_response_code(200); // Created object
             echo json_encode(['roles' => $roles,]);
             return;
         } catch (\Exception $e) {
@@ -245,6 +250,7 @@ class UserController {
                 }
             }
 
+            http_response_code(200);
             echo json_encode($tickets);
             return;
         } catch (\Exception $e) {

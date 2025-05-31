@@ -2,7 +2,9 @@
   <div class="board container-fluid shadow-sm rounded-3 my-4 mx-auto">
     <div class="row text-white align-items-center py-2 px-3">
       <div class="col-6">
-        <h1 class="fs-4 fw-medium mb-0">Contas</h1>
+        <h1 class="fs-4 fw-medium mb-0">Gerenciar Usuários</h1>
+        <i class="bi bi-arrow-left" @click="goBack()" role="button"
+                title="Atualizar Cadastro"></i>
       </div>
       <div class="col-6 text-end">
         <i class="bi bi-arrow-clockwise"></i>
@@ -28,13 +30,13 @@
           <img src="https://placehold.co/50x50.png" alt="Contact Picture" class="rounded-circle me-3 avatar-sm">
           <div class="flex-grow-1">
             <div class="d-flex justify-content-between align-items-center">
-              <h6 class="mb-1 fw-medium text-dark">#{{ item.id }} {{ item.username }}</h6>
-              <small class="text-secondary text-opacity-75">Desde : 09:15</small>
+              <h6 class="mb-1 fw-medium text-dark">{{ item.username }}</h6>
+              <small class="text-secondary text-opacity-75">
+                <i class="bi bi-pencil-square btn btn-outline-primary p-2" @click="openEditor(item.id)" role="button"
+                title="Atualizar Cadastro"></i>
+              </small>
             </div>
-            <p class="mb-0 text-muted text-truncate" style="max-width: 80%;">roles: {{ item.roles }}</p>
-            <i class="bi bi-pencil-square btn btn-outline-primary p-2" @click="openEditor" role="button"
-              title="Atualizar Cadastro">
-            </i>
+            <p class="mb-0 text-muted text-truncate">{{ item.email }}</p>
           </div>
         </div>
       </a>
@@ -44,7 +46,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue';
+import { useRouter } from "vue-router";
+const router = useRouter();
+
 
 const localAccounts = ref([]);
 
@@ -175,6 +180,9 @@ const openEditor = (id) => {
   console.log("Edit account", id);
 };
 
+const goBack = ()=> {
+  router.back();
+};
 
 </script>
 

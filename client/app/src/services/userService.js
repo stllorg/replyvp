@@ -145,7 +145,7 @@ export async function getAllUsers(page = 1, usersPerPage = 15) {
     });
     
     if (response.status === 200) {
-      // const users = response.data.data;
+      // const users = response.data.users;
       // const totalUsersCount = response.data.pagination.totalUsers;
       // const totalPages = response.data.pagination.totalPages;
       return response;

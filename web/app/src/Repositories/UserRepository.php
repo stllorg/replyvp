@@ -94,16 +94,10 @@ class UserRepository {
     }
 
     public function findUsers(int $page, int $limit = 15): array {
-
-        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $pageLimit = isset($_GET['limit']) ? (int)$_GET['limit'] : 15;
-        $defaultLimit = 15;
-        $pageLimit = $defaultLimit;
-
-        $offset = ($page - 1) * $pageLimit;
+        $offset = ($page - 1) * $limit;
 
         $countQuery = "SELECT COUNT(*) AS total FROM users";
-        $countResult = $conn->query($count_sql);
+        $countResult = $this->db->query($countQuery);
         $totalUsers = 0;
 
         if ($countResult) {
@@ -112,10 +106,9 @@ class UserRepository {
         }
 
 
-        $dataQuery = "SELECT id, username, email FROM users ORDER BY id ASC ? OFFSET ?";
+        $dataQuery = "SELECT id, username, email FROM users ORDER BY id ASC LIMIT ? OFFSET ?";
         $stmt = $this->db->prepare($dataQuery);
         $stmt->bind_param("ii", $limit, $offset);
-
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -131,13 +124,13 @@ class UserRepository {
             }
         }
 
-        $totalPages = ceil($totalUsers / $defaultLimit);
+        $totalPages = ceil($totalUsers / $limit);
 
         $response = [
             "data" => $users,
             "pagination" => [
                 "currentPage" => $page,
-                "perPage" => $defaultLimit,
+                "perPage" => $limit,
                 "totalUsers" => $totalUsers,
                 "totalPages" => $totalPages
             ]

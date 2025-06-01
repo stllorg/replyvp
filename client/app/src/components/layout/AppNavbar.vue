@@ -22,7 +22,7 @@
         <div
           v-if="authStore.isUserLogged"
           class="d-flex align-items-center"
-          @click="handleLogout"
+          @click="handleLogout(router)"
         >
           Logout
         </div>

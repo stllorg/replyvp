@@ -1,8 +1,5 @@
 import { useAuthStore } from "@/stores/authStore";
 import api, { API_ENDPOINTS } from "./api";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
 
 export function getUserToken() {
   const authStore = useAuthStore();
@@ -53,13 +50,12 @@ export async function loginUser(username, password) {
   }
 }
 
-export function redirectAfterLogin() {
+export function redirectAfterLogin(router) {
   const authStore = useAuthStore();
 
   try {
-    if (authStore.isUserLogged) { // Check if USER is logged
-
-      if (authStore.isUserStaff) { // Check if USER is logged
+    if (authStore.isUserLogged) {
+      if (authStore.isUserStaff) {
         router.push("/staff");
       } else {
         router.push("/dashboard");
@@ -70,7 +66,7 @@ export function redirectAfterLogin() {
   }
 }
 
-export function handleLogout() {
+export function handleLogout(router) {
   const authStore = useAuthStore();
   
   authStore.logout();

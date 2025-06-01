@@ -240,11 +240,14 @@
 import { useAuthStore } from "@/stores/authStore";
 import { ref, onMounted } from "vue";
 import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
 import { registerUser } from "@/services/userService";
 import { redirectAfterLogin } from "@/services/authService";
 
+const router = useRouter();
 const toast = useToast();
 const authStore = useAuthStore();
+
 const isVisible = ref(true);
 const isVisibleB = ref(false);
 const animateAndHide = ref(false);
@@ -258,7 +261,7 @@ const error = ref(null);
 
 onMounted(() => {
   if (authStore.isUserLogged) {
-    redirectAfterLogin();
+    redirectAfterLogin(router);
     return;
   }
 
@@ -288,7 +291,7 @@ const handleUserSignIn = async () => {
     await authStore.login(username.value, password.value);
 
     if (authStore.isUserLogged) {
-      redirectAfterLogin();
+      redirectAfterLogin(router);
     }
   } catch (err) {
     error.value = "Erro ao tentar fazer login.";

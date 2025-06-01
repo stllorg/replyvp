@@ -49,7 +49,7 @@ export async function updateUser(userId, password, email, newEmail, newPassword 
     }
 }
 
-export async function updateUserRoleById(userId) {
+export async function updateUserRoleById(userId, newRoles) {
   const token = getUserToken();
     
   if (!token) {
@@ -57,7 +57,11 @@ export async function updateUserRoleById(userId) {
   }
 
   try {
-    const response = await api.patch(API_ENDPOINTS.USERS.ROLES(userId), {
+    const response = await api.patch(API_ENDPOINTS.USERS.ROLES(userId),
+    {
+      roles: newRoles,
+    },
+    {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -72,6 +76,30 @@ export async function updateUserRoleById(userId) {
     throw error;
   }
 
+}
+
+export async function getUserRoleById(userId) {
+  const token = getUserToken();
+    
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const response = await api.get(API_ENDPOINTS.USERS.ROLES(userId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response;
+    }
+
+  } catch (error) {
+    console.error("Erro ao obter informações do usuário:", error);
+    throw error;
+  }
 }
 
 export async function getUserById(userId) {
@@ -110,9 +138,7 @@ export async function getAllUsers(page = 1, usersPerPage = 15) {
       params: {
         page: page,
         limit: usersPerPage,
-      }
-    },
-    {
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },

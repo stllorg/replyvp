@@ -127,7 +127,7 @@ class UserRepository {
         $totalPages = ceil($totalUsers / $limit);
 
         $response = [
-            "data" => $users,
+            "users" => $users,
             "pagination" => [
                 "currentPage" => $page,
                 "perPage" => $limit,

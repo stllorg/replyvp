@@ -1,25 +1,43 @@
 services:
   db:
-    image: mysql
+    build:
+      context: ./db
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DEFAULT_AUTHENTICATION_PLUGIN: mysql_native_password
-    volumes:
-      - ./db/data:/var/lib/mysql
-      - ./db/init:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
     restart: unless-stopped
 
   web:
-    build: ./web
+    build:
+      context: ./web
+      args:
+        APP_ENV: ${APP_ENV}
     container_name: php-container
+    environment:
+      APP_ENV: ${APP_ENV}
     restart: always
     volumes:
-      - ./web/api:/var/www/html/api
-      - ./web/auth:/var/www/html/auth
+      - ./web/app:/var/www/html:Z
     ports:
       - "8080:80"
     depends_on:
       - db
+    
+  frontend:
+    build:
+      context: ./client/app
+      dockerfile: Dockerfile.dev
+    container_name: vue-container
+    environment:
+      BASE_API_URL: http://web:8080
+    restart: unless-stopped 
+    volumes:
+      - ./client/app:/app:Z
+      - /app/node_modules
+    ports:
+      - "5174:5174"
+    depends_on:
+      - web

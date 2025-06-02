@@ -5,7 +5,7 @@
         <div class="card shadow">
           <div class="card-body p-4">
             <h2 class="card-title text-center mb-4">
-              Apagar sua conta em IA.ContactCenter
+              Apagar sua conta em REPLYVP
             </h2>
             <form @submit.prevent="handleDeleteAccount">
               <div class="mb-3">
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import userService from "@/services/UserService";
+import userService from "@/services/userService";
 import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";

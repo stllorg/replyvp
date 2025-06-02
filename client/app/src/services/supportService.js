@@ -1,14 +1,24 @@
-import axios from "axios";
-
-const SUPPORT_API_URL = "http://localhost:8080/api/tickets";
+import api, { API_ENDPOINTS } from "./api";
+import { getUserToken } from "@/services/authService";
 
 const supportService = {
   
-  async assistTicket(ticketId, token) {
+  async assistTicket(ticketId) {
+    const token = getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+    
     try {
+      // Change ticket status to in_progress
+      let newTicketStatus = 'in_progress';
 
-      const response = await axios.get(
-        `${SUPPORT_API_URL}/treat_ticket.php`,
+      const response = await api.post(
+        API_ENDPOINTS.TICKETS.BY_ID(ticketId),
+        {
+          newStatus: newTicketStatus
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -16,14 +26,14 @@ const supportService = {
         }
       );
 
-    if (response.status === 200) {
-      return response;
-    } else {
-      return response;
-    } 
-  } catch (error) {
+      if (response.status === 200) {
+        return response;
+      } else {
+        return response;
+      } 
+    } catch (error) {
     console.log(error);
-  }
+    }
   },
     
 };

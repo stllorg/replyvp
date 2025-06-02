@@ -12,7 +12,7 @@
                   type="text"
                   id="ticket-subject"
                   class="form-control"
-                  v-model="ticketSubject"
+                  v-model="subject"
                   placeholder="Digite o assunto do Ticket"
                   required
                 />
@@ -45,21 +45,37 @@
 </template>
 
 <script setup>
+import ticketService from "@/services/ticketService";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const ticketSubject = ref("");
+const subject = ref("");
 const messageContent = ref("");
 const error = ref(null);
 
-const generateTicket = () => {
-  router.push({
-    name: "MessagesPage",
-    query: {
-      subject: ticketSubject.value,
-      message: messageContent.value,
-    },
-  });
+const generateTicket = async () => {
+  let ticketId = 0;
+  let isRedirectActive = false;
+
+  // create ticket
+  const response = await ticketService.createTicket(subject.value);
+
+  if (response.status == 201) {
+    ticketId = response.data.id;
+    isRedirectActive = true;
+
+    // post first ticket message
+    await ticketService.addNewMessage(ticketId, messageContent.value);
+  }
+  
+  if (isRedirectActive) {
+    router.push(
+      {
+        name: "MessagesPage",
+        query: { ticketId }
+      }
+    );
+  }
 };
 </script>

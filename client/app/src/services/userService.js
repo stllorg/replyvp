@@ -1,25 +1,29 @@
-import axios from "axios";
+import api, { API_ENDPOINTS } from "./api";
+import { getUserToken } from "@/services/authService";
 
-const USERS_API_URL = "http://localhost:8080/api/users";
-
-const userService = {
+export async function registerUser(username, email, password) {
+  try{
+  const response = await api.post(API_ENDPOINTS.USERS.ROOT, {
+      username: username,
+      email: email,
+      password: password,
+    });
+  if (response.status === 201) {
+    return response;
+  }
+  } catch(error) {
+    console.error("Erro ao registrar usuário:", error);
+    throw error;
+  }
+}
   
-  async registerUser(username, email, password) {
-    try{
-    const response = await axios.post(`${USERS_API_URL}/register.php`, {
-        username: username,
-        email: email,
-        password: password,
-      });
-    if (response.status === 201) {
-     return response.status;
+export async function updateUser(userId, password, email, newEmail, newPassword ) {
+    const token = getUserToken();
+    
+    if (!token) {
+      return false;
     }
-    } catch(error) {
-      console.error("Erro ao registrar usuário:", error);
-      throw error;
-    }
-  },
-  async updateUser(userId, password, email, newEmail, newPassword ) {
+
     const updatedData = {
       id: userId,
       old_email: email,
@@ -28,23 +32,171 @@ const userService = {
       new_password: newPassword || undefined,
     };
     try {
-      const response = await axios.put(
-       `${USERS_API_URL}/update.php`,
+      const response = await api.put(
+        API_ENDPOINTS.USERS.BY_ID(userId), {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
         updatedData
       );
       if (response.status === 200) {
        return response.status;
       }
     } catch (error) {
-      console.error("Erro ao registrar usuário", error);
+      console.error("Erro ao atualizar usuário", error);
       throw error;
     }
-  },
-  terminateAccount(userId) {
-    return axios.delete(`${USERS_API_URL}/delete.php`, {
-      data: { id: userId },
-  });
-  },
-};
+}
 
-export default userService;
+export async function updateUserRoleById(userId, newRoles) {
+  const token = getUserToken();
+    
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const response = await api.patch(API_ENDPOINTS.USERS.ROLES(userId),
+    {
+      roles: newRoles,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 204) {
+      return response;
+    }
+
+  } catch (error) {
+    console.error("Erro ao obter usuário:", error);
+    throw error;
+  }
+
+}
+
+export async function getUserRoleById(userId) {
+  const token = getUserToken();
+    
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const response = await api.get(API_ENDPOINTS.USERS.ROLES(userId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response;
+    }
+
+  } catch (error) {
+    console.error("Erro ao obter informações do usuário:", error);
+    throw error;
+  }
+}
+
+export async function getUserById(userId) {
+  const token = getUserToken();
+    
+  if (!token) {
+    return false;
+  }
+
+  try{
+    const response = await api.get(API_ENDPOINTS.USERS.BY_ID(userId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    if (response.status === 200) {
+      return response;
+    }
+
+  } catch(error) {
+    console.error("Erro ao obter usuário:", error);
+    throw error;
+  }
+}
+
+export async function getAllUsers(page = 1, usersPerPage = 15) {
+  const token = getUserToken();
+    
+  if (!token) {
+    return false;
+  }
+
+  try{
+    const response = await api.get(API_ENDPOINTS.USERS.ROOT, {
+      params: {
+        page: page,
+        limit: usersPerPage,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    if (response.status === 200) {
+      // const users = response.data.users;
+      // const totalUsersCount = response.data.pagination.totalUsers;
+      // const totalPages = response.data.pagination.totalPages;
+      return response;
+    }
+    
+    } catch(error) {
+      console.error("Erro ao obter usuários:", error);
+      throw error;
+    }
+}
+
+export async function getTicketsWithUserMessages(id = 0) {
+  const token = getUserToken();
+
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const response = await api.get(`${API_ENDPOINTS.USERS.INTERACTIONS(id)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    console.error("Erro ao buscar tickets:", error);
+    throw error;
+  }
+}
+
+export async function terminateAccount(userId) {
+    const token = getUserToken();
+    
+    if (!token) {
+      return false;
+    }
+    
+    try {
+      return api.delete(
+        API_ENDPOINTS.USERS.BY_ID(userId), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Erro ao encerrar conta de usuário", error);
+      throw error;
+    }
+}

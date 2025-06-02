@@ -2,7 +2,7 @@
   <footer class="footer mt-auto py-3 bg-light">
     <div class="container">
       <div class="d-flex justify-content-between">
-        <span class="text-muted">© {{ new Date().getFullYear() }} IA.ContactCenter</span>
+        <span class="text-muted">© {{ new Date().getFullYear() }} REPLYVP</span>
         <ul class="list-unstyled d-flex">
           <li class="ms-3">
             <router-link to="/terms">Termos de Uso</router-link>

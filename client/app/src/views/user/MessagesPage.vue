@@ -1,80 +1,180 @@
 <template>
+  <div class="container mt-4">
+    <div class="card shadow mb-4 border-0" style="background-color: #f8f9fa">
+      <div class="card-body text-center">
+        <div class="d-inline-flex">
+          <h5 class="card-title text-secondary fw-bold">
+          Ticket #{{ ticketRef.id }}
+          </h5>
+          <div>
+            <div class="d-inline-flex">
+              <p class="mx-2">{{ ticketRef.status.toUpperCase() }}</p>
+              <p 
+                :class="`${ticketRef.status}`"
+                class="p-3 mb-4 rounded-circle fw-bold d-inline-block">
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="time-market">
+          <p class="card-text text-muted">Data de criação: {{ ticketRef.createdAt }}</p>
+        </div>
+        <div class="ticket-description d-flex">
+          Descrição: <p class="card-text text-muted text-md-start">{{ ticketRef.subject }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-for="(msg, index) in localMessageList" :key="index" :msg="msg" class="container mt-4 "
+        :class="`${msg.sender}-card`">
+    <div class="card shadow mb-4 border-0" style="background-color: #f8f9fa">
+      <div class="card-body text-center">
+        <div class="d-inline-flex">
+          <h5 class="card-title text-secondary fw-bold text-left">
+          User #{{ msg.id }}
+          </h5>
+        </div>
+        <div class="ticket-description d-flex">
+          Descrição: <p class="card-text text-muted text-md-start">{{ msg.content }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="chat-container">
     <div class="chat-box">
-      <ChatMessage v-for="(msg, index) in localMessageList" :key="index" :msg="msg" />
+      <div v-for="(msg, index) in localMessageList" :key="index" :msg="msg" class="message"
+        :class="`${msg.sender}-message`">
+        <p>{{ msg.content }}</p>
+        <small>{{ formatMessageTime(msg.createdAt) }}</small>
+      </div>
     </div>
-    <ChatInput @sendMessage="addMessage" />
     <div class="chat-input">
-      <input
-        v-model="newMessage"
-        @keyup.enter="submitNewMessage"
-        placeholder="Digite sua mensagem..."
-      />
-      <button @click="submitNewMessage">Enviar</button>
+      <input v-model="textInput" @keyup.enter="submitMessage" placeholder="Digite sua mensagem..." />
+      <button @click="submitMessage">Enviar</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import ticketService from "@/services/TicketService";
+import ticketService from "@/services/ticketService";
 import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 import { useAuthStore } from "@/stores/authStore";
-import ChatMessage from "@/components/Chat/ChatMessage.vue";
+import { formatMessageTime } from "@/utils/dateUtils";
+
 
 const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
+const route = useRoute();
 
 const user = authStore.user;
-const localMessageList = ref([
-  {
-    message_id: 0,
-    text: "Oi! Preciso de suporte.",
-    sender: "user",
-    timestamp: new Date(),
-  },
-  {
-    message_id: 1,
-    text: "Olá! Como posso ajudar?",
-    sender: "support",
-    timestamp: new Date(),
-  },
-]);
+const localMessageList = ref([]);
 
-const newMessage = ref(router.query.message || "");
-const subject = ref(router.query.subject || "Assunto indefinido");
-const ticketId = ref(router.query.ref || 0);
+const textInput = ref("-");
 const isTicketOpen = ref(false);
 
-onMounted(checkTicket());
-// Get remote messages
-const getMessages = async () => {
-  // TODO: Use Auth Bearer with token to send user id
-
-  if (!user || !user.token) {
-    toast.error("Falha na autenticação!", { timeout: 3000 });
-    // Redirect user
+const ticketRef = ref(
+  {
+    id: 0,
+    subject: "None",
+    createdAt: new Date().toISOString,
+    status: 'open',
+    userId: 0
   }
+);
+
+onMounted(
+  () => {
+    if (!user || !user.token) {
+      toast.error("Faça login para continuar!", { timeout: 200 });
+      router.push("/login");
+    }
+
+    if (route.query && route.query.ticketId != 0) {
+      isTicketOpen.value = true;
+      fetchTicketData();
+      fetchMessages();
+    }
+  }
+);
+
+const fetchTicketData = async () => {
   try {
-    const messages = await ticketService.getTicketMessages(ticketId, user.id);
-    pushMessagesToLocalList(messages);
+    const ticket = await ticketService.getTicketById(route.query.ticketId);
+
+    if (ticket && ticket != null) {
+      ticketRef.value.id = ticket.id;
+      ticketRef.value.subject = ticket.subject;
+      ticketRef.value.userId = ticket.userId;
+      ticketRef.value.createdAt = ticket.createdAt;
+      ticketRef.value.status = "open";
+    } 
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const fetchMessages = async () => {
+  try {
+    const messages = await ticketService.getTicketMessages(route.query.ticketId);
+
+    if (messages && messages != null) {
+      pushMessagesToLocalList(messages);
+    } else {
+      loadDefaultMessages();
+    }
   } catch (error) {
     toast.error("Ocorreu um erro ao carregar mensagens do ticket!", {
       timeout: 3000,
     });
   }
 };
-// Get remote messages
+
+const loadDefaultMessages = () => {
+  const defaultMessages = [
+    {
+      id: 0,
+      content: "Oi! Preciso de suporte.",
+      sender: "user",
+      createdAt: new Date(),
+    },
+    {
+      id: 1,
+      content: "Olá! Como posso ajudar?",
+      sender: "support",
+      createdAt: new Date(),
+    },
+  ];
+
+  localMessageList.value.push(...defaultMessages);
+}
+
 const pushMessagesToLocalList = (data = []) => {
+  if (!data) return;
+
   data.forEach((item) => {
-    const newItem = {
-      message_id: item.message_id,
-      text: item.text,
-      sender: item.sender,
-      timestamp: item.created_at,
+    let senderRole = () => {
+      if (item.roles.includes('user')) {
+        return "user";
+      } else if (item.roles.includes('admin')) {
+        return "admin";
+      } else if (item.roles.includes('manager')) {
+        return "manager";
+      } else if (item.roles.includes('support')) {
+        return "support";
+      }
     };
+
+    const newItem = {
+      id: item.messageId ?? localMessageList.value.length + 1,
+      content: item.content,
+      sender: senderRole(),
+      createdAt: item.createdAt === null || item.createdAt === "null" ? new Date().toISOString() : item.createdAt,
+      roles: item.roles,
+    };
+
     localMessageList.value.push(newItem);
   });
   toast.info("Carregando mensagens", {
@@ -82,30 +182,24 @@ const pushMessagesToLocalList = (data = []) => {
   });
 };
 
-const addMessage = (text) => {
-  if (text.trim() === "") {
-    toast.error("Erro: mensagem em branco!", {
-      timeout: 3000,
-    });
+const submitMessage = async () => {
+  if (!isTicketOpen.value) return;
+
+  if (textInput.value.trim() === "") {
+    toast.error("Erro: mensagem em branco!", { timeout: 3000, });
+
     return;
   }
 
-  if (isTicketOpen.value) {
-    addNewUserMessage(text);
-  } else {
-    // TODO: Redirect to New Ticket Page
-    createNewTicket(text);
-  }
-
-  autoReply();
-};
-
-const addNewUserMessage = async (text) => {
   try {
-    const userMessage = await ticketService.addNewMessage(ticketId.value, user.id, text);
-
+    const userMessage = await ticketService.addNewMessage(route.query.ticketId, textInput.value);
+    textInput.value = "";
     pushMessagesToLocalList([userMessage]);
-    autoReply();
+    if (userMessage.roles) {
+      if (!userMessage.roles.includes('user')) {
+        autoReply();
+      }
+    }
   } catch (err) {
     console.log(err);
     toast.error("Ocorreu um erro ao enviar mensagem para o servidor!", {
@@ -115,53 +209,10 @@ const addNewUserMessage = async (text) => {
 };
 
 const autoReply = () => {
-  localMessageList.value.push({
-    message_id: localMessageList.value.length + 1,
-    text: "Estamos verificando sua solicitação.",
-    sender: "none",
-    timestamp: new Date(),
-  });
+  let replyText = "Estamos verificando sua solicitação.";
+  localMessageList.value.push({ content: replyText });
 };
 
-const createNewTicket = async (text) => {
-  try {
-    const createdTicketId = await ticketService.createTicket(
-      user.value.id,
-      subject.value,
-      text
-    );
-    redirectToCreatedTicket(createdTicketId);
-  } catch (err) {
-    console.log(err);
-    toast.error("Ocorreu um erro ao conectar com o servidor!", {
-      timeout: 3000,
-    });
-  }
-};
-
-const redirectToCreatedTicket = (newTicketId) => {
-  console.log("Current Ticket is ID: ", newTicketId);
-
-  router.push({
-    name: "MessagesPage",
-    query: {
-      ref: newTicketId,
-    },
-  });
-};
-
-const checkTicket = () => {
-  if (ticketId.value != 0) {
-    toast.info(`Ticket REF#${ticketId.value}`, { timeout: 3000 });
-    isTicketOpen.value = true;
-    getMessages();
-  } else {
-    // TODO: Redirect to New Ticket Page
-    toast.info(`Envie sua mensagem para abrir um novo ticket`, {
-      timeout: 4000,
-    });
-  }
-};
 </script>
 
 <style scoped>
@@ -201,7 +252,21 @@ const checkTicket = () => {
 }
 
 .support-message {
-  background: #fff;
+  background: #d6f4ff;
+  align-self: flex-start;
+  text-align: left;
+  margin-right: auto;
+}
+
+.manager-message {
+  background: #89d5f1;
+  align-self: flex-start;
+  text-align: left;
+  margin-right: auto;
+}
+
+.admin-message {
+  background: #34c8ff;
   align-self: flex-start;
   text-align: left;
   margin-right: auto;
@@ -228,5 +293,18 @@ const checkTicket = () => {
   color: white;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.open {
+  background-color: #00a305;
+}
+
+.in_progress {
+  background-color: #fffb00;
+  color: #333;
+}
+
+.closed {
+  background-color: #ee190a;
 }
 </style>

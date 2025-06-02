@@ -49,3 +49,26 @@ export async function loginUser(username, password) {
     return { success: false, error: "Erro na comunicação com o servidor." };
   }
 }
+
+export function redirectAfterLogin(router) {
+  const authStore = useAuthStore();
+
+  try {
+    if (authStore.isUserLogged) {
+      if (authStore.isUserStaff) {
+        router.push("/staff");
+      } else {
+        router.push("/dashboard");
+      }
+    }
+  } catch (err) {
+    console.log("Failed to redirect logged user",err);
+  }
+}
+
+export function handleLogout(router) {
+  const authStore = useAuthStore();
+  
+  authStore.logout();
+  router.push("/");
+}

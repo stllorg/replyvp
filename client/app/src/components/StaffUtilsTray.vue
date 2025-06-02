@@ -59,7 +59,7 @@ const redirectToAccounts = (profile = false) => {
     return;
   }
 
-  router.push("/admin/roles");
+  router.push("/staff/accounts");
 };
 </script>
 

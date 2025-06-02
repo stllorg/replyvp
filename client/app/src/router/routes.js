@@ -13,6 +13,7 @@ import MessagesPage from '@/views/user/MessagesPage.vue';
 
 // Admin
 import AdminRolesPage from '@/views/admin/AdminRolesPage.vue';
+import StaffAreaPage from '@/views/StaffAreaPage.vue';
 
 export const routes = [
   { path: '/', name: 'HomePage', component: HomePage },
@@ -21,8 +22,10 @@ export const routes = [
   { path: '/register', redirect: '/'},
   { path: '/policy', name: 'PrivacyPolicyPage', component: PrivacyPolicyPage},
   { path: '/terms', name: 'TermsPage', component: TermsPage},
-  { path: '/dashboard', name: 'DashboardPage', component: DashboardPage, meta: { requiresAuth: true }},
-  { path: '/admin/roles', name: 'AdminRolesPage', component: AdminRolesPage, meta: {requiresAdmin: true }},
+  { path: '/dashboard', name: 'DashboardPage', component: DashboardPage, children: [
+  { path:'login', name: 'Login', component: HomePage, props: { initialTab: 'login' } }, { path: 'register', name: 'Register', component: HomePage, props: { initialTab: 'register' }}], meta: { requiresAuth: true }},
+  { path: '/staff/', name: 'StaffAreaPage', component: StaffAreaPage, meta: {requiresAdmin: true }},
+  { path: '/staff/accounts', name: 'AdminRolesPage', component: AdminRolesPage, meta: {requiresAdmin: true }},
   { path: '/user/update', name: 'UpdateUserRegistrationPage', component: UpdateUserPage, meta: { requiresAuth: true }},
   { path: '/user/tickets/new', name: 'NewTicketPage', component: NewTicketPage },
   { path: '/user/messages', name: 'MessagesPage', component: MessagesPage, meta: { requiresAuth: true }},

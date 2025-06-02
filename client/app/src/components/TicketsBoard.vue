@@ -1,53 +1,90 @@
 <template>
-  <div class="card shadow border-0" style="background-color: #f8f9fa">
-    <div class="card-body">
-      <h5 class="card-title text-secondary fw-bold">{{ boardTitle }}</h5>
+  <div class="board container-fluid shadow-sm rounded-3 my-4 mx-auto">
+    <div class="row text-white align-items-center py-2 px-3">
+      <div class="col-6">
+        <h1 class="fs-4 fw-medium mb-0">{{ boardTitle }}</h1>
+        <i
+          class="bi bi-arrow-left"
+          @click="goBack()"
+          role="button"
+          title="Atualizar Cadastro"
+        ></i>
+      </div>
+      <div class="col-6 text-end">
+        <i class="bi bi-arrow-clockwise"></i>
+        <i class="bi bi-three-dots"></i>
+      </div>
+    </div>
+    <ul v-if="tickets?.length === 0" class="list-group list-group-flush">
+      <p class="text-center text-truncate text-secondary">
+        Sem histórico de tickets.
+      </p>
+    </ul>
 
-      <ul v-if="tickets?.length === 0" class="list-group list-group-flush">
-        <p class="text-center text-truncate text-secondary">Sem histórico de tickets.</p>
-      </ul>
-
-      <ul v-else class="list-group list-group-flush">
-        <li v-for="ticket in tickets" :key="ticket.id"
-          class="list-group-item d-flex justify-content-between align-items-center"
-          style="background-color: #f8f9fa; border: none">
-          <div>
-            <small class="text-muted">
-              {{ formatFullDateTime(ticket.createdAt) }}</small>
-          </div>
-          <div class="text-truncate text-secondary text-decoration-underline" style="max-width: 70%">
-            <router-link v-if="ticket.id != 0" :to="{ name: 'MessagesPage', query: { ticketId: ticket.id, }, }"
-              class="text-truncate text-secondary subject-link">
-              {{ truncate(ticket.subject) }}
-            </router-link>
+    <div v-else class="list-group list-group-flush">
+      <a
+        v-for="(ticket, index) in tickets"
+        :key="index"
+        :item="ticket"
+        href="#"
+        class="list-group-item list-group-item-action py-3 px-3 border-bottom"
+      >
+        <div class="d-flex align-items-center">
+          <img
+            src="https://placehold.co/50x50.png"
+            alt="Contact Picture"
+            class="rounded-circle me-3 avatar-sm"
+          />
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center">
+              <h6 class="mb-1 fw-medium text-dark">
+                {{ truncate(ticket.subject) }}
+              </h6>
+            </div>
+            <p class="mb-0 text-muted text-truncate">
+              Aberto em : {{ formatFullDateTime(ticket.createdAt) }}
+            </p>
           </div>
           <div class="d-flex">
-            <button class="btn btn-outline-primary btn-sm me-2" @click="$emit('view-messages', ticket.id)"
-              title="Ver Mensagens">
+            <button
+              class="btn btn-outline-primary btn-sm me-2"
+              @click="$emit('view-messages', ticket.id)"
+              title="Ver Mensagens"
+            >
               <i class="bi bi-chat-dots"></i>
             </button>
-            <button class="btn btn-outline-primary btn-sm me-2" @click="$emit('archive-ticket', ticket.id)"
-              title="Arquivar ticket">
+            <button
+              class="btn btn-outline-primary btn-sm me-2"
+              @click="$emit('archive-ticket', ticket.id)"
+              title="Arquivar ticket"
+            >
               <i class="bi bi-archive"></i>
             </button>
           </div>
-        </li>
-      </ul>
+        </div>
+      </a>
     </div>
   </div>
 </template>
 
 <script setup>
 import { formatFullDateTime } from "@/utils/dateUtils";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 defineProps({
   boardTitle: String,
   tickets: Array,
-})
+});
 
-defineEmits(['view-messages', 'archive-ticket'])
+defineEmits(["view-messages", "archive-ticket"]);
 
 function truncate(text, maxLength = 40) {
-  return text?.length > maxLength ? text.slice(0, maxLength) + '…' : text
+  return text?.length > maxLength ? text.slice(0, maxLength) + "…" : text;
 }
+
+const goBack = () => {
+  router.back();
+};
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div class="container mt-4">
-    <StaffPanel v-if="showStaffContent" @display-area="handleDisplayArea" />
+    <StaffPanel v-if="displayArea === 'menu' && showStaffContent" @display-area="handleDisplayArea" />
     <LoadingComponent v-if="loading" />
-    <TicketsBoard
+    <WorkBoard
       v-if="displayArea === 'pending' && showStaffContent"
       :boardTitle="boardsTitles.pendingTickets"
       :tickets="pendingTicketsList"
@@ -28,7 +28,7 @@ import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import { computed } from "vue";
 import InteractionsBoard from "@/components/InteractionsBoard.vue";
-import TicketsBoard from "@/components/TicketsBoard.vue";
+import WorkBoard from "@/components/WorkBoard.vue";
 import StaffPanel from "@/components/StaffPanel.vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
 
@@ -40,7 +40,7 @@ const user = authStore.user;
 const interactionsList = ref([]);
 const pendingTicketsList = ref([]);
 
-const displayArea = ref(null);
+const displayArea = ref('menu');
 const loading = ref(false);
 const boardsTitles = {
   pendingTickets: "Tickets de casos abertos",
@@ -105,7 +105,7 @@ const handleDisplayArea = async (areaName) => {
     try {
       const response = await getTicketsWithUserMessages();
 
-      if (response.status != 200) {
+      if (response.status != 200 && response.status != 404) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       loadInteractionsData(response.data);

@@ -68,12 +68,12 @@ INSERT INTO user_roles (user_id, role_id) VALUES
 
 INSERT INTO tickets (subject, status, is_repeat, user_id) VALUES
 ('Login', 'in_progress', FALSE, 4),
-('Atualização de email', 'open', FALSE, 5),
-('Verificação de email', 'open', FALSE, 6);
+('Atualiza??o de email', 'open', FALSE, 5),
+('Verifica??o de email', 'open', FALSE, 6);
 
 INSERT INTO ticket_messages (ticket_id, message, user_id) VALUES
-(1, 'Não consigo fazer login.', 4),
-(1, 'Olá! Meu nome é John Doe, especialista em suporte. Você poderia tentar usar a opção redefinir sua senha?', 3),
-(1, 'Já tentei, mas apareceu um erro dizendo que meu email não existe, embora meu email já existe.', 4),
+(1, 'N?o consigo fazer login.', 4),
+(1, 'Ol?! Meu nome ? John Doe, especialista em suporte. Voc? poderia tentar usar a op??o redefinir sua senha?', 3),
+(1, 'J? tentei, mas apareceu um erro dizendo que meu email n?o existe, embora meu email j? existe.', 4),
 (2, 'Quero atualizar meu email.', 5),
-(3, 'Não consigo verificar o meu email.', 6);
+(3, 'N?o consigo verificar o meu email.', 6);

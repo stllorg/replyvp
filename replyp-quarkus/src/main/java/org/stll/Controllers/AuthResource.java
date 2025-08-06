@@ -1,21 +1,20 @@
 package org.stll.Controllers;
 
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.stll.dtos.LoginRequest;
+import org.stll.dtos.LoginResponse;
 import org.stll.dtos.RegistrationRequest;
 import org.stll.Services.AuthService;
-import io.smallrye.jwt.build.Jwt;
+import org.stll.dtos.ValidationResponse;
 
-import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
-
 
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -24,6 +23,10 @@ public class AuthResource {
 
     @Inject
     AuthService authService;
+
+    @Inject
+    JsonWebToken jwt;
+
     // Registration Endpoint was POST /users.
     @POST
     @Path("/register")
@@ -37,24 +40,29 @@ public class AuthResource {
         }
     }
 
+    @GET
+    @Path("/authenticate")
+    @RolesAllowed({"user", "admin"})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validateToken() {
+        String userId = jwt.getClaim("id").toString();
+        Set<String> roles = jwt.getGroups();
+
+        return Response.ok().entity(new ValidationResponse(userId, roles)).build();
+    }
+
     @POST
     @Path("/login")
     @PermitAll
     public Response login(LoginRequest request) {
         try {
-            authService.loginWithUsername(request);
-            
-            Set<String> roles = new HashSet<>();
-            roles.add("USER");
+            Optional<String> token = authService.loginWithUsername(request);
 
-            String token = Jwt.issuer("stllorg/issuer")
-                    .subject(request.getUsername())
-                    .upn(request.getUsername())
-                    .groups(roles)
-                    .expiresIn(24 * 60 * 60)
-                    .sign();
-
-            return Response.ok().entity("{\"token\": \"" + token + "\"}").build();
+            if (token.isPresent()) {
+                return Response.ok().entity(new LoginResponse(true, "Login successful", token.get())).build();
+            } else {
+                throw new IllegalArgumentException("Invalid credentials");
+            }
         } catch (RuntimeException e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
         }

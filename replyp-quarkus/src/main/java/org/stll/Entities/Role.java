@@ -1,29 +1,22 @@
 package org.stll.Entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.Optional;
 
 @Entity
 @Table(name = "roles")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Role extends PanacheEntity {
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     @Column(unique = true, nullable = false)
     private String name;
-
-    public Role(String name) {
-        this.name = name;
-    }
-
-    public static Optional<Role> findByName(String name) {
-        return find("name", name).firstResultOptional();
-    }
 }

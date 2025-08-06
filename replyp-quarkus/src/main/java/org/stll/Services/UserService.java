@@ -1,106 +1,95 @@
 package org.stll.Services;
 
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
-import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.stll.Entities.Role;
 import org.stll.Entities.User;
+import org.stll.Repositories.UserRepository;
 import org.stll.dtos.PaginationResponse;
-import org.stll.dtos.UserDTO;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UserService {
 
+    @Inject
+    UserRepository userRepository;
+
     @Transactional
     public User createUser(User user) {
-        user.persist();
-
-        // ROLE 4 = USER
-        Optional<Role> defaultRole = Role.findByIdOptional(4L);
-
-        if (defaultRole.isPresent()) {
-            user.getRoles().add(defaultRole.get());
-            user.persistAndFlush(); // Persiste as mudanças na relação de roles
-        } else {
-           throw new RuntimeException("Default role not found.");
+        // Validate if username or email already exists
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists: " + user.getUsername());
         }
-        return user;
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists: " + user.getEmail());
+        }
+
+        // Save the user
+        User savedUser = userRepository.save(user);
+
+        // Assign the default role (ID 4) to the new user
+        userRepository.assignRoleToUser(savedUser.getId(), 4);
+
+        return savedUser;
     }
 
-    @Transactional
-    public boolean insertUserRole(Long userId, Long roleId) {
-        Optional<User> userOptional = User.findByIdOptional(userId);
-        Optional<Role> roleOptional = Role.findByIdOptional(roleId);
-
-        if (userOptional.isPresent() && roleOptional.isPresent()) {
-            User user = userOptional.get();
-            Role role = roleOptional.get();
-            if (user.getRoles().add(role)) {
-                user.persistAndFlush();
-                return true;
-            }
-        }
-        return false;
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    @Transactional
-    public boolean deleteAllUserRoles(Long userId) {
-        Optional<User> userOptional = User.findByIdOptional(userId);
+    public Optional<User> findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> findUserById(int id) {
+        return userRepository.findById(id);
+    }
+
+    public PaginationResponse<User> getUsers(int page, int limit) {
+        return userRepository.findAll(page, limit);
+    }
+
+    public String[] getUserRolesByUserId(int userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.getRoles().clear();
-            user.persistAndFlush();
-            return true;
-        }
-        return false;
-    }
-
-    public PaginationResponse<UserDTO> findUsers(int page, int limit) {
-        PanacheQuery<User> query = User.findAll(Sort.by("id"));
-
-        List<User> users = query.page(Page.of(page - 1, limit)).list(); // page é zero-based
-
-        List<UserDTO> userDtos = users.stream()
-                .map(user -> new UserDTO(user.id, user.getUsername(), user.getEmail()))
-                .collect(Collectors.toList());
-
-        long totalUsers = User.count();
-        int totalPages = (int) Math.ceil((double) totalUsers / limit);
-
-        PaginationResponse.PaginationInfo paginationInfo = new PaginationResponse.PaginationInfo(
-                page, limit, totalUsers, totalPages
-        );
-
-        return new PaginationResponse<>(userDtos, paginationInfo);
-    }
-
-
-    public Optional<User> getUserByEmail(String email) {
-        return User.findByEmail(email);
-    }
-
-    public Optional<User> getUserByUsername(String username) {
-        return User.findByUsername(username);
-    }
-
-    public Optional<User> getUserById(Long id) {
-        return User.findByIdOptional(id);
-    }
-
-    public String[] getUserRolesByUserId(Long userId) {
-        Optional<User> userOptional = User.findByIdOptional(userId);
-        if (userOptional.isPresent()) {
-            return userOptional.get().getRoles().stream()
+            return userRepository.findRolesByUserId(userId).stream()
                     .map(Role::getName)
                     .toArray(String[]::new);
         }
         return new String[]{};
     }
 
+    @Transactional
+    public boolean updateUserRoles(int userId, List<Integer> rolesIdsList) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            userRepository.updateUserRoles(userId, rolesIdsList);
+        }
+        return false;
+    }
+
+    @Transactional
+    public boolean insertUserRole(int userId, int roleId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            userRepository.assignRoleToUser(userId, roleId);
+        }
+        return false;
+    }
+
+    @Transactional
+    public boolean deleteAllUserRoles(int userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            userRepository.deleteRolesByUserId(userId);
+            return true;
+        }
+        return false;
+    }
 }

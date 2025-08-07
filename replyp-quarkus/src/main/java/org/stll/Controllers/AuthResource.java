@@ -3,6 +3,7 @@ package org.stll.Controllers;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -31,7 +32,7 @@ public class AuthResource {
     @POST
     @Path("/register")
     @PermitAll
-    public Response register(RegistrationRequest request) {
+    public Response register(@Valid RegistrationRequest request) {
         try {
             authService.register(request.getUsername(), request.getEmail(), request.getPassword());
             return Response.ok("User registered successfully").build();
@@ -54,7 +55,7 @@ public class AuthResource {
     @POST
     @Path("/login")
     @PermitAll
-    public Response login(LoginRequest request) {
+    public Response login(@Valid LoginRequest request) {
         try {
             Optional<String> token = authService.loginWithUsername(request);
 

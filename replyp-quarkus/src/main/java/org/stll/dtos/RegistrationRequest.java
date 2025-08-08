@@ -6,10 +6,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(
+        example = "{\"username\": \"aaa\", \"email\": \"aaa@email.com\", \"password\": \"Senha2#?\"}"
+)
 public class RegistrationRequest {
 
     @NotBlank(message = "Username cannot be blank")

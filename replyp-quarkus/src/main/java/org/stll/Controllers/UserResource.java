@@ -1,7 +1,10 @@
 package org.stll.Controllers;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityExistsException;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -10,6 +13,7 @@ import org.stll.Entities.User;
 import org.stll.Services.AuthService;
 import org.stll.Services.UserService;
 import org.stll.dtos.PaginationResponse;
+import org.stll.dtos.RegistrationRequest;
 import org.stll.dtos.RoleUpdateRequest;
 import org.stll.utils.RolesConverter;
 
@@ -32,6 +36,41 @@ public class UserResource {
     @Inject
     JsonWebToken jwt;
 
+    // CREATE user
+    @POST
+    @PermitAll
+    public Response createUser(@Valid RegistrationRequest request) {
+        try {
+            userService.createUserFromRequest(request.getUsername(), request.getEmail(), request.getPassword());
+            return Response.ok("User registered successfully").build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    // GET user
+    @GET
+    @Path("/{id}")
+    public Response getUserById(@PathParam("id") int id) {
+        return userService.findUserById(id)
+                .map(ticket -> Response.ok(ticket).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    // DELETE User by Id
+    @DELETE
+    @Path("/{id}")
+    @RolesAllowed("admin")
+    public Response deleteUserById(@PathParam("id") int id) {
+        boolean isDeleted = userService.delete(id);
+        if (isDeleted) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    // GET ALL users
     @GET
     @RolesAllowed("admin")
     public Response fetchUsers(@QueryParam("page") @DefaultValue("1") int page,
@@ -43,6 +82,7 @@ public class UserResource {
         return Response.ok(usersResult).build();
     }
 
+    // GET Roles by User Id
     @GET
     @Path("/{targetId}/roles")
     @RolesAllowed({"admin", "user"})
@@ -61,6 +101,7 @@ public class UserResource {
         return Response.ok(Collections.singletonMap("roles", roles)).build();
     }
 
+    // Update User Role by User Id
     @PUT
     @Path("/{targetId}/roles")
     @RolesAllowed("admin")

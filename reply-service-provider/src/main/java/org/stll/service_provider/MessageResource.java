@@ -6,6 +6,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.stll.service_provider.dtos.SaveMessageRequest;
 
 public class MessageResource {
 
@@ -35,7 +36,7 @@ public class MessageResource {
     // Create message
     @POST
     @RolesAllowed("user")
-    public Response createMessage(String messagePayload) {
+    public Response createMessage(SaveMessageRequest messagePayload) {
         return backendRestClient.createMessage(apiKey, messagePayload);
     }
 

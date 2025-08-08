@@ -1,5 +1,6 @@
 package org.stll.Repositories;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -10,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@ApplicationScoped
 public class TicketRepository {
 
     @Inject
@@ -30,7 +32,6 @@ public class TicketRepository {
         return lastSavedTicket.get();
     }
 
-
     public List<Ticket> findAllTicketsByUserId(int userId) {
 
         List<Ticket> tickets;
@@ -48,7 +49,6 @@ public class TicketRepository {
 
         return tickets;
     }
-
 
     public List<Ticket> findAllOpenTickets() {
 
@@ -124,6 +124,24 @@ public class TicketRepository {
                 .executeUpdate();
 
         return em.find(Ticket.class, ticket.getId());
+    }
+
+    public List<Integer> findAllTicketIdWithUserMessages(int ticketId) {
+
+        List<Integer> ticketsIds;
+
+        try {
+            ticketsIds = em.createNativeQuery(
+                            "SELECT DISTINCT ticket_id FROM ticket_messages WHERE user_id = ?"
+                    )
+                    .setParameter(1, ticketId)
+                    .getResultList();
+
+        } catch (jakarta.persistence.NoResultException e) {
+            ticketsIds = Collections.emptyList();
+        }
+
+        return ticketsIds;
     }
 
     @Transactional

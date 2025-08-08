@@ -1,5 +1,6 @@
 package org.stll.Services;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.stll.Entities.Ticket;
@@ -8,6 +9,7 @@ import org.stll.Repositories.TicketRepository;
 import java.util.List;
 import java.util.Optional;
 
+@ApplicationScoped
 public class TicketService {
 
     @Inject
@@ -39,6 +41,11 @@ public class TicketService {
     // FIND one ticket creator by ticket id
     public Optional<Integer> findTicketCreatorId(int ticketId) {
         return ticketRepository.findUserIdByTicketId(ticketId);
+    }
+
+    // FIND ALL tickets Ids with messages by user
+    public List<Integer> getTicketIdsWithUserMessagesByUserId(int userId) {
+        return ticketRepository.findAllTicketIdWithUserMessages(userId);
     }
 
     // UPDATE ticket

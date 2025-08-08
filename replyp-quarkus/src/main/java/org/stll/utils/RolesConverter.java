@@ -1,8 +1,11 @@
 package org.stll.utils;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ApplicationScoped
 public class RolesConverter {
     
     // map lista of RoleNames To list of Ids

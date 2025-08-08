@@ -5,6 +5,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.stll.service_provider.dtos.SaveMessageRequest;
+import org.stll.service_provider.dtos.SaveTicketRequest;
+import org.stll.service_provider.dtos.SaveUserRequest;
 
 @RegisterRestClient(configKey = "your-api")
 @Path("/api/v1")
@@ -37,7 +40,7 @@ public interface BackendRestClient {
     @POST
     @Path("/users")
     @Consumes("application/json")
-    Response createUser(@HeaderParam("X-API-KEY") String apiKey, String userPayload);
+    Response createUser(@HeaderParam("X-API-KEY") String apiKey, SaveUserRequest userPayload);
 
     // UPDATE user
     @PUT
@@ -62,7 +65,7 @@ public interface BackendRestClient {
     @POST
     @Path("/tickets")
     @Consumes("application/json")
-    Response createTicket(@HeaderParam("X-API-KEY") String apiKey, String ticketPayload);
+    Response createTicket(@HeaderParam("X-API-KEY") String apiKey, SaveTicketRequest ticketPayload);
 
     // UPDATE ticket
     @PUT
@@ -88,7 +91,7 @@ public interface BackendRestClient {
     // Moved from messages interactions to tickets
     // GET tickets Id with user messages by user id
     @GET
-    @Path("/tickets/users/{id}")
+    @Path("/tickets/interactions/users/{id}")
     Response getTicketsIdsWithUserMessage(@HeaderParam("X-API-KEY") String apiKey, @PathParam("id") String id);
 
     // DELETE ticket
@@ -103,7 +106,7 @@ public interface BackendRestClient {
     @POST
     @Path("/messages/tickets/{id}")
     @Consumes("application/json")
-    Response createMessage(@HeaderParam("X-API-KEY") String apiKey, String messagePayload);
+    Response createMessage(@HeaderParam("X-API-KEY") String apiKey, SaveMessageRequest messagePayload);
 
     // UPDATE message
     @PUT

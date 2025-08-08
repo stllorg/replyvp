@@ -81,4 +81,12 @@ public class TicketResource {
         List<Ticket> tickets = ticketService.findTicketsByUserId(id);
         return Response.ok(tickets).build();
     }
+
+    // GET Tickets Ids with User Messages By User Id
+    @GET
+    @Path("/user/{userId}/tickets")
+    public Response getTicketIdsByUserId(@PathParam("userId") int userId) {
+        List<Integer> ticketIds = ticketService.getTicketIdsWithUserMessagesByUserId(userId);
+        return Response.ok(ticketIds).build();
+    }
 }

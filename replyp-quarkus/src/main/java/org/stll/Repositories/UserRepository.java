@@ -49,10 +49,12 @@ public class UserRepository {
     }
 
     @Transactional
-    public int deleteById(int id) {
-        return em.createNativeQuery("DELETE FROM users WHERE id = ?")
+    public boolean deleteById(int id) {
+        int rowsAffected =  em.createNativeQuery("DELETE FROM users WHERE id = ?")
                 .setParameter(1, id)
                 .executeUpdate();
+
+        return rowsAffected > 0;
     }
 
     public Optional<User> findByEmail(String email) {

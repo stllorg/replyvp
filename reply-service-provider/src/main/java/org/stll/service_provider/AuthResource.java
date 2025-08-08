@@ -1,4 +1,4 @@
-package org.stll.service_provider;// src/main/java/com/yourcompany/apigateway/AuthResource.java
+package org.stll.service_provider;
 
 import io.smallrye.jwt.build.Jwt;
 import jakarta.ws.rs.Consumes;
@@ -14,6 +14,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.stll.service_provider.dtos.LoginRequest;
+import org.stll.service_provider.dtos.RegisterRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,8 +40,8 @@ public class AuthResource {
     @PermitAll
     public Response login(LoginRequest loginRequest) {
         String loginPayload = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", 
-                                           loginRequest.getUsername(),
-                                           loginRequest.getPassword());
+                                           loginRequest,
+                                           loginRequest);
 
         Response principalApiResponse = backendRestClient.login(apiKey, loginPayload);
 
@@ -48,7 +49,11 @@ public class AuthResource {
 
             // TODO: get roles from database
             Set<String> userRoles = Set.of();
-            String token = generateJwt(loginRequest.getUsername(), userRoles);
+
+            // TODO: get user id from database
+            Integer userId = 0;
+
+            String token = generateJwt(String.valueOf(userId), userRoles);
             return Response.ok().entity("{\"token\":\"" + token + "\"}").build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED)
@@ -98,13 +103,5 @@ public class AuthResource {
                   .groups(roles)
                   .expiresIn(3600)
                   .sign();
-    }
-
-
-
-    public static class RegisterRequest {
-        public String username;
-        public String email;
-        public String password;
     }
 }

@@ -1,14 +1,17 @@
 package org.stll.Repositories;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.transaction.Transactional;
 import org.stll.Entities.Message;
-import org.stll.Entities.Ticket;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@ApplicationScoped
 public class MessageRepository {
 
     @Inject
@@ -29,9 +32,21 @@ public class MessageRepository {
         return lastSavedMessage.get();
     }
 
+    public Optional<Message> findById(int messageId) {
+        try {
+            Message message = (Message) em.createNativeQuery(
+                            "SELECT id, ticket_id, message, created_at, user_id FROM ticket_messages WHERE id = ?", Message.class
+                    ).setParameter(1, messageId)
+                    .getSingleResult();
+
+            return Optional.of(message);
+
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 
     public List<Message> findAllMessagesByTicketId(int ticketId) {
-
         List<Message> messages;
 
         try {
@@ -66,22 +81,12 @@ public class MessageRepository {
         }
     }
 
+    @Transactional
+    public boolean deleteById(int id) {
+        int rowsAffected = em.createNativeQuery("DELETE FROM ticket_messages WHERE id = ?")
+                .setParameter(1, id)
+                .executeUpdate();
 
-    public List<Integer> findAllTicketIdWithUserMessages(int ticketId) {
-
-        List<Integer> ticketsIds;
-
-        try {
-            ticketsIds = em.createNativeQuery(
-                            "SELECT DISTINCT ticket_id FROM ticket_messages WHERE user_id = ?"
-                    )
-                    .setParameter(1, ticketId)
-                    .getResultList();
-
-        } catch (jakarta.persistence.NoResultException e) {
-            ticketsIds = Collections.emptyList();
-        }
-
-        return ticketsIds;
+        return rowsAffected > 0;
     }
 }

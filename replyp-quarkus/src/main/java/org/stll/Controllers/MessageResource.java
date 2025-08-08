@@ -18,6 +18,7 @@ public class MessageResource {
     @Inject
     MessageService messageService;
 
+    // CREATE new message inside a ticket
     @POST
     @Path("/{ticketId}")
     public Response createMessage(@PathParam("ticketId") int ticketId, Message message) {
@@ -38,6 +39,16 @@ public class MessageResource {
         return Response.created(URI.create("/messages/" + createdMessage.getId())).entity(createdMessage).build();
     }
 
+    // GET ticket by Id
+    @GET
+    @Path("/{id}")
+    public Response getTicketById(@PathParam("id") int id) {
+        return messageService.findMessageById(id)
+                .map(ticket -> Response.ok(ticket).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    // GET Messages BY Ticket Id
     @GET
     @Path("/ticket/{ticketId}")
     public Response getMessagesByTicketId(@PathParam("ticketId") int ticketId) {
@@ -45,10 +56,8 @@ public class MessageResource {
         return Response.ok(messages).build();
     }
 
-    @GET
-    @Path("/user/{userId}/tickets")
-    public Response getTicketIdsByUserId(@PathParam("userId") int userId) {
-        List<Integer> ticketIds = messageService.getTicketIdsWithUserMessagesByUserId(userId);
-        return Response.ok(ticketIds).build();
+    // DELETE message
+    public boolean delete(int ticketId) {
+        return messageService.delete(ticketId);
     }
 }

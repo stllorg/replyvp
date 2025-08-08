@@ -3,11 +3,13 @@ package org.stll.Services;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import org.stll.Entities.Role;
 import org.stll.Entities.User;
 import org.stll.Repositories.UserRepository;
 import org.stll.dtos.PaginationResponse;
+import org.stll.utils.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,21 @@ public class UserService {
 
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    private PasswordEncoder passwordEncoder;
+
+    public User createUserFromRequest(String username, String password, String email) {
+        if (findUserByEmail(email).isPresent()) {
+            throw new EntityExistsException();
+        }
+        String hashedPassword = passwordEncoder.hashPassword(password);
+
+        User user = new User(username, email, hashedPassword);
+        createUser(user);
+
+        return user;
+    }
 
     @Transactional
     public User createUser(User user) {
@@ -51,6 +68,10 @@ public class UserService {
 
     public PaginationResponse<User> getUsers(int page, int limit) {
         return userRepository.findAll(page, limit);
+    }
+
+    public boolean delete(int id) {
+        return userRepository.deleteById(id);
     }
 
     public String[] getUserRolesByUserId(int userId) {

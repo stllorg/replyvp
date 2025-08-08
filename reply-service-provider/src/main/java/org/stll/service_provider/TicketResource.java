@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.stll.service_provider.dtos.SaveTicketRequest;
 
 @Path("/api/v1/tickets")
 @Produces(MediaType.APPLICATION_JSON)
@@ -23,7 +24,7 @@ public class TicketResource {
     // Create ticket
     @POST
     @RolesAllowed("user")
-    public Response createTicket(String ticketPayload) {
+    public Response createTicket(SaveTicketRequest ticketPayload) {
         return backendRestClient.createTicket(apiKey, ticketPayload);
     }
 

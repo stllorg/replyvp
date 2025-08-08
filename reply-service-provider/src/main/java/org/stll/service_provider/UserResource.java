@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.stll.service_provider.dtos.SaveUserRequest;
 
 @Path("/api/v1/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,7 +34,7 @@ public class UserResource {
 
     @POST
     @RolesAllowed("admin")
-    public Response createUser(String userPayload) {
+    public Response createUser(SaveUserRequest userPayload) {
         return backendRestClient.createUser(apiKey, userPayload);
     }
 

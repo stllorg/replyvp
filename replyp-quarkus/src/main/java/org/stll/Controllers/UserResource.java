@@ -3,6 +3,7 @@ package org.stll.Controllers;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.stll.Entities.User;
@@ -17,10 +18,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Path("/users")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
-
-    @Inject
-    AuthService authService;
 
     @Inject
     UserService userService;

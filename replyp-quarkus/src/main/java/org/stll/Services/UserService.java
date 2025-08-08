@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
+import lombok.extern.jbosslog.JBossLog;
 import org.stll.Entities.Role;
 import org.stll.Entities.User;
 import org.stll.Repositories.UserRepository;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
+@JBossLog
 public class UserService {
 
     @Inject
@@ -23,15 +25,24 @@ public class UserService {
     @Inject
     private PasswordEncoder passwordEncoder;
 
-    public User createUserFromRequest(String username, String password, String email) {
+    public User createUserFromRequest(String username, String email, String password) {
+
+        log.info("UserService - Received email {}" + email);
         if (findUserByEmail(email).isPresent()) {
+            log.info("UserService - User email already exists! {}" + email);
             throw new EntityExistsException();
         }
         String hashedPassword = passwordEncoder.hashPassword(password);
 
         User user = new User(username, email, hashedPassword);
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(hashedPassword);
+
+        log.info("UserService - Received email from user {}" + user.getEmail());
         createUser(user);
 
+        log.info("UserService - Sucesscfully created user with email: " + user.getEmail());
         return user;
     }
 

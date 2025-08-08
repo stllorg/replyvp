@@ -17,7 +17,9 @@ public class TicketService {
 
     // CREATE ticket
     @Transactional
-    public Ticket createTicket(Ticket ticket) {
+    public Ticket createTicket(String subject, int userId) {
+
+        Ticket ticket = new Ticket(subject, userId);
         return ticketRepository.save(ticket);
     }
 

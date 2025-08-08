@@ -15,6 +15,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(unique = true, nullable = false)
@@ -27,5 +29,9 @@ public class User {
     private LocalDateTime createdAt;
 
     public User(String username, String email, String hashedPassword) {
+        this.username = username;
+        this.email = email;
+        this.password = hashedPassword;
+        this.createdAt = LocalDateTime.now();
     }
 }

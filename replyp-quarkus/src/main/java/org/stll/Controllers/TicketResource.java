@@ -7,6 +7,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.stll.Entities.Ticket;
 import org.stll.Services.TicketService;
+import org.stll.dtos.SaveTicketRequest;
+import org.stll.dtos.SaveTicketResponse;
 
 import java.net.URI;
 import java.util.List;
@@ -21,18 +23,21 @@ public class TicketResource {
 
     // CREATE ticket
     @POST
-    public Response createTicket(Ticket newTicket) {
-        if (newTicket == null) {
+    public Response createTicket(SaveTicketRequest request) {
+        if (request == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Ticket data is missing.").build();
         }
 
-        Integer userId = newTicket.getUserId();
+        Integer userId = request.userId;
 
-        if (newTicket.getSubject() == null || userId == null) {
+        if (request.subject == null || userId == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Subject and userId are required").build();
         }
-        Ticket createdTicket = ticketService.createTicket(newTicket);
-        return Response.created(URI.create("/tickets/" + createdTicket.getId())).entity(createdTicket).build();
+        Ticket createdTicket = ticketService.createTicket(request.subject, request.userId);
+        SaveTicketResponse saveTicketResponse = new SaveTicketResponse(
+                ticketService.createTicket(createdTicket.getSubject(), createdTicket.getUserId() );
+        // return Response.created(URI.create("/tickets/" + createdTicket.getId())).entity(createdTicket).build();
+        return Response.ok(saveTicketResponse).build();
     }
 
     // GET ticket

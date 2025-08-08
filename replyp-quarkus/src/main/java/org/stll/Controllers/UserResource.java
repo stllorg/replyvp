@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.stll.Entities.User;
 import org.stll.Services.AuthService;
@@ -15,6 +16,7 @@ import org.stll.Services.UserService;
 import org.stll.dtos.PaginationResponse;
 import org.stll.dtos.RegistrationRequest;
 import org.stll.dtos.RoleUpdateRequest;
+import org.stll.dtos.UserDTO;
 import org.stll.utils.RolesConverter;
 
 import java.util.Collections;
@@ -25,6 +27,7 @@ import java.util.Set;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@JBossLog
 public class UserResource {
 
     @Inject
@@ -40,9 +43,19 @@ public class UserResource {
     @POST
     @PermitAll
     public Response createUser(@Valid RegistrationRequest request) {
+
+        log.info("UserResource Received email {}" + request.getEmail());
+
         try {
-            userService.createUserFromRequest(request.getUsername(), request.getEmail(), request.getPassword());
-            return Response.ok("User registered successfully").build();
+            User user = userService.createUserFromRequest(request.getUsername(), request.getEmail(), request.getPassword());
+
+            UserDTO userResponse = new UserDTO(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail()
+            );
+
+            return Response.ok(userResponse).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }

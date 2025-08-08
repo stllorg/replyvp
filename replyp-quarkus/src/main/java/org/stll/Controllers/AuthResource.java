@@ -41,6 +41,7 @@ public class AuthResource {
         }
     }
 
+    // JWT TOKEN VALIDATION
     @GET
     @Path("/authenticate")
     @RolesAllowed({"user", "admin"})
@@ -52,6 +53,7 @@ public class AuthResource {
         return Response.ok().entity(new ValidationResponse(userId, roles)).build();
     }
 
+    // LOGIN
     @POST
     @Path("/login")
     @PermitAll

@@ -33,4 +33,9 @@ public class Ticket {
 
     @Column(name = "user_id", nullable = false)
     private int userId;
+
+    public Ticket(String subject, int userId) {
+        this.subject = subject;
+        this.userId = userId;
+    }
 }

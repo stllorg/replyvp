@@ -22,8 +22,6 @@ public class MessageResource {
     @POST
     @Path("/{ticketId}")
     public Response createMessage(@PathParam("ticketId") int ticketId, Message message) {
-
-
         if (message == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Message data is missing.").build();
         }
@@ -31,12 +29,16 @@ public class MessageResource {
         Integer userId = message.getUserId();
         Integer newMessageTicketId = message.getTicketId();
 
-
         if (message.getMessage() == null || userId == null || newMessageTicketId == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Message content and IDs are required").build();
         }
-        Message createdMessage = messageService.createMessage(message);
-        return Response.created(URI.create("/messages/" + createdMessage.getId())).entity(createdMessage).build();
+
+        try {
+            Message createdMessage = messageService.createMessage(message);
+            return Response.created(URI.create("/messages/" + createdMessage.getId())).entity(createdMessage).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
     // GET ticket by Id

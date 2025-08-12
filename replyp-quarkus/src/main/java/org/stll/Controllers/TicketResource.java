@@ -10,7 +10,6 @@ import org.stll.Services.TicketService;
 import org.stll.dtos.SaveTicketRequest;
 import org.stll.dtos.SaveTicketResponse;
 
-import java.net.URI;
 import java.util.List;
 
 @Path("/tickets")
@@ -33,11 +32,16 @@ public class TicketResource {
         if (request.subject == null || userId == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Subject and userId are required").build();
         }
-        Ticket createdTicket = ticketService.createTicket(request.subject, request.userId);
-        SaveTicketResponse saveTicketResponse = new SaveTicketResponse(
-                ticketService.createTicket(createdTicket.getSubject(), createdTicket.getUserId() );
-        // return Response.created(URI.create("/tickets/" + createdTicket.getId())).entity(createdTicket).build();
-        return Response.ok(saveTicketResponse).build();
+
+        try {
+            Ticket createdTicket = ticketService.createTicket(request.subject, request.userId);
+
+            SaveTicketResponse saveTicketResponse = new SaveTicketResponse(createdTicket.getSubject(), createdTicket.getId(), createdTicket.getUserId());
+            // return Response.created(URI.create("/tickets/" + createdTicket.getId())).entity(createdTicket).build();
+            return Response.ok(saveTicketResponse).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
     // GET ticket

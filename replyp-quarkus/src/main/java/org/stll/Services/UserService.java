@@ -70,6 +70,7 @@ public class UserService {
     }
 
     public Optional<User> findUserByUsername(String username) {
+        log.info("UserService Trying to find username: " + username);
         return userRepository.findByUsername(username);
     }
 

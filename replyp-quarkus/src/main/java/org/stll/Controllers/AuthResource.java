@@ -7,12 +7,11 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.stll.dtos.LoginRequest;
-import org.stll.dtos.LoginResponse;
-import org.stll.dtos.RegistrationRequest;
+import org.stll.Entities.User;
+import org.stll.dtos.*;
 import org.stll.Services.AuthService;
-import org.stll.dtos.ValidationResponse;
 
 import java.util.Optional;
 import java.util.Set;
@@ -20,6 +19,7 @@ import java.util.Set;
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@JBossLog
 public class AuthResource {
 
     @Inject
@@ -34,8 +34,15 @@ public class AuthResource {
     @PermitAll
     public Response register(@Valid RegistrationRequest request) {
         try {
-            authService.register(request.getUsername(), request.getEmail(), request.getPassword());
-            return Response.ok("User registered successfully").build();
+            User user = authService.register(request.getUsername(), request.getPassword(), request.getEmail());
+
+            UserDTO userResponse = new UserDTO(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail()
+            );
+
+            return Response.ok(userResponse).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
@@ -47,7 +54,11 @@ public class AuthResource {
     @RolesAllowed({"user", "admin"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response validateToken() {
+
+        log.info("AuthResource Received token for validation");
         String userId = jwt.getClaim("id").toString();
+
+        log.info("AuthResource Detected userId: " + userId);
         Set<String> roles = jwt.getGroups();
 
         return Response.ok().entity(new ValidationResponse(userId, roles)).build();

@@ -5,9 +5,11 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.jbosslog.JBossLog;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.stll.reply.core.Entities.Ticket;
 import org.stll.reply.core.Services.TicketService;
-import org.stll.reply.core.dtos.SaveTicketRequest;
+import org.stll.reply.core.dtos.CreateTicketRequest;
 import org.stll.reply.core.dtos.SaveTicketResponse;
 
 import java.util.List;
@@ -15,26 +17,46 @@ import java.util.List;
 @Path("/tickets")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@JBossLog
 public class TicketResource {
 
     @Inject
     TicketService ticketService;
 
+    @Inject
+    JsonWebToken jwt;
+
     // CREATE ticket
     @POST
-    public Response createTicket(SaveTicketRequest request) {
+    @RolesAllowed("user")
+    public Response createTicket(CreateTicketRequest request) {
         if (request == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Ticket data is missing.").build();
         }
 
-        Integer userId = request.userId;
+        log.info("TicketResource Received token for validation");
+        String userIdString = jwt.getClaim("id").toString();
 
-        if (request.subject == null || userId == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Subject and userId are required").build();
+        Integer userId = null;
+
+        try {
+            userId = Integer.valueOf(userIdString);
+        } catch (NumberFormatException e) {
+            log.error("Failed to convert the user id from JWT claim to Integer:");
+            userId = null;
+        }
+
+        if (userId == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An auth token with user id is required").build();
+        }
+
+        if (request.subject == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Subject is required").build();
         }
 
         try {
-            Ticket createdTicket = ticketService.createTicket(request.subject, request.userId);
+            // Autounboxing will convert Integer(wrapper) to int(primitive)
+            Ticket createdTicket = ticketService.createTicket(request.subject, userId);
 
             SaveTicketResponse saveTicketResponse = new SaveTicketResponse(createdTicket.getSubject(), createdTicket.getId(), createdTicket.getUserId());
             // return Response.created(URI.create("/tickets/" + createdTicket.getId())).entity(createdTicket).build();

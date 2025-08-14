@@ -4,7 +4,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
+import lombok.extern.jbosslog.JBossLog;
 import org.stll.reply.core.Entities.Ticket;
 
 import java.util.Collections;
@@ -12,24 +14,28 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
+@JBossLog
 public class TicketRepository {
 
     @Inject
     EntityManager em;
 
     public Ticket save(Ticket ticket) {
+        log.info("TicketRepository : Trying to save new ticket from user id: " + ticket.getUserId());
+
         em.createNativeQuery(
-                        "INSERT INTO tickets (subject, status, user_id) VALUES (?, ?, ?)"
+                        "INSERT INTO tickets (subject, user_id) VALUES (?, ?)"
                 )
                 .setParameter(1, ticket.getSubject())
-                .setParameter(2, ticket.getStatus())
-                .setParameter(3, ticket.getUserId())
+                .setParameter(2, ticket.getUserId())
                 .executeUpdate();
 
         // After insertion, retrieve the ID from the saved Ticket.
-        Optional<Ticket> lastSavedTicket = findLastTicketByUserId(ticket.getUserId());
+        Optional<Integer> savedTicketId = findIdOfLastTicketCreatedByUserId(ticket.getUserId());
+        savedTicketId.ifPresent(ticket::setId);
+        log.info("TicketRepository: Sucessfully saved ticket with ID : " + ticket.getId());
 
-        return lastSavedTicket.get();
+        return ticket;
     }
 
     public List<Ticket> findAllTicketsByUserId(int userId) {
@@ -67,19 +73,17 @@ public class TicketRepository {
         return tickets;
     }
 
-    public Optional<Ticket> findLastTicketByUserId(int userId) {
-
-        List<Ticket> tickets;
-
+    // Should find the id of the most recent ticket created by user
+    public Optional<Integer> findIdOfLastTicketCreatedByUserId(int userId) {
         try {
-            tickets = em.createNativeQuery(
+            Integer ticketId = (Integer) em.createNativeQuery(
                             "SELECT id FROM tickets WHERE user_id = ? ORDER BY created_at DESC"
                     )
                     .setParameter(1, userId)
                     .setMaxResults(1)
-                    .getResultList();
+                    .getSingleResult();
 
-            return Optional.of(tickets.getFirst());
+            return Optional.of(ticketId);
         } catch (jakarta.persistence.NoResultException e) {
             return Optional.empty();
         }

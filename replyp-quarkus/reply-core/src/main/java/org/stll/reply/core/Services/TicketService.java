@@ -8,6 +8,7 @@ import org.stll.reply.core.Repositories.TicketRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 public class TicketService {
@@ -17,7 +18,7 @@ public class TicketService {
 
     // CREATE ticket
     @Transactional
-    public Ticket createTicket(String subject, int userId) {
+    public Ticket createTicket(String subject, UUID userId) {
 
         Ticket ticket = new Ticket(subject, userId);
         return ticketRepository.save(ticket);
@@ -25,7 +26,7 @@ public class TicketService {
 
     // FIND all tickets created by USER id
     @Transactional
-    public List<Ticket> findTicketsByUserId(int userId) {
+    public List<Ticket> findTicketsByUserId(UUID userId) {
         return ticketRepository.findAllTicketsByUserId(userId);
     }
 
@@ -36,17 +37,17 @@ public class TicketService {
     }
 
     // FIND one ticket by Ticket id
-    public Optional<Ticket> findTicketById(int ticketId) {
+    public Optional<Ticket> findTicketById(UUID ticketId) {
         return ticketRepository.findById(ticketId);
     }
 
     // FIND one ticket creator by ticket id
-    public Optional<Integer> findTicketCreatorId(int ticketId) {
+    public Optional<UUID> findTicketCreatorId(UUID ticketId) {
         return ticketRepository.findUserIdByTicketId(ticketId);
     }
 
     // FIND ALL tickets Ids with messages by user
-    public List<Integer> getTicketIdsWithUserMessagesByUserId(int userId) {
+    public List<UUID> getTicketIdsWithUserMessagesByUserId(UUID userId) {
         return ticketRepository.findAllTicketIdWithUserMessages(userId);
     }
 
@@ -56,7 +57,7 @@ public class TicketService {
     }
 
     // DELETE ticket
-    public boolean delete(int ticketId) {
+    public boolean delete(UUID ticketId) {
         return ticketRepository.deleteById(ticketId);
     }
 }

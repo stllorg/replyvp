@@ -12,6 +12,7 @@ import org.stll.reply.core.dtos.PaginationResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 public class UserRepository {
@@ -49,7 +50,7 @@ public class UserRepository {
     }
 
     @Transactional
-    public boolean deleteById(int id) {
+    public boolean deleteById(UUID id) {
         int rowsAffected =  em.createNativeQuery("DELETE FROM users WHERE id = ?")
                 .setParameter(1, id)
                 .executeUpdate();
@@ -83,7 +84,7 @@ public class UserRepository {
         }
     }
 
-    public Optional<User> findById(int id) {
+    public Optional<User> findById(UUID id) {
         try {
             User user = (User) em.createNativeQuery(
                             "SELECT id, username, email, password, created_at FROM users WHERE id = ?", User.class
@@ -123,7 +124,7 @@ public class UserRepository {
     }
 
     @SuppressWarnings("unchecked") // Suppress warning for unchecked cast from getResultList()
-    public List<Role> findRolesByUserId(int userId) {
+    public List<Role> findRolesByUserId(UUID userId) {
         return em.createNativeQuery(
                         "SELECT r.id, r.name FROM roles r JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = ?", Role.class
                 )
@@ -132,7 +133,7 @@ public class UserRepository {
     }
 
     @Transactional
-    public void assignRoleToUser(int userId, int roleId) {
+    public void assignRoleToUser(UUID userId, int roleId) {
         em.createNativeQuery(
                         "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)"
                 )
@@ -142,7 +143,7 @@ public class UserRepository {
     }
 
     @Transactional
-    public void updateUserRoles(int userId, List<Integer> rolesIds) {
+    public void updateUserRoles(UUID userId, List<Integer> rolesIds) {
 
         for (Integer roleId : rolesIds) {
             em.createNativeQuery(
@@ -156,11 +157,13 @@ public class UserRepository {
     }
 
     @Transactional
-    public int deleteRolesByUserId(int userId) {
-        return em.createNativeQuery(
+    public boolean deleteRolesByUserId(UUID userId) {
+        int rowsAffected = em.createNativeQuery(
                         "DELETE FROM user_roles WHERE user_id = ?"
                 )
                 .setParameter(1, userId)
                 .executeUpdate();
+
+        return rowsAffected > 0;
     }
 }

@@ -17,10 +17,7 @@ import org.stll.reply.core.dtos.RoleUpdateRequest;
 import org.stll.reply.core.dtos.UserDTO;
 import org.stll.reply.core.utils.RolesConverter;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -62,7 +59,7 @@ public class UserResource {
     // GET user
     @GET
     @Path("/{id}")
-    public Response getUserById(@PathParam("id") int id) {
+    public Response getUserById(@PathParam("id") UUID id) {
         return userService.findUserById(id)
                 .map(ticket -> Response.ok(ticket).build())
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());
@@ -72,7 +69,7 @@ public class UserResource {
     @DELETE
     @Path("/{id}")
     @RolesAllowed("admin")
-    public Response deleteUserById(@PathParam("id") int id) {
+    public Response deleteUserById(@PathParam("id") UUID id) {
         boolean isDeleted = userService.delete(id);
         if (isDeleted) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -97,8 +94,21 @@ public class UserResource {
     @GET
     @Path("/{targetId}/roles")
     @RolesAllowed({"admin", "user"})
-    public Response fetchUserRoles(@PathParam("targetId") int targetId) {
-        int currentUserId = Integer.parseInt(jwt.getClaim("id").toString());
+    public Response fetchUserRoles(@PathParam("targetId") UUID targetId) {
+        String currentUserIdString = jwt.getClaim("id").toString();
+        UUID currentUserId = null;
+
+        try {
+            currentUserId = UUID.fromString(currentUserIdString);
+        } catch (IllegalArgumentException e) {
+            log.error("Failed to convert the user id from JWT claim to UUID:");
+            currentUserId = null;
+        }
+
+        if (currentUserId == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An auth token with user id is required").build();
+        }
+
         Set<String> currentUserRoles = jwt.getGroups();
         if (currentUserId != targetId && !currentUserRoles.contains("admin")) {
             return Response.status(Response.Status.FORBIDDEN)
@@ -116,7 +126,7 @@ public class UserResource {
     @PUT
     @Path("/{targetId}/roles")
     @RolesAllowed("admin")
-    public Response updateUserRole(@PathParam("targetId") int targetId, RoleUpdateRequest request) {
+    public Response updateUserRole(@PathParam("targetId") UUID targetId, RoleUpdateRequest request) {
         if (request.getRoleNames() == null || request.getRoleNames().isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonMap("error", "Missing roles value")).build();
         }

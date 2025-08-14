@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name= "tickets")
@@ -16,8 +17,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
     private String subject;
@@ -32,9 +33,9 @@ public class Ticket {
     private LocalDateTime createdAt;
 
     @Column(name = "user_id", nullable = false)
-    private int userId;
+    private UUID userId;
 
-    public Ticket(String subject, int userId) {
+    public Ticket(String subject, UUID userId) {
         this.subject = subject;
         this.userId = userId;
     }

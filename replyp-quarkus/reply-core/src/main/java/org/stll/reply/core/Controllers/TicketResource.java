@@ -13,6 +13,7 @@ import org.stll.reply.core.dtos.CreateTicketRequest;
 import org.stll.reply.core.dtos.SaveTicketResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 @Path("/tickets")
 @Produces(MediaType.APPLICATION_JSON)
@@ -37,12 +38,12 @@ public class TicketResource {
         log.info("TicketResource Received token for validation");
         String userIdString = jwt.getClaim("id").toString();
 
-        Integer userId = null;
+        UUID userId = null;
 
         try {
-            userId = Integer.valueOf(userIdString);
-        } catch (NumberFormatException e) {
-            log.error("Failed to convert the user id from JWT claim to Integer:");
+            userId = UUID.fromString(userIdString);
+        } catch (IllegalArgumentException e) {
+            log.error("Failed to convert the user id from JWT claim to UUID:");
             userId = null;
         }
 
@@ -55,7 +56,6 @@ public class TicketResource {
         }
 
         try {
-            // Autounboxing will convert Integer(wrapper) to int(primitive)
             Ticket createdTicket = ticketService.createTicket(request.subject, userId);
 
             SaveTicketResponse saveTicketResponse = new SaveTicketResponse(createdTicket.getSubject(), createdTicket.getId(), createdTicket.getUserId());
@@ -69,7 +69,7 @@ public class TicketResource {
     // GET ticket
     @GET
     @Path("/{id}")
-    public Response getTicketById(@PathParam("id") int id) {
+    public Response getTicketById(@PathParam("id") UUID id) {
         return ticketService.findTicketById(id)
                 .map(ticket -> Response.ok(ticket).build())
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());
@@ -88,7 +88,7 @@ public class TicketResource {
     @DELETE
     @Path("/{id}")
     @RolesAllowed("admin")
-    public Response deleteTicketById(@PathParam("id") int id) {
+    public Response deleteTicketById(@PathParam("id") UUID id) {
         boolean isDeleted = ticketService.delete(id);
         if (isDeleted) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -108,7 +108,7 @@ public class TicketResource {
     // GET ALL TICKETS created by a User
     @GET
     @Path("/user/{userId}")
-    public Response getTicketsByUserId(@PathParam("id") int id) {
+    public Response getTicketsByUserId(@PathParam("id") UUID id) {
         List<Ticket> tickets = ticketService.findTicketsByUserId(id);
         return Response.ok(tickets).build();
     }
@@ -116,8 +116,8 @@ public class TicketResource {
     // GET Tickets Ids with User Messages By User Id
     @GET
     @Path("/user/{userId}/tickets")
-    public Response getTicketIdsByUserId(@PathParam("userId") int userId) {
-        List<Integer> ticketIds = ticketService.getTicketIdsWithUserMessagesByUserId(userId);
+    public Response getTicketIdsByUserId(@PathParam("userId") UUID userId) {
+        List<UUID> ticketIds = ticketService.getTicketIdsWithUserMessagesByUserId(userId);
         return Response.ok(ticketIds).build();
     }
 }

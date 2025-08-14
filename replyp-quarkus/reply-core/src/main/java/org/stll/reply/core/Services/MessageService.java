@@ -8,6 +8,7 @@ import org.stll.reply.core.Repositories.MessageRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 public class MessageService {
@@ -17,22 +18,24 @@ public class MessageService {
 
     // CREATE message
     @Transactional
-    public Message createMessage(Message message) {
+    public Message createMessage(UUID ticketId, UUID userId, String messageText) {
+        Message message = new Message(ticketId, userId, messageText);
+
         return messageRepository.save(message);
     }
 
     // FIND one message by Ticket id
-    public Optional<Message> findMessageById(int messageId) {
+    public Optional<Message> findMessageById(UUID messageId) {
         return messageRepository.findById(messageId);
     }
 
     // FIND ALL messages by ticket id
-    public List<Message> getMessagesByTicketId(int ticketId) {
+    public List<Message> getMessagesByTicketId(UUID ticketId) {
         return messageRepository.findAllMessagesByTicketId(ticketId);
     }
 
     // DELETE message by Id
-    public boolean delete(int id) {
+    public boolean delete(UUID id) {
         return messageRepository.deleteById(id);
     }
 }

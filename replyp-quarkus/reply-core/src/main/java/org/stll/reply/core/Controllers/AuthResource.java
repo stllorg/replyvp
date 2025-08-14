@@ -15,6 +15,7 @@ import org.stll.reply.core.dtos.*;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -56,7 +57,9 @@ public class AuthResource {
     public Response validateToken() {
 
         log.info("AuthResource Received token for validation");
-        String userId = jwt.getClaim("id").toString();
+        String userIdString = jwt.getClaim("id").toString();
+
+        UUID userId = UUID.fromString(userIdString);
 
         log.info("AuthResource Detected userId: " + userId);
         Set<String> roles = jwt.getGroups();

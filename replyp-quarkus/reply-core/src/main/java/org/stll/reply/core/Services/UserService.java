@@ -13,6 +13,7 @@ import org.stll.reply.core.utils.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 @JBossLog
@@ -73,7 +74,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<User> findUserById(int id) {
+    public Optional<User> findUserById(UUID id) {
         return userRepository.findById(id);
     }
 
@@ -81,11 +82,11 @@ public class UserService {
         return userRepository.findAll(page, limit);
     }
 
-    public boolean delete(int id) {
+    public boolean delete(UUID id) {
         return userRepository.deleteById(id);
     }
 
-    public String[] getUserRolesByUserId(int userId) {
+    public String[] getUserRolesByUserId(UUID userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             return userRepository.findRolesByUserId(userId).stream()
@@ -96,7 +97,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUserRoles(int userId, List<Integer> rolesIdsList) {
+    public boolean updateUserRoles(UUID userId, List<Integer> rolesIdsList) {
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isPresent()) {
@@ -106,7 +107,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean insertUserRole(int userId, int roleId) {
+    public boolean insertUserRole(UUID userId, int roleId) {
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isPresent()) {
@@ -116,7 +117,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean deleteAllUserRoles(int userId) {
+    public boolean deleteAllUserRoles(UUID userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             userRepository.deleteRolesByUserId(userId);

@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import lombok.extern.jbosslog.JBossLog;
 import org.stll.reply.core.Entities.Ticket;
@@ -12,6 +11,7 @@ import org.stll.reply.core.Entities.Ticket;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 @JBossLog
@@ -31,14 +31,14 @@ public class TicketRepository {
                 .executeUpdate();
 
         // After insertion, retrieve the ID from the saved Ticket.
-        Optional<Integer> savedTicketId = findIdOfLastTicketCreatedByUserId(ticket.getUserId());
+        Optional<UUID> savedTicketId = findIdOfLastTicketCreatedByUserId(ticket.getUserId());
         savedTicketId.ifPresent(ticket::setId);
-        log.info("TicketRepository: Sucessfully saved ticket with ID : " + ticket.getId());
+        log.info("TicketRepository: Successfully saved ticket with ID : " + ticket.getId());
 
         return ticket;
     }
 
-    public List<Ticket> findAllTicketsByUserId(int userId) {
+    public List<Ticket> findAllTicketsByUserId(UUID userId) {
 
         List<Ticket> tickets;
 
@@ -74,9 +74,9 @@ public class TicketRepository {
     }
 
     // Should find the id of the most recent ticket created by user
-    public Optional<Integer> findIdOfLastTicketCreatedByUserId(int userId) {
+    public Optional<UUID> findIdOfLastTicketCreatedByUserId(UUID userId) {
         try {
-            Integer ticketId = (Integer) em.createNativeQuery(
+            UUID ticketId = (UUID) em.createNativeQuery(
                             "SELECT id FROM tickets WHERE user_id = ? ORDER BY created_at DESC"
                     )
                     .setParameter(1, userId)
@@ -89,7 +89,7 @@ public class TicketRepository {
         }
     }
 
-    public Optional<Ticket> findById(int ticketId) {
+    public Optional<Ticket> findById(UUID ticketId) {
         try {
             Ticket ticket = (Ticket) em.createNativeQuery(
                     "SELECT id, subject, status, created_at FROM tickets WHERE id = ?", Ticket.class
@@ -103,7 +103,7 @@ public class TicketRepository {
         }
     }
 
-    public Optional<Integer> findUserIdByTicketId(int ticketId) {
+    public Optional<UUID> findUserIdByTicketId(UUID ticketId) {
         try {
             Ticket ticket = (Ticket) em.createNativeQuery(
                             "SELECT id, userId FROM tickets WHERE id = ?", Ticket.class
@@ -130,9 +130,9 @@ public class TicketRepository {
         return em.find(Ticket.class, ticket.getId());
     }
 
-    public List<Integer> findAllTicketIdWithUserMessages(int ticketId) {
+    public List<UUID> findAllTicketIdWithUserMessages(UUID ticketId) {
 
-        List<Integer> ticketsIds;
+        List<UUID> ticketsIds;
 
         try {
             ticketsIds = em.createNativeQuery(
@@ -149,7 +149,7 @@ public class TicketRepository {
     }
 
     @Transactional
-    public boolean deleteById(int id) {
+    public boolean deleteById(UUID id) {
         int rowsAffected = em.createNativeQuery("DELETE FROM tickets WHERE id = ?")
                 .setParameter(1, id)
                 .executeUpdate();

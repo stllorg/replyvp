@@ -4,6 +4,10 @@
     <groupId>org.stll</groupId>
     <artifactId>reply-quarkus</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>reply-core</module>
+    </modules>
 
     <properties>
         <compiler-plugin.version>3.14.0</compiler-plugin.version>

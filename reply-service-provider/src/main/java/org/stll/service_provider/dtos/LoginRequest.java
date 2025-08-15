@@ -1,6 +1,0 @@
-package org.stll.service_provider.dtos;
-
-public class LoginRequest {
-    public String username;
-    public String password;
-}

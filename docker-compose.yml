@@ -1,43 +1,54 @@
 services:
+
   db:
-    build:
-      context: ./db
-    container_name: mysql-container
+    image: postgres:14
+    container_name: postgres_db
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DEFAULT_AUTHENTICATION_PLUGIN: mysql_native_password
+      POSTGRES_DB: test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "3306:3306"
-    restart: unless-stopped
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   web:
     build:
-      context: ./web
-      args:
-        APP_ENV: ${APP_ENV}
-    container_name: php-container
-    environment:
-      APP_ENV: ${APP_ENV}
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-web
     restart: always
-    volumes:
-      - ./web/app:/var/www/html:Z
     ports:
       - "8080:80"
     depends_on:
       - db
-    
-  frontend:
-    build:
-      context: ./client/app
-      dockerfile: Dockerfile.dev
-    container_name: vue-container
-    environment:
-      BASE_API_URL: http://web:8080
-    restart: unless-stopped 
-    volumes:
-      - ./client/app:/app:Z
-      - /app/node_modules
+  
+  gateway:
+    image: "kong:3.8-ubuntu"
+    container_name: kong-gateway
+    restart: on-failure
     ports:
-      - "5174:5174"
-    depends_on:
-      - web
+      - "8000:8000"
+    environment:
+      KONG_DATABASE: "off"
+      KONG_PROXY_ACCESS_LOG: "/dev/stdout"
+      KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
+      KONG_PROXY_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_ERROR_LOG: "/dev/stderr"
+      KONG_DECLARATIVE_CONFIG: "/kong/declarative/kong.yml"
+      KONG_DNS_RESOLVER: "8.8.8.8"
+    volumes:
+      - ./reply-service-provider/kong.yml:/kong/declarative/kong.yml
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:

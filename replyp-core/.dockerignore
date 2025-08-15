@@ -4,3 +4,8 @@
 !build/lib/*
 !build/quarkus-app/*
 *.Identifier
+jwt
+jwt/
+/jwt/
+.idea
+.idea/

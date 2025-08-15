@@ -1,0 +1,38 @@
+_format_version: "3.0"
+
+services:
+  - name: backend-service
+    url: http://web:8080
+    routes:
+      - name: login-route
+        paths:
+          - /login
+        plugins:
+          - name: rate-limiting
+            config:
+              policy: local
+              second: 100
+      - name: register-route
+        paths:
+          - /register
+        plugins:
+          - name: rate-limiting
+            config:
+              policy: local
+              second: 100
+      - name: protected-routes
+        paths:
+          - /api
+        plugins:
+          - name: rate-limiting
+            config:
+              policy: local
+              second: 100
+          - name: jwt
+            config:
+              rsa_public_key: "{{file('/kong/jwt/publicKey.pem')}}" 
+              iss:
+                - "reply-core"             
+              algorithm: RS256
+              claims_to_verify:
+                - exp

@@ -1,7 +1,9 @@
 
-# ReplyVP - Fullstack Solution with Docker Compose
+# replyvp
 
-This project is a modern fullstack application with a PHP backend, MySQL database, and a Vue.js frontend. Designed with scalability, security, and best practices in mind, it's an ideal starting point for building robust applications.
+ReplyVP is a solution to customer support with asynchronous ticket support system designed to streamline customer service operations. The solution is containerized with Docker Compose for easy deployment and management.
+
+The architecture is built for scalability and performance, featuring Quarkus, PostgreSQL and Kong API Gateway.
 
 ---
 
@@ -12,11 +14,7 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
 - [Database and passwords](#database-and-passwords)
 - [Endpoints](#endpoints)
 - [Features](#features)
-- [Vue Client Setup](#vue-client-setup)
-- [Database Configuration](#mysql-database-access)
-- [Contributing](#contributing)
 - [License](#license)
-- [Details](#details)
 
 ---
 
@@ -24,31 +22,18 @@ This project is a modern fullstack application with a PHP backend, MySQL databas
 
 ### Backend
 
-- **Language**: PHP 8.4.3
-- **Web Server**: Apache 2.4.62 (serving the PHP application)
-- **API Endpoints**: routes defined on [/web/app/index.php](/web/app/index.php)
-  - **Authentication**: `localhost:8080/auth/authenticate` (For token for validation)    
-  - **Registration/Sign up**: `localhost:8080/auth/register` (For user registration)    
-  - **Login/Sign up**: `localhost:8080/auth/login` (For login)    
-  - **Users tickets**: `localhost:8080/users/tickets` (For users create or fetch their tickets)
-- **Database Driver**: MySQLi (for communication with the MySQL database)
-- **PHP Dependency Manager**: Composer ( installed from [/web/Dockerfile](/web/Dockerfile) )
-- **Authentication**: Using Firebase `php-jwt` v6.11 for authentication and JWT token generation.
-- **Containers**: Docker with Compose in compatibility with Podman Compose.
-- **PHP Testing**: PHPUnit ( installed from [/web/app/composer.json](/web/app/composer.json) ). Tests cases executed from [/web/app/tests/Auth](/web/app/tests/Auth).  
-  - Currently, tests are executed manually from terminal:
-    ```bash
-    docker exec -it php-container vendor/bin/phpunit
-    ```
-### Database
-- **Database**: MySQL
+- **Language**: Java 21
+- **Framework**: Quarkus 3.25
+- **Migrations Tool**: Flyway
+- **Tests** : Junit + Rest Assured
+- **Authentication & RBAC** : Elytron Smallrey JWT
+- **RSA Key Pair Tool** : Openssl
+- **Password Hash** : Bcrypt
+- **Logging** : JBoss
+- **API Documentation** : OpenAPI Swagger
 
-### Frontend
-- **Framework**: Vue.js (Client-side)
-- **Build Tool**: npm for dependency management and script automation
-- **Vue App URL**: `http://localhost:5174`. (For development app build)
-- **Development Environment**: The Vue App is served by `vue-cli-service` and is instaled from [/client/app/Dockerfile.dev](/client/app/Dockerfile.dev)
-- **Key Development Features**: This setup provides **hot module replacement (HMR)**, allowing for instant updates in the browser as you make code changes without losing application state.
+### Database
+- **Database**: PostgreSQL
 
 ---
 
@@ -123,99 +108,6 @@ The MySQL database configuration is automatically handled by `docker-compose.yml
 
 > Info: All default users have the password: `test@test.com`
 
-Default users 
-- Admin   
-  id: 1
-  username: admin   
-  email: adm@testmail.com   
-  password: test@testmail.com   
-  roles: admin  
-
-- Manager   
-  id: 2   
-  username: manager   
-  email : manager@email.com   
-  password: test@testmail.com   
-  roles: manager  (no rights)
-
-- Support
-  id: 3
-  username: support
-  email : support@email.com
-  password: test@testmail.com
-  roles: support (no rights)
-
-### script.sql Line 4 - Create users table
-> The users table stores information to users login and be correctly identified to the system provide services.   
-
-```sql
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### script.sql Line 12 - Create roles table
-> The roles table stores roles to possibility rules to improve user experience providing only needed resources and services applicable to a specific role.
-```sql
-CREATE TABLE IF NOT EXISTS roles (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL UNIQUE
-);
-```
-
-### script.sql Line 17 - Create user_roles
-> The user_roles table stores user_id and role_id to provide the atrribution of roles to users. Currently, each user may have n roles.
-```sql
-CREATE TABLE IF NOT EXISTS user_roles (
-    user_id INT NOT NULL,
-    role_id INT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (role_id) REFERENCES roles(id)
-);
-```
-
-### script.sql Line 45 - Populate users table with sample users
-> The samples users inserted will have the same default password to login, the passowrd in plain text withouth encryption is: `test@test.com`  
-
-```sql
-INSERT INTO users (username, email, password) VALUES
-('admin', 'adm@testmail.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
-('manager', 'manager@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
-('support', 'support@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
-('usera1', 'usuario4@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
-('usera2', 'usuario5@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
-('usera3', 'usuario6@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO'),
-('usera4', 'usuario7@email.com', '$2y$12$7WxeGPCKKc/w5ZrR4I/YjeoJ0p2AyjbjCsYt/Y6ygHo9phOWd0ZsO');
-```
-### script.sql Line 54 - Create table roles
-> Insert admin, manager, support and user roles. Currently, manager and support have no access.
-
-```sql
-INSERT INTO roles (name) VALUES
-('admin'),
-('manager'),
-('support'),
-('user');
-```
-
-### script.sql Line 60 - Populate user_roles
-> Insert entries in user_roles with (user_id, role_id) to assign roles to users. Currently, role_id 2 (manager) and role_id(3) will grant no acess.
-
-```sql
-INSERT INTO user_roles (user_id, role_id) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 4),
-(6, 4),
-(7, 4);
-```
 ------
 
 ## Endpoints:
@@ -434,33 +326,10 @@ This application is designed with the following key features:
 - CSRF protection to prevent cross-site request forgery.
 - Input validation and prepared SQL statements to prevent SQL injection.
 - CORS headers to enable safe cross-origin requests.
-- Vue.js route guards to protect sensitive pages based on roles.
 
-
----
-
-## Contributing
-
-We welcome contributions from developers of all skill levels. If you have ideas for new features, optimizations, or bug fixes, feel free to submit an issue or pull request.
-
-### Code Style
-This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/) specification for commit messages. The code is formatted as follows:
-- **Vue.js files**: 2 spaces indentation.
-- **PHP files**: 4 spaces indentation.
-
-A [Visual Studio Code configuration](./vscode) file is included to ensure consistency across the development environment.
 
 ---
 
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-## Details
-
-- **Frontend Expertise**: Proficiency in Vue.js for building interactive, scalable, and responsive user interfaces.
-- **Backend Development**: Solid foundation in PHP and MySQL for building API-driven applications with security and scalability in mind.
-- **DevOps Skills**: Docker for containerization and Docker Compose for orchestration, ensuring a seamless development and deployment workflow.
-- **Security Focus**: Best practices for securing the application, including JWT, CSRF protection, input validation, and more.

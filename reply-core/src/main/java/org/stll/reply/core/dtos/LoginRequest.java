@@ -1,5 +1,6 @@
 package org.stll.reply.core.dtos;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@RegisterForReflection
 @Schema(
         example = "{\"username\": \"aaa\", \"password\": \"Senha2#?\"}"
 )

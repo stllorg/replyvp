@@ -1,9 +1,11 @@
 package org.stll.reply.core.dtos;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+@RegisterForReflection
 @Schema(
         example = "{\"message\": \"texto\"}"
 )

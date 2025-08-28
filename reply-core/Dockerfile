@@ -1,1 +1,0 @@
-FROM stllorg/reply-core

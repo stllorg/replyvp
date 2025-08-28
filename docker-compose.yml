@@ -33,6 +33,21 @@
         - private_key_secret
       depends_on:
         - db
+    
+    nginx:
+      build:
+        context: ./nginx
+        dockerfile: Dockerfile
+      container_name: nginx_proxy
+      ports:
+        - "8080:80"
+      volumes:
+        - ./frontend:/usr/share/nginx/html
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      depends_on:
+        - web
+      secrets:
+        - public_key_secret
 
   secrets:
     public_key_secret:

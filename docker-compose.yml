@@ -51,9 +51,9 @@
 
   secrets:
     public_key_secret:
-      file: ./reply-core/jwt/publicKey.pem
+      file: ./keys/jwt/publicKey.pem
     private_key_secret:
-      file: ./reply-core/jwt/privateKey.pem
+      file: ./keys/jwt/privateKey.pem
 
   volumes:
     postgres_data:

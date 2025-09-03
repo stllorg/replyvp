@@ -40,7 +40,7 @@
         dockerfile: Dockerfile
       container_name: nginx_proxy
       ports:
-        - "8080:80"
+        - "80:80"
       volumes:
         - ./frontend:/usr/share/nginx/html
         - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -51,9 +51,9 @@
 
   secrets:
     public_key_secret:
-      file: ./reply-core/jwt/publicKey.pem
+      file: ./keys/jwt/publicKey.pem
     private_key_secret:
-      file: ./reply-core/jwt/privateKey.pem
+      file: ./keys/jwt/privateKey.pem
 
   volumes:
     postgres_data:

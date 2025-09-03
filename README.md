@@ -3,7 +3,7 @@
 
 ReplyVP is a solution to customer support with asynchronous ticket support system designed to streamline customer service operations. The solution is containerized with Docker Compose for easy deployment and management.
 
-The architecture is built for scalability and performance, featuring Quarkus, PostgreSQL and Kong API Gateway.
+The architecture is built for scalability and performance, featuring Quarkus, PostgreSQL and Nginx.
 
 ---
 
@@ -40,13 +40,9 @@ The architecture is built for scalability and performance, featuring Quarkus, Po
 ## Setup Instructions
 
 ### Prerequisites
-The only prerequirement is to have Docker Desktop or Podman Desktop:
 - Docker Desktop: For Windows, Mac and Linux.   
     1 - Installation Guide: [https://docs.docker.com/desktop/](https://docs.docker.com/desktop/)     
-
-- Podman Desktop - For Windows, Mac and Linux. Is optimized for RPM-based Linux distributions.    
-    1 - Installation Guide: [https://podman-desktop.io/docs/installation](https://podman-desktop.io/docs/installation)   
-    2 - Setting up Compose: https://podman-desktop.io/docs/compose/setting-up-compose
+- make ( [Linux Ubuntu]Lhttps://www.geeksforgeeks.org/installation-guide/how-to-install-make-on-ubuntu/) | [Linux Mint](https://ipv6.rs/tutorial/Linux_Mint_Latest/GNU_Make/) | [Windows](http://gnuwin32.sourceforge.net/packages/make.htm))
 
 ### Step 1: Clone the Repository
 Clone the repository to your local machine:
@@ -55,58 +51,47 @@ Clone the repository to your local machine:
 git clone <repository-url>
 cd <project-directory>
 ```
-### Step 2: Edit Passwords and Environment Variables
-Edit the environment variable values in the following files:
 
-- `/.env.example`
-- `/web/app/.env.example`
+### Step 2: Start
 
-### Step 3: Rename `.env.example` Files to `.env`
-
+> To start all containers run:
 
 ```bash
-mv .env.example .env
-mv web/app/.env.example web/app/.env
+make start
 ```
 
-### Step 4: Build and Start the Containers
-To start the project with Docker, run the following in your terminal:
-
-```bash
-docker-compose up --build -d
-```
-OR
-```bash
-podman-compose up -d
-```
 
 This will:
 - Build the images for PHP, MySQL, and other services.
 - Expose the services on port `8080` (PHP), `5174` (VUE ) `3306` (MySQL).
 - Automatically load MySQL data from the provided SQL script for initialization.
 
+
+### Step 3: Stop
+
+
+```bash
+
 > To stop all containers for this project, use:
 
-```bash
-docker-compose down
+make stop
 ```
-OR
-```bash
-podman-compose down
+
+
+
 ```
+
 
 ### Step 5: Access the Application
-Once the containers are up and running, you can access the application:
-
-The Vue App (client) is available on [http://localhost:5174/](http://localhost:5174/).
-To consult the API go to [Endpoints](#endpoits)
+Once the containers are up and running, you can access the application.
 
 ------
 
 ## Database and passwords
-The MySQL database configuration is automatically handled by `docker-compose.yml`. The SQL initialization script ( [/db/init/script.sql](/db/init/script.sql) ) creates necessary database tables and inserts initial sample data such as tickets, messages and users.
+The PostgreSQL database configuration is automatically handled by 'reply-core' with `Flyway` migrations.
 
-> Info: All default users have the password: `test@test.com`
+
+> Info: All default users have the password: `Senha1234`
 
 ------
 
